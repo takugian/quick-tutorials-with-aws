@@ -1,7 +1,6 @@
 # apigatewayopenapi
 
-This project creates:
-- A REST API Gateway based on OpenAPI contract;
+This project creates a REST API Gateway deployed using OpenAPI.
 
 ## Helpful links
 

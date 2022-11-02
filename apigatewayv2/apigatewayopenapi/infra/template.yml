@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a REST API Gateway based on OpenAPI contract
+Description: Creates a REST API Gateway deployed using OpenAPI
 
 Parameters:
   BucketOpenAPI:

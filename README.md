@@ -25,21 +25,32 @@ Amazon API Gateway tutorials.
 [apigatewayprivateloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayprivateloadbalancer
 [apigatewayvpclink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayvpclink
 
+### [API Gateway V2]
 
+Amazon API Gateway V2 resource type reference.
 
+- [apigatewaychatroomwebsocket] - A complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
+- [apigatewaycognitoauthorizer] - An API Gateway using Cognito as authorizer `in progress`
+- [apigatewaycustominterceptor] - An API Gateway with a custom interceptor `in progress`
+- [apigatewaygamerestapi] - A complete CRUD REST API using an API Gateway, a Lambda function as backend and a DynamoDB table
+- [apigatewayecsappgamerestapi] - A complete CRUD REST API using an API Gateway, a ECS task as backend and a DynamoDB table `in progress`
+- [apigatewayhttplambda] - A REST API Gateway integrated to a Lambda function
+- [apigatewayhttpwebsocketlambda] - A WebSocket API Gateway integrated to a Lambda function
+- [apigatewayhttpwebsocketmock] - A WebSocket API Gateway integrated to a mocked backend
+- [apigatewayopenapi] - A REST API Gateway deployed using OpenAPI
+- [apigatewayv2vpclink] - A VPC Link 
 
-
-- API Gateway V2
-    - (O) API Gateway, WebSocket, Lambda Chat Room, Lambda Authorizer, DynamoDB apigatewaychatroomwebsocket
-    - ( ) API Gateway, Cognito Authorizer #apigatewaycognitoauthorizer
-    - ( ) API Gateway Custom Interceptor #apigatewaycustominterceptor
-    - (O) API Gateway, Lambda Game REST API, DynamoDB #apigatewaygamerestapi
-    - ( ) API Gateway, ECS App Game REST API, DynamoDB #apigatewayecsappgamerestapi
-    - (O) API Gateway and HTTP Lambda #apigatewayhttplambda
-    - (O) API Gateway and WebSocket Lambda #apigatewayhttpwebsocketlambda
-    - (O) API Gateway and WebSocket Mock #apigatewayhttpwebsocketmock
-    - (O) API Gateway and OpenAPI #apigatewayopenapi
-    - (O) VPC Link #apigatewayv2vpclink
+[API Gateway V2]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ApiGatewayV2.html
+[apigatewaychatroomwebsocket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaychatroomwebsocket
+[apigatewaycognitoauthorizer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaycognitoauthorizer
+[apigatewaycustominterceptor]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayv2lambda
+[apigatewaygamerestapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaygamerestapi
+[apigatewayecsappgamerestapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayecsappgamerestapi
+[apigatewayhttplambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayhttplambda
+[apigatewayhttpwebsocketlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayhttpwebsocketlambda
+[apigatewayhttpwebsocketmock]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayhttpwebsocketmock
+[apigatewayopenapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayopenapi
+[apigatewayv2vpclink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayv2vpclink
 
 - Aurora
     - (O) Aurora Cluster #auroramysqlcluster

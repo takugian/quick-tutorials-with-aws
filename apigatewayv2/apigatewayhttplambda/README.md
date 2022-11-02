@@ -1,12 +1,6 @@
 # apigatewayhttplambda
 
-This project creates:
-- A HTTP API Gateway
-    - CORS enabled;
-    - One route configured;
-    - Throttling limits configured;
-- A Lambda function as the backend of the API
-    - CloudWatch Logs enabled;
+This project creates a REST API Gateway integrated to a Lambda function.
 
 ## How to invoke
 

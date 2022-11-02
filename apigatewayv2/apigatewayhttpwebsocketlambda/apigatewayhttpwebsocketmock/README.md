@@ -1,10 +1,6 @@
 # apigatewayhttpwebsocketmock
 
-This project creates:
-- A websocket API Gateway;
-    - $default route mocked;
-    - $connect route mocked;
-    - $disconnect route mocked;
+This project creates a WebSocket API Gateway integrated to a mocked backend.
 
 ## How to invoke
 

@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a HTTP API Gateway and a Lambda function as the backend
+Description: Creates a REST API Gateway integrated to a Lambda function
 
 Parameters:
   ApiName:

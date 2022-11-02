@@ -1,7 +1,6 @@
 # apigatewaygamerestapi
 
-This project creates:
-- A REST API Gateway with a complete backend using lambda and authorizer;
+This project creates a complete CRUD REST API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table.
 
 ## How to invoke
 
@@ -56,8 +55,8 @@ curl --location --request DELETE 'https://pursvt5pcg.execute-api.us-east-2.amazo
 
 - [What is Amazon API Gateway?][1]
 - [Working with REST APIs][2]
-- [Set up mock integrations in API Gateway][3]
+- [What is AWS Lambda?][3]
 
 [1]: https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html
 [2]: https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html
-[3]: https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-mock-integration.html
+[3]: https://docs.aws.amazon.com/lambda/latest/dg/welcome.html

@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a Chat Room WebSocket API
+Description: Creates a complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 
 Parameters:
   BucketLambdaSourceCode:

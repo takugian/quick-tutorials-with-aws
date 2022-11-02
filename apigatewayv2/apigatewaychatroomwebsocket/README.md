@@ -1,13 +1,6 @@
 # apigatewaychatroomwebsocket
 
-This project creates:
-- A WebSocket API Gateway;
-    - $connect route enabled;
-        - Authorizer enabled;
-    - $disconnect route enabled;
-    - onMessage route enabled;
-- A Lambda function as the backend of the API
-    - CloudWatch Logs enabled;
+This project creates a complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table.
 
 ## How to invoke
 

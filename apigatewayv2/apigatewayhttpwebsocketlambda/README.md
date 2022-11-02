@@ -1,12 +1,6 @@
 # apigatewaywebsocket
 
-This project creates:
-- A WebSocket API Gateway;
-    - $default route enabled;
-    - $connect route enabled;
-    - $disconnect route enabled;
-- A Lambda function as the backend of the API
-    - CloudWatch Logs enabled;
+This project creates a WebSocket API Gateway integrated to a Lambda function.
 
 ## How to invoke
 
