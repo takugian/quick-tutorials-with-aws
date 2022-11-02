@@ -1,4 +1,4 @@
-# apigatewaywebsocket
+# apigatewayhttpwebsocketlambda
 
 This project creates a WebSocket API Gateway integrated to a Lambda function.
 
