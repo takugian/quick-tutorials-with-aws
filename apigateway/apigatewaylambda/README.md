@@ -1,15 +1,6 @@
 # apigatewaylambda
 
-This project creates:
-- A REST API Gateway;
-    - Endpoints enabled:
-        - GET /customers;
-        - POST /customers;
-        - GET /customers/{id};
-        - PUT /customers/{id};
-        - DELETE /customers/{id};
-- A Lambda function as the backend of the API
-    - CloudWatch Logs enabled;
+This project creates a REST API Gateway and a Lambda function as backend.
 
 ## How to invoke
 

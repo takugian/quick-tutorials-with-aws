@@ -1,12 +1,6 @@
 # apigatewaylambdaauthorizer
 
-This project creates:
-- A REST API Gateway;
-    - Authorizer enabled;
-- A Lambda function as authorizer of the API
-    - CloudWatch Logs enabled;
-- A Lambda function as backend of the API
-    - CloudWatch Logs enabled;
+This project creates a REST API Gateway with a Lambda function as authorizer.
 
 ## How to invoke
 

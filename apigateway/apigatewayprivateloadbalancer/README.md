@@ -1,14 +1,6 @@
 # apigatewayprivateloadbalancer
 
-This project creates:
-- A private REST API Gateway;
-    - Endpoints enabled:
-        - GET /customers;
-        - POST /customers;
-        - GET /customers/{id};
-        - PUT /customers/{id};
-        - DELETE /customers/{id};
-- An integration between an API and a Network Load Balancer;
+This project creates a private REST API Gateway integrated with a Network Load Balancer and an ECS task.
 
 ## How to invoke
 

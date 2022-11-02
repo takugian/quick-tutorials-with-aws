@@ -1,7 +1,6 @@
 # apigatewaymock
 
-This project creates:
-- A REST API Gateway with a mocked backend;
+This project creates a REST API Gateway with a mocked backend.
 
 ## How to invoke
 

@@ -1,7 +1,6 @@
 # apigatewaydomainnamebasepath
 
-This project creates:
-- A REST API Gateway with domain name and base path configured;
+This project creates a REST API Gateway with domain name and base path.
 
 ## How to invoke
 

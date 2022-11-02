@@ -17,13 +17,13 @@ Amazon API Gateway tutorials.
 - [apigatewayvpclink] - A VPC Link 
 
 [API Gateway]: https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html
-[apigatewayapikeyusageplan]: https://github.com/takugian/quick-tutorials-with-aws/apigateway/apigatewayapikeyusageplan
-[apigatewaydomainnamebasepath]: https://github.com/takugian/quick-tutorials-with-aws/apigateway/apigatewaydomainnamebasepath
-[apigatewaylambda]: https://github.com/takugian/quick-tutorials-with-aws/apigateway/apigatewaylambda
-[apigatewaylambdaauthorizer]: https://github.com/takugian/quick-tutorials-with-aws/apigateway/apigatewaylambdaauthorizer
-[apigatewaymock]: https://github.com/takugian/quick-tutorials-with-aws/apigateway/apigatewaymock
-[apigatewayprivateloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/apigateway/apigatewayprivateloadbalancer
-[apigatewayvpclink]: https://github.com/takugian/quick-tutorials-with-aws/apigateway/apigatewayvpclink
+[apigatewayapikeyusageplan]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayapikeyusageplan
+[apigatewaydomainnamebasepath]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaydomainnamebasepath
+[apigatewaylambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaylambda
+[apigatewaylambdaauthorizer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaylambdaauthorizer
+[apigatewaymock]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaymock
+[apigatewayprivateloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayprivateloadbalancer
+[apigatewayvpclink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayvpclink
 
 
 

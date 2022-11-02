@@ -1,9 +1,6 @@
 # apigatewayapikeyusageplan
 
-This project creates:
-- A REST API Gateway;
-    - API Key configured;
-    - Usage plan configured;
+This project creates a REST API Gateway with usage plan and API Key configured.
 
 ## How to invoke
 
