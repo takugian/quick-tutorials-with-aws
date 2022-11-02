@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a KMS key used to encrypt the secret stored in secrets manager
+
+Parameters:
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  KMSKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: KMS key for a secret
+      KeySpec: SYMMETRIC_DEFAULT
+      MultiRegion: false
+      EnableKeyRotation: true
+      PendingWindowInDays: 7
+      Enabled: true
+      KeyPolicy:
+        Id: KeyDefault
+        Version: 2012-10-17
+        Statement:
+          - Sid: Allow root access of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+          - Sid: Allow administration of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/Admin"
+            Action:
+              - kms:Create*
+              - kms:Describe*
+              - kms:Enable*
+              - kms:List*
+              - kms:Put*
+              - kms:Update*
+              - kms:Revoke*
+              - kms:Disable*
+              - kms:Get*
+              - kms:Delete*
+              - kms:ScheduleKeyDeletion
+              - kms:CancelKeyDeletion
+            Resource: "*"
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Secret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: Secret
+      Description: Secret
+      SecretString: '{"username": "quicklabs1", "password": "secret"}'
+      KmsKeyId: !Ref KMSKey
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

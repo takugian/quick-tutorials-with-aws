@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Alarms checking a SQS queue
+
+Parameters:
+  QueueName:
+    Type: String
+    Default: CloudWatchAlarmsQueue
+
+  AlarmEmail:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint:
+            Ref: AlarmEmail
+          Protocol: email
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  QueueDepthAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub QueueDepth${QueueName}
+      AlarmDescription: !Sub QueueDepth${QueueName}
+      Namespace: /aws/sqs
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value: !Ref Queue
+      Statistic: Sum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: LessThanThreshold
+      TreatMissingData: breaching
+      ActionsEnabled: true
+      AlarmActions:
+        - !Ref AlarmTopic
+      InsufficientDataActions:
+        - !Ref AlarmTopic

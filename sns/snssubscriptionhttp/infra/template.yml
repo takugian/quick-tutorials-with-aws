@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SNS Topic with a HTTP service subscription
+
+Parameters:
+  TopicName:
+    Type: String
+    Default: SNSSubscriptionHTTP
+  
+  HTTPServiceURL:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Ref TopicName
+      # KmsMasterKeyId: !Ref KmsMasterKeyId
+      Subscription:
+        - Endpoint: !Ref HTTPServiceURL
+          Protocol: https
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Log Group for a Lambda function
+
+Parameters:
+  FunctionName:
+    Type: String
+    Default: CloudWatchLogsLambda
+
+  # KmsKeyId:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${FunctionName}
+      # KmsKeyId: !Ref KmsKeyId
+      RetentionInDays: 7
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${FunctionName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${FunctionName}LogsPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: ExecutionRole
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: nodejs14.x
+      Role: !GetAtt ExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+            console.log('Running CloudWatch Logs');
+            context.succeed("Hello, Running CloudWatch Logs!");
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

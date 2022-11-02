@@ -1,0 +1,379 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a REST API Gateway with a complete backend using lambda and authorizer
+
+Parameters:
+  VpcId:
+    Type: String
+    Default: vpc-0d1b84f8a177dcfe7
+  
+  RouteTableId1:
+    Type: String
+    Default: rtb-0a7b385520065f0e3
+
+  SubnetId1:
+    Type: String
+    Default: subnet-0c7d6a7e645723d38
+
+  SubnetId2:
+    Type: String
+    Default: subnet-03f5af28ac6350b5c
+
+  SecurityGroupId:
+    Type: String
+    Default: sg-0487cc44f61202398
+
+  VpcLinkId:
+    Type: String
+    Default: 9a4p8t
+
+  BucketLambdaSourceCode:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  ApiName:
+    Type: String
+    Default: GameAPI
+
+  StageName:
+    Type: String
+    Default: dev
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  VPCEndpointDynamoDB:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: com.amazonaws.us-east-2.dynamodb
+      VpcEndpointType: Gateway
+      VpcId: !Ref VpcId
+      RouteTableIds:
+        - !Ref RouteTableId1
+
+  VPCEndpointExecuteApi:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: com.amazonaws.us-east-2.execute-api
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VpcId
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Game
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaAuthorizerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaAuthorizerExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: LambdaAuthorizerExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  LambdaGameAPIExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaGameAPIExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: LambdaGameAPILogsPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: "*"
+        - PolicyName: LambdaGameAPIDynamoPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                Resource: "arn:aws:dynamodb:*:*:table/Game"
+
+  LambdaAuthorizer:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaAuthorizer
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaAuthorizerExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: authorizer.zip
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaGameAPI:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaGameAPI
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaGameAPIExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: gameapi.zip
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          - !Ref SubnetId1
+          - !Ref SubnetId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaAuthorizerPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: LambdaAuthorizer
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaAuthorizer.Arn
+      Principal: apigateway.amazonaws.com
+
+  # LambdaGameAPIGatewayPermission:
+  #   Type: AWS::Lambda::Permission
+  #   DependsOn: LambdaGameAPI
+  #   Properties:
+  #     Action: lambda:InvokeFunction
+  #     FunctionName: !GetAtt LambdaGameAPI.Arn
+  #     Principal: apigateway.amazonaws.com
+
+  LambdaGameAPIELBPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: LambdaGameAPI
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaGameAPI.Arn
+      Principal: elasticloadbalancing.amazonaws.com
+
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub SgLbLambdaGameAPI
+      GroupDescription: !Sub SgLbLambdaGameAPI
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: LbLambdaGameAPI
+      Type: application
+      Scheme: internal
+      SecurityGroups:
+        - !GetAtt LoadBalancerSecurityGroup.GroupId
+      Subnets:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LoadBalancerTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub LbTgLambdaGameAPI
+      TargetType: lambda
+      HealthCheckEnabled: false
+      Targets:
+        - Id: !GetAtt LambdaGameAPI.Arn
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LoadBalancer
+      Protocol: HTTP
+      Port: 80
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref LoadBalancerTargetGroup
+
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Version: 1
+      ProtocolType: HTTP
+      DisableExecuteApiEndpoint: false
+
+  Authorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    DependsOn: Api
+    Properties:
+      Name: Authorizer
+      AuthorizerPayloadFormatVersion: 2.0
+      AuthorizerType: REQUEST
+      ApiId: !Ref Api
+      AuthorizerUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaAuthorizer.Arn}/invocations
+      IdentitySource:
+        - $request.header.Authorization
+
+  Integration:
+    Type: AWS::ApiGatewayV2::Integration
+    DependsOn: LoadBalancerListener
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      ConnectionType: VPC_LINK
+      ConnectionId: !Ref VpcLinkId
+      IntegrationType: HTTP_PROXY
+      IntegrationMethod: ANY
+      IntegrationUri: !GetAtt LoadBalancerListener.ListenerArn
+      PayloadFormatVersion: 1.0
+      TimeoutInMillis: 30000
+
+  PostGamesRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "POST /games"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  GetGamesRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "GET /games"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  GetGamesByIdRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "GET /games/{game_id}"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  PutGamesByIdRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "PUT /games/{game_id}"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  DeleteGamesByIdRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "DELETE /games/{game_id}"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      [
+        Api,
+        PostGamesRoute,
+        GetGamesRoute,
+        GetGamesByIdRoute,
+        PutGamesByIdRoute,
+        DeleteGamesByIdRoute,
+      ]
+    Properties:
+      ApiId: !Ref Api
+
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn:
+      [
+        Integration,
+        PostGamesRoute,
+        GetGamesRoute,
+        GetGamesByIdRoute,
+        PutGamesByIdRoute,
+        DeleteGamesByIdRoute,
+        Deployment,
+      ]
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      ApiId: !Ref Api
+      AutoDeploy: false
+      DeploymentId: !Ref Deployment
+      DefaultRouteSettings:
+        DetailedMetricsEnabled: true
+        DataTraceEnabled: false
+        ThrottlingBurstLimit: 10
+        ThrottlingRateLimit: 10

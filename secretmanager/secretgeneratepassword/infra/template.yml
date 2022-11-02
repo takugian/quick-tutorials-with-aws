@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a secret with dynamic password and a secret with hardcoded password
+
+Parameters:
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  DynamicSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: DynamicSecret
+      Description: DynamicSecret
+      GenerateSecretString:
+        SecretStringTemplate: '{ "username": "DynamicSecret" }'
+        GenerateStringKey: password
+        PasswordLength: 30
+        ExcludeCharacters: '"@/\'
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  HardcodedSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: HardcodedSecret
+      Description: HardcodedSecret
+      SecretString: '{"username": "HardcodedSecret", "password": "secret"}'
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

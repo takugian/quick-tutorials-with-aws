@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a DAX cluster
+
+Parameters:
+
+  SubnetId1:
+    Type: String
+  
+  SubnetId2:
+    Type: String
+
+  ClusterName:
+    Type: String
+    Default: daxcluster1
+  
+  NodeType:
+    Type: String
+    Default: dax.t3.small
+
+  ReplicationFactor:
+    Type: String
+    Default: 1
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ClusterName}IAMRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: dax.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+
+  SubnetGroup:
+    Type: AWS::DAX::SubnetGroup
+    Properties:
+      SubnetGroupName:  !Sub ${ClusterName}SubnetGroup
+      Description: !Sub ${ClusterName} subnet Group
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+
+  Cluster:
+    Type: AWS::DAX::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+      Description: Default cluster
+      NodeType: !Ref NodeType
+      ReplicationFactor: !Ref ReplicationFactor
+      # AvailabilityZones:
+        # -
+      IAMRoleARN: !GetAtt IAMRole.Arn
+      SubnetGroupName: !Ref SubnetGroup
+      ClusterEndpointEncryptionType: NONE
+      # NotificationTopicARN
+      # ParameterGroupName
+      # SecurityGroupIds
+      # SSESpecification
+
+Outputs:
+
+  ClusterDiscoveryEndpointURL:
+    Value: !GetAtt Cluster.ClusterDiscoveryEndpointURL

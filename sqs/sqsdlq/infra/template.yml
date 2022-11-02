@@ -1,0 +1,104 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SQS DLQ and a Lambda producer
+
+Parameters:
+
+  QueueName:
+    Type: String
+    Default: CustomerCreatedQueue
+
+  DLQName:
+    Type: String
+    Default: CustomerCreatedDLQ
+
+  LambdaConsumerName:
+    Type: String
+    Default: LambdaConsumerName
+
+  BucketLambdaSourceCode:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  BucketKeyLambdaConsumerSourceCode:
+    Type: String
+    Default: LambdaConsumer.zip
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      RedrivePolicy: 
+        deadLetterTargetArn: !GetAtt DLQ.Arn
+        maxReceiveCount: 2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  DLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref DLQName
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaConsumerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${LambdaConsumerName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: !Sub ${LambdaConsumerName}ExecutionRolePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:CreateLogGroup
+              - logs:PutLogEvents
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+            Resource: "*"
+
+  LambdaConsumer:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref LambdaConsumerName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaConsumerExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: !Ref BucketKeyLambdaConsumerSourceCode
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  SQSEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      Enabled: true
+      EventSourceArn: !GetAtt Queue.Arn
+      FunctionName: !Ref LambdaConsumerName

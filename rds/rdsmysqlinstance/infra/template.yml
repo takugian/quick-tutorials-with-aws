@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a RDS DB Instance using MySQL engine
+
+Parameters:
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  DBInstanceID:
+    Type: String
+    Default: dbinstance
+
+  DBName:
+    Type: String
+    Default: awsquickstartdatabase
+
+  DBInstanceClass:
+    Type: String
+    Default: db.t2.micro
+
+  DBUsername:
+    Type: String
+    NoEcho: true
+    MinLength: "1"
+    MaxLength: "16"
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    Default: root
+
+  DBPassword:
+    Type: String
+    NoEcho: true
+    MinLength: "8"
+    MaxLength: "41"
+    AllowedPattern: "[a-zA-Z0-9]*"
+    Default: root123456
+
+  DBAllocatedStorage:
+    Type: Number
+    Default: 50
+
+  # KmsKeyId:
+  #   Type: String
+
+  BackupRetentionPeriod:
+    Type: Number
+    Default: 0
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: !Sub ${DBName}DBSubnetGroup
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub ${DBName}SecurityGroup
+      GroupDescription: !Sub ${DBName}SecurityGroup
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+
+  EnhancedMonitoringRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ""
+            Effect: Allow
+            Principal:
+              Service: monitoring.rds.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
+      Path: "/"
+
+  DBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Ref DBInstanceID
+      DBName: !Ref DBName
+      DBInstanceClass: !Ref DBInstanceClass
+      Engine: mysql
+      EngineVersion: 8.0.16
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      VPCSecurityGroups:
+        - !GetAtt SecurityGroup.GroupId
+      AllocatedStorage: !Ref DBAllocatedStorage
+      # KmsKeyId: !Ref KmsKeyId
+      BackupRetentionPeriod: !Ref BackupRetentionPeriod
+      MonitoringInterval: 60
+      MonitoringRoleArn: !GetAtt EnhancedMonitoringRole.Arn
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

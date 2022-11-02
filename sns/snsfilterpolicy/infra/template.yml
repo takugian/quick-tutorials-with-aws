@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SNS Topic with subscription filter applied
+
+Parameters:
+  TopicName:
+    Type: String
+    Default: OrderUpdated
+
+  QueueName1:
+    Type: String
+    Default: OrderApproved
+
+  QueueName2:
+    Type: String
+    Default: OrderRejected
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Queue1:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName1
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Queue2:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Topic:
+    Type: AWS::SNS::Topic
+    DependsOn: [Queue1, Queue2]
+    Properties:
+      TopicName: !Ref TopicName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Subscription1:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !GetAtt Queue1.Arn
+      Protocol: sqs
+      FilterPolicy: '{ "status": ["approved"] }'
+      TopicArn: !Ref Topic
+
+  Subscription2:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !GetAtt Queue2.Arn
+      Protocol: sqs
+      FilterPolicy: '{ "status": ["rejected"] }'
+      TopicArn: !Ref Topic
+
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    DependsOn: Topic
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Sid: AllowSNSSendMessage
+            Effect: Allow
+            Principal:
+              Service: sns.amazonaws.com
+            Action:
+              - sqs:SendMessage
+            Resource: "*"
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref Topic
+      Queues:
+        - !Ref Queue1
+        - !Ref Queue2

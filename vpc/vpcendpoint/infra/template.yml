@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a VPC Endpoint
+
+Parameters:
+  VpcId:
+    Type: String
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  RouteTableId1:
+    Type: String
+
+  RouteTableId2:
+    Type: String
+
+  SecurityGroupId:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  VPCEndpointDynamoDB:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: com.amazonaws.us-east-2.dynamodb
+      VpcEndpointType: Gateway
+      VpcId: !Ref VpcId
+      RouteTableIds:
+        - !Ref RouteTableId1
+        - !Ref RouteTableId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  VPCEndpointExecuteApi:
+    Type: AWS::EC2::VPCEndpoint
+    DependsOn: SecurityGroupVPCEndpoint
+    Properties:
+      ServiceName: com.amazonaws.us-east-2.execute-api
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VpcId
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2

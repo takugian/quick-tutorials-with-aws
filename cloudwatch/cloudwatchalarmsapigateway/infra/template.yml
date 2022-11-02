@@ -1,0 +1,136 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Alarm for an API Gateway
+
+Parameters:
+  ApiName:
+    Type: String
+    Default: CloudWatchAlarmApiGateway
+
+  StageName:
+    Type: String
+    Default: sandbox
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: customers
+
+  MethodGetCustomers:
+    Type: AWS::ApiGateway::Method
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: 200
+      Integration:
+        Type: MOCK
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: MethodGetCustomers
+    Properties:
+      RestApiId: !Ref RestApi
+
+  Stage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      RestApiId: !Ref RestApi
+      DeploymentId: !Ref Deployment
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  5XXErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    DependsOn: Stage
+    Properties:
+      AlarmName: !Sub ${ApiName}5XXError
+      AlarmDescription: !Sub ${ApiName}5XXError
+      Namespace: AWS/ApiGateway
+      MetricName: 5XError
+      Dimensions:
+        - Name: Stage
+          Value: !Ref StageName
+        - Name: ApiName
+          Value: !Ref ApiName
+        - Name: Method
+          Value: GET
+        - Name: Resource
+          Value: customers 
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 2
+      ComparisonOperator: LessThanThreshold
+      TreatMissingData: breaching
+
+  CountAlarm:
+    Type: AWS::CloudWatch::Alarm
+    DependsOn: Stage
+    Properties:
+      AlarmName: !Sub ${ApiName}Count
+      AlarmDescription: !Sub ${ApiName}Count
+      Namespace: AWS/ApiGateway
+      MetricName: Count
+      Dimensions:
+        - Name: Stage
+          Value: !Ref StageName
+        - Name: ApiName
+          Value: !Ref ApiName
+        - Name: Method
+          Value: GET
+        - Name: Resource
+          Value: customers
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 4
+      ComparisonOperator: LessThanThreshold
+      TreatMissingData: breaching
+
+  LatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    DependsOn: Stage
+    Properties:
+      AlarmName: !Sub ${ApiName}Latency
+      AlarmDescription: !Sub ${ApiName}Latency
+      Namespace: AWS/ApiGateway
+      MetricName: Latency
+      Dimensions:
+        - Name: Stage
+          Value: !Ref StageName
+        - Name: ApiName
+          Value: !Ref ApiName
+        - Name: Method
+          Value: GET
+        - Name: Resource
+          Value: customers
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1000
+      ComparisonOperator: LessThanThreshold
+      TreatMissingData: breaching

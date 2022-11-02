@@ -1,0 +1,188 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a REST API Gateway with a Lambda function as authorizer
+
+Parameters:
+  ApiName:
+    Type: String
+    Default: ApiGatewayLambdaAuthorizer
+
+  BucketLambdaSourceCode:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  BucketKeyLambdaAuthorizerSourceCode:
+    Type: String
+    Default: ApiGatewayLambdaAuthorizer.zip
+
+  BucketKeyLambdaBackendSourceCode:
+    Type: String
+    Default: ApiGatewayLambdaBackend.zip
+
+  StageName:
+    Type: String
+    Default: dev
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  LambdaAuthorizerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaAuthorizerExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: LambdaAuthorizerExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  LambdaAuthorizer:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaAuthorizer
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaAuthorizerExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: !Ref BucketKeyLambdaAuthorizerSourceCode
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaAuthorizerPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: LambdaAuthorizer
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaAuthorizer.Arn
+      Principal: apigateway.amazonaws.com
+
+  LambdaBackendExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaBackendExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: LambdaBackendExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  LambdaBackend:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaBackend
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaBackendExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: !Ref BucketKeyLambdaBackendSourceCode
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaBackendPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: LambdaBackend
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaBackend.Arn
+      Principal: apigateway.amazonaws.com
+
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    DependsOn: [LambdaAuthorizer, LambdaBackend]
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Authorizer:
+    Type: AWS::ApiGateway::Authorizer
+    DependsOn: RestApi
+    Properties:
+      Name: Authorizer
+      Type: TOKEN
+      RestApiId: !Ref RestApi
+      AuthorizerResultTtlInSeconds: 300
+      AuthorizerUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaAuthorizer.Arn}/invocations
+      IdentitySource: method.request.header.authorizationToken
+
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: customers
+
+  MethodGetCustomers:
+    Type: AWS::ApiGateway::Method
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      RequestParameters:
+        "method.request.header.authorizationToken": true
+      AuthorizerId: !Ref Authorizer
+      AuthorizationType: CUSTOM
+      MethodResponses:
+        - StatusCode: 200
+      Integration:
+        Type: AWS
+        IntegrationResponses:
+          - StatusCode: 200
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaBackend.Arn}/invocations
+        RequestTemplates:
+          application/json: '{ "httpMethod": "$context.httpMethod", "path": "/customers" }'
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: [MethodGetCustomers]
+    Properties:
+      RestApiId: !Ref RestApi
+      StageName: !Ref StageName
+
+Outputs:
+  ApiGatewayId:
+    Value: !Ref RestApi

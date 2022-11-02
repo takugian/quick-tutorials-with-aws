@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Security Group with ingress and egress configurations
+
+Parameters:
+  SecurityGroupName:
+    Type: String
+    Default: "QuickstartsSecurityGroup"
+
+  VpcId:
+    Type: String
+
+  IpProtocolIngress:
+    Type: String
+    Default: "tcp"
+
+  FromPortIngress:
+    Type: Number
+    Default: 80
+
+  ToPortIngress:
+    Type: Number
+    Default: 80
+
+  CidrIpIngress:
+    Type: String
+    Default: "0.0.0.0/0"
+
+  # SourceSecurityGroupId:
+  #   Type: String
+
+  IpProtocolEgress:
+    Type: String
+    Default: "-1"
+
+  # FromPortEgress:
+  #   Type: Number
+
+  # ToPortEgress:
+  #   Type: Number
+
+  CidrIpEgress:
+    Type: String
+    Default: "0.0.0.0/0"
+
+  # DestinationSecurityGroupId:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: "tg"
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub Sg${SecurityGroupName}
+      GroupDescription: !Sub Sg${SecurityGroupName}
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: !Ref IpProtocolIngress
+          FromPort: !Ref FromPortIngress
+          ToPort: !Ref ToPortIngress
+          CidrIp: !Ref CidrIpIngress
+          # SourceSecurityGroupId: !Ref SourceSecurityGroupId
+      SecurityGroupEgress:
+        - IpProtocol: !Ref IpProtocolEgress
+          # FromPort: FromPortEgress
+          # ToPort: ToPortEgress
+          CidrIp: !Ref CidrIpEgress
+          # DestinationSecurityGroupId: !Ref DestinationSecurityGroupId
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

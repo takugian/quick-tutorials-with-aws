@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a public certificate
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: "*.takugian.com"
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

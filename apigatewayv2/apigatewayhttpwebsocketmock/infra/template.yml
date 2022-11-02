@@ -1,0 +1,157 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a WebSocket API Gateway with routes connect, disconnect and default mocked
+
+Parameters:
+  ApiName:
+    Type: String
+    Default: ApiGatewayWebSocketMock
+
+  StageName:
+    Type: String
+    Default: dev
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Version: v1
+      ProtocolType: WEBSOCKET
+      DisableExecuteApiEndpoint: false
+      DisableSchemaValidation: false
+      RouteSelectionExpression: $request.body.message
+
+  DefaultIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      IntegrationType: MOCK
+      IntegrationMethod: POST
+      TemplateSelectionExpression: 200
+      RequestTemplates:
+        "200": '{ "statusCode": 200 }'
+
+  DefaultIntegrationResponse:
+    Type: AWS::ApiGatewayV2::IntegrationResponse
+    Properties:
+      ApiId: !Ref Api
+      IntegrationId: !Ref DefaultIntegration
+      IntegrationResponseKey: $default
+      TemplateSelectionExpression: 200
+      ResponseTemplates:
+        "200": '{ "statusCode": 200, "connectionId": "$context.connectionId" }'
+
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: DefaultIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $default
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref DefaultIntegration]]
+
+  DefaultRouteResponse:
+    Type: AWS::ApiGatewayV2::RouteResponse
+    Properties:
+      ApiId: !Ref Api
+      RouteId: !Ref DefaultRoute
+      RouteResponseKey: $default
+
+  ConnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      IntegrationType: MOCK
+      IntegrationMethod: POST
+      TemplateSelectionExpression: 200
+      RequestTemplates:
+        "200": '{ "statusCode": 200 }'
+
+  ConnectIntegrationResponse:
+    Type: AWS::ApiGatewayV2::IntegrationResponse
+    Properties:
+      ApiId: !Ref Api
+      IntegrationId: !Ref ConnectIntegration
+      IntegrationResponseKey: $default
+      TemplateSelectionExpression: 200
+
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: ConnectIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $connect
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref ConnectIntegration]]
+
+  ConnectRouteResponse:
+    Type: AWS::ApiGatewayV2::RouteResponse
+    Properties:
+      ApiId: !Ref Api
+      RouteId: !Ref ConnectRoute
+      RouteResponseKey: $default
+
+  DisconnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      IntegrationType: MOCK
+      IntegrationMethod: POST
+      TemplateSelectionExpression: 200
+      RequestTemplates:
+        "200": '{ "statusCode": 200 }'
+
+  DisconnectIntegrationResponse:
+    Type: AWS::ApiGatewayV2::IntegrationResponse
+    Properties:
+      ApiId: !Ref Api
+      IntegrationId: !Ref DisconnectIntegration
+      IntegrationResponseKey: $default
+      TemplateSelectionExpression: 200
+
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: DisconnectIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref DisconnectIntegration]]
+
+  DisconnectRouteResponse:
+    Type: AWS::ApiGatewayV2::RouteResponse
+    Properties:
+      ApiId: !Ref Api
+      RouteId: !Ref DisconnectRoute
+      RouteResponseKey: $default
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn: [DefaultRoute, ConnectRoute, DisconnectRoute]
+    Properties:
+      ApiId: !Ref Api
+
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      ApiId: !Ref Api
+      AutoDeploy: false
+      DeploymentId: !Ref Deployment
+
+Outputs:
+  ApiGatewayId:
+    Value: !Ref Api

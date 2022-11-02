@@ -1,0 +1,191 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Step Functions state machine
+
+Parameters:
+  PrefixName:
+    Type: String
+    Default: QTSF
+  
+  StateMachineRoleArn:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  RequestTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${PrefixName}Request
+      AttributeDefinitions:
+        - AttributeName: requestId
+          AttributeType: S
+        - AttributeName: status
+          AttributeType: S
+      KeySchema:
+        - AttributeName: requestId
+          KeyType: HASH
+        - AttributeName: status
+          KeyType: RANGE
+      TableClass: STANDARD
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ValidateRule1Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${PrefixName}ValidateRule1
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ValidateRule2Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${PrefixName}ValidateRule2
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  RequestValidatedQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${PrefixName}RequestValidated
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${PrefixName}LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${PrefixName}LambdaExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  ValidateRule1Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Sub ${PrefixName}ValidateRule1
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+            console.log('event', JSON.stringify(event));
+            const response = {
+              "isBase64Encoded": false,
+              "statusCode": 200,
+              "statusDescription": "200 OK",
+              "headers": {
+                  "Set-cookie": "cookies",
+                  "Content-Type": "application/json"
+              },
+              "body": {
+                "requestId": event.requestId,
+                "customerId": event.customerId,
+                "rule": "RULE_1",
+                "status": "SUCCESS"
+              }
+            };
+            if (event.customerId == "2") {
+              response.body.status = "ERROR";
+            }
+            return response;
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ValidateRule2Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Sub ${PrefixName}ValidateRule2
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+            console.log('event', JSON.stringify(event));
+            const response = {
+              "isBase64Encoded": false,
+              "statusCode": 200,
+              "statusDescription": "200 OK",
+              "headers": {
+                  "Set-cookie": "cookies",
+                  "Content-Type": "application/json"
+              },
+              "body": {
+                "requestId": event.requestId,
+                "customerId": event.customerId,
+                "rule": "RULE_2",
+                "status": "SUCCESS"
+              }
+            };
+            if (event.customerId == "3") {
+              response.body.status = "ERROR";
+            }
+            return response;
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ValidateRule1LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ValidateRule1Lambda.Arn
+      Action: "lambda:InvokeFunction"
+      Principal: states.amazonaws.com
+
+  ValidateRule2LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ValidateRule2Lambda.Arn
+      Action: "lambda:InvokeFunction"
+      Principal: states.amazonaws.com
+
+  StateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: !Sub ${PrefixName}StateMachine
+      DefinitionS3Location:
+        Bucket: tg-quicklabs-stepfunctions
+        Key: definition.json
+      RoleArn: !Ref StateMachineRoleArn

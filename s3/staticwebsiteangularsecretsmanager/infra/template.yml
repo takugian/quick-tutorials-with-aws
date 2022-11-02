@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a bucket used as a static website to deploy an AngularJS app integrated to Secrets Manager
+
+Parameters:
+  AppName:
+    Type: String
+    Default: AngularSecretsManager
+
+  BucketName:
+    Type: String
+    Default: tg-staticwebsite-123456
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  AngularSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Ref AppName
+      Description: !Ref AppName
+      SecretString: '{"username": "angular", "password": "secret123456"}'
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LoggingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${BucketName}-logging
+      AccessControl: LogDeliveryWrite
+
+  StaticWebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicRead
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      LoggingConfiguration:
+        DestinationBucketName: !Ref LoggingBucket
+        LogFilePrefix: logs
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+    DeletionPolicy: Retain
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: StaticWebsiteBucket
+    Properties:
+      Bucket: !Ref StaticWebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowPublic
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: 
+              - !Sub "arn:aws:s3:::${BucketName}/*"
+            Principal: "*"
+
+Outputs:
+  WebsiteURL:
+    Value: !GetAtt StaticWebsiteBucket.WebsiteURL
+    Description: URL for website hosted on S3
+
+  S3BucketSecureURL:
+    Value: !Join
+      - ""
+      - - "https://"
+        - !GetAtt StaticWebsiteBucket.DomainName
+    Description: Name of S3 bucket to hold website content

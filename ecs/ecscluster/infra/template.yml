@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an ECS Cluster
+
+Parameters:
+  ClusterName:
+    Type: String
+    Default: FargateEcsCluster
+
+  VpcId:
+    Type: String
+
+  ContainerInsights:
+    Type: String
+    Default: disabled
+    AllowedValues: ["enabled", "disabled"]
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+      CapacityProviders:
+        - FARGATE
+      DefaultCapacityProviderStrategy:
+        - CapacityProvider: FARGATE
+          Weight: 1
+      ClusterSettings:
+        - Name: containerInsights
+          Value: !Ref ContainerInsights
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub Sg${ClusterName}
+      GroupDescription: !Sub Sg${ClusterName}
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0

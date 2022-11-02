@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SQS Queue FIFO
+
+Parameters:
+  QueueName:
+    Type: String
+    Default: Queue
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${QueueName}.fifo
+      FifoQueue: true
+      # FifoThroughputLimit: perMessageGroupId To enable high throughput for a FIFO queue
+      # DeduplicationScope: messageGroup To enable high throughput for a FIFO queue
+      # ContentBasedDeduplication: false
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

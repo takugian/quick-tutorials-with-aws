@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a private Lambda function with VPC config and endpoint
+
+Parameters:
+  FunctionName:
+    Type: String
+    Default: LambdaWithEndpoint
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  SecurityGroupId:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${FunctionName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${FunctionName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: ExecutionRole
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: nodejs14.x
+      Role: !GetAtt ExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+            console.log('event', JSON.stringify(event));
+            if (event.routeKey == "GET /customers") {
+              context.succeed( [ { "customer_id": "bdd6a8bb-d195-419c-a20b-aa3cb8bd747b", "customer_name": "EDWARD ELRIC" } ]);
+            } else {
+              context.fail("routeKey invalid");
+            }
+          };
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          - !Ref SubnetId1
+          - !Ref SubnetId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Url:
+    Type: AWS::Lambda::Url
+    DependsOn: Lambda
+    Properties: 
+      TargetFunctionArn: !Ref FunctionName
+      Qualifier: default
+      AuthType: NONE
+      # Cors: 
+

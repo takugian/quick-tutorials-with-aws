@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a secret replicated to two regions
+
+Parameters:
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  ReplicatedSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: ReplicatedSecret
+      Description: ReplicatedSecret
+      SecretString: '{"username": "HardcodedSecret", "password": "secret"}'
+      ReplicaRegions:
+        - Region: us-east-1
+        - Region: us-east-2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

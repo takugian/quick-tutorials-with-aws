@@ -1,0 +1,142 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an ElastiCache Redis cluster integrated to a Lambda function
+
+Parameters:
+  ClusterName:
+    Type: String
+    Default: CacheClusterRedisDefault
+
+  ClusterPort:
+    Type: Number
+    Default: 6379
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  SecurityGroupId:
+    Type: String
+
+  LambdaFunctionName:
+    Type: String
+    Default: LambdaRedis
+
+  BucketLambdaSourceCode:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  BucketKeyLambdaSourceCode:
+    Type: String
+    Default: LambdaRedis.zip
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/elasticache/${ClusterName}
+      RetentionInDays: 7
+
+  SubnetGroup:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties:
+      Description: !Sub ${ClusterName} Subnet Group
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ClusterName} Security Group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref ClusterPort
+          ToPort: !Ref ClusterPort
+          SourceSecurityGroupId: !Ref SecurityGroupId
+
+  CacheCluster:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      ClusterName: !Ref ClusterName
+      Engine: redis
+      CacheNodeType: cache.t2.micro
+      AZMode: single-az
+      PreferredAvailabilityZone: us-east-2a
+      NumCacheNodes: 1
+      Port: !Ref ClusterPort
+      VpcSecurityGroupIds:
+        - !GetAtt SecurityGroup.GroupId
+      CacheSubnetGroupName: !Ref SubnetGroup
+      LogDeliveryConfigurations:
+        - DestinationDetails:
+            CloudWatchLogsDetails:
+              LogGroup: !Sub /aws/elasticache/${ClusterName}
+          DestinationType: cloudwatch-logs
+          LogFormat: json
+          LogType: engine-log
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${LambdaFunctionName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${LambdaFunctionName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: !Ref BucketKeyLambdaSourceCode
+      Environment:
+        Variables:
+          REDIS_HOST: !GetAtt CacheCluster.RedisEndpoint.Address
+          REDIS_PORT: !GetAtt CacheCluster.RedisEndpoint.Port
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          - !Ref SubnetId1
+          - !Ref SubnetId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

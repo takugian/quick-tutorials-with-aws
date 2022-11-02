@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Lambda function with two versions and an alias
+
+Parameters:
+  FunctionName:
+    Type: String
+    Default: LambdaAlias
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${FunctionName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${FunctionName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: ExecutionRole
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: nodejs14.x
+      Role: !GetAtt ExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = function(event){
+              console.log(JSON.stringify(event, null, 2))
+              const response = {
+                  statusCode: 200,
+                  body: JSON.stringify('Hello again from Lambda!')
+              }
+              return response
+          }
+      # TracingConfig:
+      #   Mode: Active
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaVersionV1:
+    Type: AWS::Lambda::Version
+    Properties:
+      FunctionName: !Ref Lambda
+      Description: v1
+      # ProvisionedConcurrencyConfig: 
+        # ProvisionedConcurrencyConfiguration
+
+  LambdaVersionV2:
+    Type: AWS::Lambda::Version
+    Properties:
+      FunctionName: !Ref Lambda
+      Description: v2
+      # ProvisionedConcurrencyConfig: 
+        # ProvisionedConcurrencyConfiguration
+
+  LambdaAlias:
+    Type: AWS::Lambda::Alias
+    Properties:
+      FunctionName: !Ref Lambda
+      FunctionVersion: !GetAtt LambdaVersionV2.Version
+      Name: BLUE
+      # ProvisionedConcurrencyConfig: 
+        # ProvisionedConcurrencyConfiguration
+      RoutingConfig:
+        AdditionalVersionWeights:
+          - FunctionVersion: !GetAtt LambdaVersionV1.Version
+            FunctionWeight: 0.5

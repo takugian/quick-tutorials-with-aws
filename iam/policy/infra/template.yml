@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an IAM Policy
+
+Parameters:
+  PolicyName:
+    Type: String
+    Default: CloudWatchLogs
+
+  Users:
+    Type: CommaDelimitedList
+    Default: User
+
+  # Roles:
+  #   Type: CommaDelimitedList
+
+  # Groups:
+  #   Type: CommaDelimitedList
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Ref PolicyName
+      Users: !Ref Users
+      # Roles: !Ref Roles
+      # Groups: !Ref Groups
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:CreateLogGroup
+              - logs:PutLogEvents
+            Resource: "*"

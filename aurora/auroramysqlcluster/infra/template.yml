@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an Aurora Cluster using MySQL engine
+
+Parameters:
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+  
+  DBClusterIdentifier:
+    Type: String
+    Default: auroracluster1
+
+  DatabaseName:
+    Type: String
+    Default: auroradatabase1
+
+  DBInstanceID:
+    Type: String
+    Default: dbinstance  
+
+  DBUsername:
+    Type: String
+    NoEcho: true
+    MinLength: "1"
+    MaxLength: "16"
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    Default: root
+
+  DBPassword:
+    Type: String
+    NoEcho: true
+    MinLength: "8"
+    MaxLength: "41"
+    AllowedPattern: "[a-zA-Z0-9]*"
+    Default: root123456
+
+  DBInstanceClass:
+    Type: String
+    Default: db.t2.small
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: !Sub ${DatabaseName}DBSubnetGroup
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  EnhancedMonitoringRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ""
+            Effect: Allow
+            Principal:
+              Service: monitoring.rds.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
+      Path: "/"
+
+  DBCluster:
+    Type: AWS::RDS::DBCluster
+    Properties: 
+      DBClusterIdentifier: !Ref DBClusterIdentifier
+      DatabaseName: !Ref DatabaseName
+      Engine: aurora-mysql
+      EngineMode: provisioned
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      AvailabilityZones: 
+        - us-east-2a
+        - us-east-2c
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      Port: 3306
+      EnableCloudwatchLogsExports: 
+        - audit
+      # BackupRetentionPeriod: 1
+      CopyTagsToSnapshot: true
+      DeletionProtection: false
+      EnableHttpEndpoint: false
+      # KmsKeyId: String
+      StorageEncrypted: false
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  DBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBClusterIdentifier: !Ref DBClusterIdentifier
+      DBInstanceIdentifier: !Ref DBInstanceID
+      DBInstanceClass: !Ref DBInstanceClass
+      Engine: aurora-mysql
+      AvailabilityZone: us-east-2a
+      MonitoringInterval: 60
+      MonitoringRoleArn: !GetAtt EnhancedMonitoringRole.Arn
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

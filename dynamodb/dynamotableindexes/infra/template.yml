@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a DynamoDB table with Global Secondary Index and Local Secondary Index configured
+
+Parameters:
+  TableName:
+    Type: String
+    Default: Customer
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref TableName
+      AttributeDefinitions:
+        - AttributeName: CustomerId
+          AttributeType: S
+        - AttributeName: CustomerType
+          AttributeType: S
+        - AttributeName: CustomerLocation
+          AttributeType: S
+      KeySchema:
+        - AttributeName: CustomerId
+          KeyType: HASH
+        - AttributeName: CustomerType
+          KeyType: RANGE
+      TableClass: STANDARD
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
+      LocalSecondaryIndexes:
+        - IndexName: !Sub ${TableName}LSI1
+          KeySchema:
+            - AttributeName: CustomerId
+              KeyType: HASH
+            - AttributeName: CustomerLocation
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      GlobalSecondaryIndexes:
+        - IndexName: !Sub ${TableName}GSI1
+          KeySchema:
+            - AttributeName: CustomerType
+              KeyType: HASH
+            - AttributeName: CustomerLocation
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 0
+            WriteCapacityUnits: 0
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

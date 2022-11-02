@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a VPC Link
+
+Parameters:
+  VpcLinkName:
+    Type: String
+    Default: VpcLinkDefault
+
+  LoadBalancerArn:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  VpcLink:
+    Type: AWS::ApiGateway::VpcLink
+    Properties:
+      Name: !Sub VpcLink${VpcLinkName}
+      Description: !Sub VpcLink${VpcLinkName}
+      TargetArns:
+        - !Ref LoadBalancerArn
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+Outputs:
+  VpcLinkId:
+    Value: !Ref VpcLink

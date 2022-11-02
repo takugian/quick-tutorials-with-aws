@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an EC2 Instance prepared to be used as a bastion host
+
+Parameters:
+
+  InstanceName:
+    Type: String
+    Default: BastionHost
+
+  FreeTierImageId:
+    Type: String
+    Default: ami-0661cd3308ec33aaa
+  
+  FreeTierInstanceType:
+    Type: String
+    Default: t2.micro
+  
+  KeyName:
+    Type: String
+  
+  PublicSubnetId:
+    Type: String
+
+  SSHSecurityGroupId:
+    Type: String
+  
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  EC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref FreeTierImageId
+      InstanceType: !Ref FreeTierInstanceType
+      KeyName: !Ref KeyName
+      SubnetId: !Ref PublicSubnetId
+      SecurityGroupIds:
+        - !Ref SSHSecurityGroupId
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeType: gp2
+            DeleteOnTermination: true
+            VolumeSize: 8
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName
+        - Key: Owner
+          Value: !Ref Owner

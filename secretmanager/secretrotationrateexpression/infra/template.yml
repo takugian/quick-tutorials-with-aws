@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a secret rotation schedule with a rate expression
+
+Parameters:
+  SecretId:
+    Type: String
+
+  RotationLambdaARN:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  SecretRotationSchedule:
+    Type: AWS::SecretsManager::RotationSchedule
+    Properties:
+      SecretId: !Ref SecretId
+      RotationLambdaARN: !Ref RotationLambdaARN
+      RotationRules: # Between midnight and 6:00 AM UTC) every 10 days
+        Duration: 6h
+        ScheduleExpression: "rate(10 days)"
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

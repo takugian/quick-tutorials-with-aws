@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudFront Origin Access Identity (OAI)
+
+Parameters:
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: OAIDefault
+
+Outputs:
+  CloudFrontOriginAccessIdentity:
+    Value: !Ref CloudFrontOriginAccessIdentity
+    Description: CloudFront Origin Access Identity

@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SNS Topic
+
+Parameters:
+  TopicName:
+    Type: String
+    Default: SampleTopic
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Ref TopicName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+Outputs:
+  TopicArn:
+    Value: !Ref Topic

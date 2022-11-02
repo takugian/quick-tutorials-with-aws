@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h2>Hello, Static Website with Web Socket!</h2>
+
+    <script>
+        console.log('Running WebSocket');
+        let socket = new WebSocket("wss://{api_id}.execute-api.{region}.amazonaws.com/{stage_name}");
+
+        socket.onopen = function (e) {
+            console.log("[open] Connection established");
+        };
+
+        socket.onmessage = function (event) {
+            console.log(`[message] Data received from server: ${event.data}`);
+        };
+
+        socket.onclose = function (event) {
+            if (event.wasClean) {
+                console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                console.log('[close] Connection died');
+            }
+        };
+
+        socket.onerror = function (error) {
+            console.error(`[error] ${error.message}`);
+        };
+
+        function sendMessage() {
+            socket.send("Testing...");
+        }
+    </script>
+
+    <button onclick="sendMessage()">Send message</button>
+
+</body>
+
+</html>

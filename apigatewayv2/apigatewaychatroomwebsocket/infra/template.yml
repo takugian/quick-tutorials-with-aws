@@ -1,0 +1,290 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Chat Room WebSocket API
+
+Parameters:
+  BucketLambdaSourceCode:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Chat
+      AttributeDefinitions:
+        - AttributeName: connectionid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: connectionid
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaWebSocketExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaWebSocketExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: LambdaWebSocketLogsPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+        - PolicyName: LambdaWebSocketDynamoPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                Resource: "arn:aws:dynamodb:*:*:table/Chat"
+        - PolicyName: LambdaWebSocketGatewayPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - execute-api:ManageConnections
+                Resource: "*"
+
+  LambdaAuthorizerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaAuthorizerExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: LambdaAuthorizerExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  LambdaAuthorizer:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaAuthorizer
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaAuthorizerExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: authorizer.zip
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaAuthorizerPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: LambdaAuthorizer
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaAuthorizer.Arn
+      Principal: apigateway.amazonaws.com
+
+  ConnectFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaWebSocketExecutionRole
+    Properties:
+      FunctionName: ConnectFunction
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaWebSocketExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: connect.zip
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ConnectFunctionPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: ConnectFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt ConnectFunction.Arn
+      Principal: apigateway.amazonaws.com
+
+  DisconnectFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaWebSocketExecutionRole
+    Properties:
+      FunctionName: DisconnectFunction
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaWebSocketExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: disconnect.zip
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  DisconnectFunctionPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: DisconnectFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt DisconnectFunction.Arn
+      Principal: apigateway.amazonaws.com
+
+  OnMessageFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaWebSocketExecutionRole
+    Properties:
+      FunctionName: OnMessageFunction
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaWebSocketExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: onmessage.zip
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  OnMessageFunctionPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: OnMessageFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt OnMessageFunction.Arn
+      Principal: apigateway.amazonaws.com
+
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: ChatRoomWebSocketAPI
+      Description: Simple chat WebSocket API
+      Version: v1
+      ProtocolType: WEBSOCKET
+      DisableExecuteApiEndpoint: false
+      DisableSchemaValidation: false
+      RouteSelectionExpression: $request.body.action
+
+  Authorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    DependsOn: Api
+    Properties:
+      Name: Authorizer
+      AuthorizerType: REQUEST
+      ApiId: !Ref Api
+      AuthorizerUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaAuthorizer.Arn}/invocations
+      IdentitySource:
+        - route.request.querystring.authorizationToken
+
+  ConnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: ConnectIntegration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ConnectFunction.Arn}/invocations
+
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: ConnectIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $connect
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref ConnectIntegration]]
+
+  DisconnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: DisconnectIntegration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DisconnectFunction.Arn}/invocations
+
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: DisconnectIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref DisconnectIntegration]]
+
+  OnMessageIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: OnMessageIntegration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${OnMessageFunction.Arn}/invocations
+
+  OnMessageRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: OnMessageIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: onMessage
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref OnMessageIntegration]]
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn: [ConnectRoute, DisconnectRoute, OnMessageRoute]
+    Properties:
+      ApiId: !Ref Api
+
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: dev
+      Description: dev
+      ApiId: !Ref Api
+      AutoDeploy: false
+      DeploymentId: !Ref Deployment

@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Log Group for an API Gateway
+
+Parameters:
+  ApiName:
+    Type: String
+    Default: CloudWatchLogsApiGateway
+
+  StageName:
+    Type: String
+    Default: sandbox
+
+  # KmsKeyId:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${ApiName}/${StageName}
+      # KmsKeyId: !Ref KmsKeyId
+      RetentionInDays: 7
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ApiGatewayCloudWatchRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ApiName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+
+  ApiGatewayAccount:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
+
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: customers
+
+  MethodGetCustomers:
+    Type: AWS::ApiGateway::Method
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: 200
+      Integration:
+        Type: MOCK
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: MethodGetCustomers
+    Properties:
+      RestApiId: !Ref RestApi
+      # StageName: !Ref StageName
+
+  SandboxStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      RestApiId: !Ref RestApi
+      DeploymentId: !Ref Deployment
+      Variables:
+        Stack: SANDBOX
+      MethodSettings:
+        - ResourcePath: /customers
+          HttpMethod: GET
+          MetricsEnabled: true
+          DataTraceEnabled: true
+          LoggingLevel: INFO
+      AccessLogSetting:
+        DestinationArn: !GetAtt CloudWatchLogGroup.Arn
+        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLatency":$context.responseLatency}'
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+Outputs:
+  ApiGatewayId:
+    Value: !Ref RestApi

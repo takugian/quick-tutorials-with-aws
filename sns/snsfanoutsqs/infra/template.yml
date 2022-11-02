@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SNS Topic with fanout to SQS queues
+
+Parameters:
+  TopicName:
+    Type: String
+    Default: FanoutTopic
+
+  QueueName1:
+    Type: String
+    Default: FanoutQueue1
+
+  QueueName2:
+    Type: String
+    Default: FanoutQueue2
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Queue1:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName1
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Queue2:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Topic:
+    Type: AWS::SNS::Topic
+    DependsOn: [Queue1, Queue2]
+    Properties:
+      TopicName: !Ref TopicName
+      Subscription:
+        - Endpoint: !GetAtt Queue1.Arn
+          Protocol: sqs
+        - Endpoint: !GetAtt Queue2.Arn
+          Protocol: sqs
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    DependsOn: Topic
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Sid: AllowSNSSendMessage
+            Effect: Allow
+            Principal:
+              Service: sns.amazonaws.com
+            Action:
+              - sqs:SendMessage
+            Resource: "*"
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref Topic
+      Queues:
+        - !Ref Queue1
+        - !Ref Queue2

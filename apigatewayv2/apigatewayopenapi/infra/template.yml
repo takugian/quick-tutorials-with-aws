@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a REST API Gateway based on OpenAPI contract
+
+Parameters:
+  BucketOpenAPI:
+    Type: String
+    Default: tg-quicklabs-openapi
+
+  BucketKeyOpenAPI:
+    Type: String
+    Default: openapi.yaml
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      BodyS3Location:
+        Bucket: !Ref BucketOpenAPI
+        Key: !Ref BucketKeyOpenAPI

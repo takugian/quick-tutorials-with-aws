@@ -1,0 +1,9 @@
+version: 0.0
+Resources:
+  - PocCodeDeployLambdaFunction:
+      Type: AWS::Lambda::Function
+      Properties:
+        Name: "PocCodeDeployLambdaFunction"
+        Alias: "PocCodeDeployLambdaFunction"
+        CurrentVersion: "1"
+        TargetVersion: "2"

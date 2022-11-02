@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an IAM User
+
+Parameters:
+  Username:
+    Type: String
+    Default: User
+
+  Password:
+    Type: String
+    Default: User123@
+
+  Groups:
+    Type: CommaDelimitedList
+    Default: ReadOnlyAccessGroup
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  User:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Ref Username
+      Groups: !Ref Groups
+      LoginProfile:
+        Password: !Ref Password
+        PasswordResetRequired: true
+      Path: /
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

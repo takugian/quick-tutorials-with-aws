@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a VPC Link
+
+Parameters:
+  VpcLinkName:
+    Type: String
+    Default: VpcLinkDefault
+
+  SubnetId1:
+    Type: String
+    Default: subnet-0c7d6a7e645723d38
+
+  SubnetId2:
+    Type: String
+    Default: subnet-03f5af28ac6350b5c
+
+  SecurityGroupId:
+    Type: String
+    Default: sg-0487cc44f61202398
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  VpcLink:
+    Type: AWS::ApiGatewayV2::VpcLink
+    Properties:
+      Name: !Ref VpcLinkName
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+
+Outputs:
+  VpcLinkId:
+    Value: !Ref VpcLink

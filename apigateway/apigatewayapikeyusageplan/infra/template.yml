@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a REST API Gateway with usage plan and API Key configured
+
+Parameters:
+  ApiName:
+    Type: String
+    Default: ApiGatewayUsagePlan
+
+  StageName:
+    Type: String
+    Default: dev
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: customers
+
+  MethodGetCustomers:
+    Type: AWS::ApiGateway::Method
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      ApiKeyRequired: true
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: 200
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: "{ \"statusCode\": 200 }"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseTemplates:
+              application/json: "{ \"result\": \"OK\" }"
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: [MethodGetCustomers]
+    Properties:
+      RestApiId: !Ref RestApi
+
+  Stage:
+    Type: AWS::ApiGateway::Stage
+    DependsOn: [Deployment]
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      RestApiId: !Ref RestApi
+      DeploymentId: !Ref Deployment
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn: [Stage]
+    Properties:
+      Name: 490a79fc-0ac4-4fab-b7dc-e5f8fdb338b0
+      Value: 64b8e0c0-e21a-4d8c-974e-73012795f523
+      StageKeys:
+        - RestApiId: !Ref RestApi
+          StageName: !Ref StageName
+      Enabled: true
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  UsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    DependsOn: [Stage]
+    Properties:
+      UsagePlanName: Default Usage Plan
+      ApiStages:
+        - ApiId: !Ref RestApi
+          Stage: !Ref StageName
+          Throttle:
+            "/customers/GET":
+              BurstLimit: 10
+              RateLimit: 1
+      Quota:
+        Limit: 10
+        Offset: 0
+        Period: DAY
+      Throttle:
+        BurstLimit: 10
+        RateLimit: 1
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  UsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref ApiKey
+      UsagePlanId: !Ref UsagePlan
+      KeyType: API_KEY
+
+Outputs:
+  ApiGatewayId:
+    Value: !Ref RestApi

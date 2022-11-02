@@ -1,0 +1,226 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an Auto Scaling Group and four types of Auto Scaling Policies
+
+Parameters:
+  FreeTierImageId:
+    Type: String
+    Default: ami-0c02fb55956c7d316
+    Description: The image ID of the launch template
+
+  FreeTierInstanceType:
+    Type: String
+    Default: t2.micro
+    Description: The instance type of the launch template
+
+  KeyName:
+    Type: String
+    Default: DefaultKeyPair
+    Description: The name of the key pair used by launch template
+
+  SecurityGroupId:
+    Type: String
+    Description: The security group ID of the launch template
+
+  AutoScalingGroupName:
+    Type: String
+    Default: AutoScalingGroup
+    Description: The name of auto scaling group
+
+  AvailabilityZones:
+    Type: CommaDelimitedList
+    Default: us-east-1a,us-east-1b
+    Description: The list of Availability Zones where instances in the Auto Scaling group can be created
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  InstanceProfileRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AutoScalingGroupName}InstanceProfileRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: autoscaling.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: !Sub ${AutoScalingGroupName}InstanceProfileRolePolicy
+          PolicyDocument:
+            Statement:
+              - Sid: EC2InstanceManagement
+                Effect: Allow
+                Action:
+                  - ec2:AttachClassicLinkVpc
+                  - ec2:CancelSpotInstanceRequests
+                  - ec2:CreateFleet
+                  - ec2:CreateTags
+                  - ec2:DeleteTags
+                  - ec2:Describe*
+                  - ec2:DetachClassicLinkVpc
+                  - ec2:ModifyInstanceAttribute
+                  - ec2:RequestSpotInstances
+                  - ec2:RunInstances
+                  - ec2:StartInstances
+                  - ec2:StopInstances
+                  - ec2:TerminateInstances
+                Resource: "*"
+              - Sid: EC2InstanceProfileManagement
+                Effect: Allow
+                Action:
+                  - iam:PassRole
+                Resource: "*"
+                Condition:
+                  StringLike:
+                    iam:PassedToService: ec2.amazonaws.com*
+              - Sid: EC2SpotManagement
+                Effect: Allow
+                Action:
+                  - iam:CreateServiceLinkedRole
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    iam:AWSServiceName: spot.amazonaws.com
+              - Sid: ELBManagement
+                Effect: Allow
+                Action:
+                  - elasticloadbalancing:Register*
+                  - elasticloadbalancing:Deregister*
+                  - elasticloadbalancing:Describe*
+                Resource: "*"
+              - Sid: CWManagement
+                Effect: Allow
+                Action:
+                  - cloudwatch:DeleteAlarms
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:GetMetricData
+                  - cloudwatch:PutMetricAlarm
+                Resource: "*"
+              - Sid: SNSManagement
+                Effect: Allow
+                Action: sns:Publish
+                Resource: "*"
+              - Sid: EventBridgeRuleManagement
+                Effect: Allow
+                Action:
+                  - events:PutRule
+                  - events:PutTargets
+                  - events:RemoveTargets
+                  - events:DeleteRule
+                  - events:DescribeRule
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    events:ManagedBy: autoscaling.amazonaws.com
+              - Sid: SystemsManagerParameterManagement
+                Effect: Allow
+                Action:
+                  - ssm:GetParameters
+                Resource: "*"
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Sub ${AutoScalingGroupName}InstanceProfile
+      Path: /
+      Roles:
+        - !Ref InstanceProfileRole
+
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: LaunchTemplateDefault
+      LaunchTemplateData:
+        ImageId: !Ref FreeTierImageId
+        InstanceType: !Ref FreeTierInstanceType
+        KeyName: !Ref KeyName
+        IamInstanceProfile:
+          Arn: !GetAtt InstanceProfile.Arn
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        DisableApiTermination: true
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Ref AutoScalingGroupName
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      AvailabilityZones: !Ref AvailabilityZones
+      Cooldown: 300
+      DesiredCapacity: 2
+      DesiredCapacityType: units
+      HealthCheckGracePeriod: 300
+      HealthCheckType: EC2
+      MaxSize: 4
+      MinSize: 1
+      MetricsCollection:
+        - Granularity: 1Minute
+          Metrics:
+            - GroupMinSize
+            - GroupMaxSize
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+          PropagateAtLaunch: true
+
+  PredictiveScalingPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    DependsOn: AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Ref AutoScalingGroupName
+      PolicyType: PredictiveScaling
+      PredictiveScalingConfiguration:
+        MetricSpecifications:
+          - TargetValue: 70
+            PredefinedMetricPairSpecification:
+              PredefinedMetricType: ASGCPUUtilization
+        Mode: ForecastOnly
+
+  TargetTrackingScalingPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    DependsOn: AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Ref AutoScalingGroupName
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization
+        TargetValue: 70
+
+  StepScalingPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    DependsOn: AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Ref AutoScalingGroupName
+      PolicyType: StepScaling
+      AdjustmentType: ChangeInCapacity
+      MetricAggregationType: Average
+      EstimatedInstanceWarmup: 60
+      StepAdjustments:
+        - MetricIntervalLowerBound: 0
+          MetricIntervalUpperBound: 15
+          ScalingAdjustment: 1
+        - MetricIntervalLowerBound: 15
+          MetricIntervalUpperBound: 25
+          ScalingAdjustment: 2
+        - MetricIntervalLowerBound: 25
+          ScalingAdjustment: 3
+
+  SimpleScalingPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    DependsOn: AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Ref AutoScalingGroupName
+      PolicyType: SimpleScaling
+      AdjustmentType: ChangeInCapacity
+      Cooldown: 300
+      ScalingAdjustment: 1

@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an Event Bridge rule to schedule an ECS task
+
+Parameters:
+  RuleName:
+    Type: String
+    Default: ECSTaskScheduledRule
+
+  ECSClusterArn:
+    Type: String
+
+  ECSTaskDefinitionArn:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${RuleName}Role
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: !Sub ${RuleName}RolePolicy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecs:RunTask
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - iam:PassRole
+                Resource: "*"
+
+  ScheduledRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Ref RuleName
+      Description: !Ref RuleName
+      ScheduleExpression: rate(1 minute)
+      State: ENABLED
+      Targets:
+        - Id: !Sub ${RuleName}1
+          Arn: !Ref ECSClusterArn
+          RoleArn: !GetAtt Role.Arn
+          EcsParameters:
+            TaskCount: 1
+            TaskDefinitionArn: !Ref ECSTaskDefinitionArn

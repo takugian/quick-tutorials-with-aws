@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Lambda function that gets a secret from Secret Manager
+
+Parameters:
+  LambdaSecretName:
+    Type: String
+    Default: SecretLambda
+
+  FunctionName:
+    Type: String
+    Default: SecretLambda
+
+  BucketLambdaSourceCode:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  BucketKeyLambdaSourceCode:
+    Type: String
+    Default: SecretLambda.zip
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  LambdaSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Ref LambdaSecretName
+      Description: !Ref LambdaSecretName
+      SecretString: '{"username": "lambda", "password": "secret"}'
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${FunctionName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${FunctionName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+        - PolicyName: !Sub ${FunctionName}SecretsManagerPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:DescribeSecret
+                  - secretsmanager:GetSecretValue
+                Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: !Ref BucketKeyLambdaSourceCode
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

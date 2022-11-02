@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudFront distribution in front a private bucket used as a static website
+
+Parameters:
+  LoggingBucketName:
+    Type: String
+    Default: tg-staticwebsite-logging-123456
+
+  StaticWebsiteBucketName:
+    Type: String
+    Default: tg-staticwebsite-123456
+
+  CloudFrontOriginAccessIdentity:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  LoggingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref LoggingBucketName
+      AccessControl: LogDeliveryWrite
+
+  LoggingBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: LoggingBucket
+    Properties:
+      Bucket: !Ref LoggingBucketName
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowCloudFrontLogging
+            Effect: Allow
+            Action:
+              - s3:GetBucketAcl
+              - s3:PutBucketAcl
+            Resource: !Sub arn:aws:s3:::${LoggingBucketName}
+            Principal:
+              AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}
+
+  StaticWebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref StaticWebsiteBucketName
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  StaticWebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: StaticWebsiteBucket
+    Properties:
+      Bucket: !Ref StaticWebsiteBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowCloudFront
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: !Sub arn:aws:s3:::${StaticWebsiteBucketName}/*
+            Principal:
+              AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    DependsOn: [LoggingBucketPolicy, StaticWebsiteBucketPolicy]
+    Properties:
+      DistributionConfig:
+        Comment: !Sub ${StaticWebsiteBucketName}Distribution
+        DefaultRootObject: index.html
+        Origins:
+          - Id: !Sub ${StaticWebsiteBucketName}Origin
+            DomainName: !Sub ${StaticWebsiteBucketName}.s3.amazonaws.com
+            ConnectionAttempts: 3
+            ConnectionTimeout: 10
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 30
+        DefaultCacheBehavior:
+          TargetOriginId: !Sub ${StaticWebsiteBucketName}Origin
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          AllowedMethods:
+            - GET
+            - HEAD
+          ViewerProtocolPolicy: allow-all
+        Logging:
+          Bucket: !Sub ${LoggingBucketName}.s3.amazonaws.com
+          Prefix: logs
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: whitelist
+            Locations:
+              - BR
+        Enabled: true
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+Outputs:
+  WebsiteURL:
+    Value: !GetAtt StaticWebsiteBucket.WebsiteURL
+
+  DomainName:
+    Value: !GetAtt Distribution.DomainName

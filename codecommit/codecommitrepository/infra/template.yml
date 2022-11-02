@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CodeCommit Repository with a SNS notification
+
+Parameters:
+  RepositoryName:
+    Type: String
+    Default: PocCodeCommit
+
+  DefaultBranchName:
+    Type: String
+    Default: development
+
+  SourceCodeBucket:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  SourceCodeBucketKey:
+    Type: String
+    Default: lambda.zip
+
+  AlarmEmail:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${RepositoryName}SNSTopic
+      Subscription:
+        - Endpoint: !Ref AlarmEmail
+          Protocol: email
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Repository:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: !Ref RepositoryName
+      RepositoryDescription: !Ref RepositoryName
+      Code:
+        BranchName: !Ref DefaultBranchName
+        S3:
+          Bucket: !Ref SourceCodeBucket
+          Key: !Ref SourceCodeBucketKey
+      Triggers:
+        - Name: TriggerDefault
+          DestinationArn: !Ref Topic
+          Branches:
+            - !Ref DefaultBranchName
+          Events:
+            - all
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

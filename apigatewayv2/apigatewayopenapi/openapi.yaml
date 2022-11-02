@@ -1,0 +1,278 @@
+openapi: 3.0.0
+
+info:
+  title: Game API
+  description: This API has services for registering and querying games.
+  version: 1.0.0
+
+servers:
+  - description: Development environment
+    url: /game_api/v1/dev
+
+paths:
+
+  /games:
+    parameters:
+      - $ref: '#/components/parameters/x_app_key'
+    post:
+      tags:
+        - Games
+      summary: Register a new game
+      description: Register a new game
+      operationId: postGames
+      requestBody:
+        $ref: '#/components/requestBodies/201_postGames'
+      responses:
+        201:
+          $ref: '#/components/responses/201_postGames'
+        400:
+          $ref: '#/components/responses/400_default'
+        401:
+          $ref: '#/components/responses/401_default'
+        403:
+          $ref: '#/components/responses/403_default'
+    get:
+      tags:
+        - Games
+      summary: Query a list of games
+      description: Query a list of games
+      operationId: getGames
+      parameters:
+        - $ref: '#/components/parameters/game_name'
+        - $ref: '#/components/parameters/game_platform'
+        - $ref: '#/components/parameters/game_developer'
+      responses:
+        200:
+          $ref: '#/components/responses/200_getGames'
+        401:
+          $ref: '#/components/responses/401_default'
+        403:
+          $ref: '#/components/responses/403_default'
+
+  /games/{game_id}:
+    parameters:
+      - $ref: '#/components/parameters/x_app_key'
+      - $ref: '#/components/parameters/game_id'
+    get:
+      tags:
+        - Games
+      summary: Find a game by ID
+      description: Find a game by ID
+      operationId: getGamesById
+      responses:
+        200:
+          $ref: '#/components/responses/200_getGamesById'
+        401:
+          $ref: '#/components/responses/401_default'
+        403:
+          $ref: '#/components/responses/403_default'
+        404:
+          $ref: '#/components/responses/404_default'
+    put:
+      tags:
+        - Games
+      summary: Update a game by ID
+      description: Update a game by ID
+      operationId: putGamesById
+      requestBody:
+        $ref: '#/components/requestBodies/201_postGames'
+      responses:
+        204:
+          $ref: '#/components/responses/204_default'
+        401:
+          $ref: '#/components/responses/401_default'
+        403:
+          $ref: '#/components/responses/403_default'
+        404:
+          $ref: '#/components/responses/404_default'
+    delete:
+      tags:
+        - Games
+      summary: Delete a game by ID
+      description: Delete a game by ID
+      operationId: deleteGamesById
+      responses:
+        204:
+          $ref: '#/components/responses/204_default'
+        401:
+          $ref: '#/components/responses/401_default'
+        403:
+          $ref: '#/components/responses/403_default'
+        404:
+          $ref: '#/components/responses/404_default'
+
+components:
+  
+  schemas:
+  
+    game:
+      title: Game
+      description: Represents a game
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: The unique identifier of the game
+        name:
+          type: string
+          description: The name of the game
+          example: THE LAST OF US PART I
+        platform:
+          type: string
+          description: The platform of the game
+          example: PlayStation 5
+        company:
+          type: string
+          description: The company of the game
+          example: Sony Interactive Entertainment
+        developer:
+          type: string
+          description: The company of the game
+          example: Naughty Dog
+        released_at:
+          type: string
+          format: date
+          description: The release date of the game
+        summary:
+          type: string
+          description: The summary of the game
+          example: In a ravaged civilization, where infected and hardened survivors run rampant, Joel, a weary protagonist, is hired to smuggle 14-year-old Ellie out of a military quarantine zone. However, what starts as a small job soon transforms into a brutal cross-country journey. Includes the complete The…
+        metascore:
+          type: number
+          description: The metascore of the game
+          example: 89
+        user_score:
+          type: number
+          description: The user score of the game
+          example: 5.8
+        genres:
+          type: array
+          items:
+            type: string
+          description: The genres of the game
+          example: [ Action Adventure, General ]
+        number_of_players:
+          type: string
+          description: The number of players of the game
+          example: No Online Multiplayer
+        rating:
+          type: string
+          description: The rating of the game
+          enum: [ E, E10PLUS, T, M, A, RP, RP17PLUS ]
+      required:
+        - id
+        - name
+        - platform
+        - company
+        - developer
+        - released_at
+        - summary
+        - metascore
+        - user_score
+        - genres
+        - number_of_players
+        - rating
+
+    error:
+      title: Error
+      description: Represents an error
+      type: object
+      readOnly: true
+      properties:
+        code:
+          type: string
+          description: The code of the error
+        description:
+          type: string
+          description: The description of the error
+    
+  responses:
+    200_getGames:
+      description: A list of games
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/game'
+    200_getGamesById:
+      description: A game
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/game'
+    201_postGames:
+      description: The game has created
+      headers:
+        Location:
+          description: The location URI of the game
+          schema:
+            type: string
+    204_default:
+      description: No content
+    400_default:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/error'      
+    401_default:
+      description: Unauthorized
+    403_default:
+      description: Forbidden
+    404_default:
+      description: Not found
+    
+  parameters:
+    x_app_key:
+      name: X-App-Key
+      in: header
+      description: The unique identifier of the app
+      schema:
+        type: string
+        format: uuid
+    game_id:
+      name: game_id
+      in: path
+      description: The unique identifier of the game
+      required: true
+      schema:
+        type: string
+        format: uuid
+    game_name:
+      name: name
+      in: query
+      description: The name of the game
+      schema:
+        type: string
+    game_platform:
+      name: game_id
+      in: query
+      description: The platform of the game
+      schema:
+        type: string
+    game_developer:
+      name: game_id
+      in: query
+      description: The developer of the game
+      schema:
+        type: string
+  
+  requestBodies:
+    201_postGames:
+      description: A new game
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/game'

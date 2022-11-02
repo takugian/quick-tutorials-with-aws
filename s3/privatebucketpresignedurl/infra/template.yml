@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a private bucket and a Lambda function that creates a Pre Signed URL
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: tg-private-bucket-123456
+
+  FunctionName:
+    Type: String
+    Default: PreSignedURL
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref Bucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowSSLRequestOnly
+            Action:
+              - s3:*
+            Effect: Deny
+            Resource:
+              Fn::Join: ["", ["arn:aws:s3:::", !Ref Bucket, "/*"]]
+            Condition:
+              Bool:
+                "aws:SecureTransport": "false"
+            Principal: "*"
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${FunctionName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${FunctionName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          console.log('Loading function');
+          const aws = require('aws-sdk');
+          const s3 = new aws.S3({
+              signatureVersion: 'v4',
+              accessKeyId: '${accessKeyId}',
+              secretAccessKey: '${secretAccessKey}',
+              Bucket: 'tg-private-bucket-123456',
+          })
+          exports.handler = async (event, context) => {
+              const params = {
+                  Bucket: "tg-private-bucket-123456",
+                  Key: event.key,
+                  Expires: 3600
+              };
+              const url = await s3.getSignedUrl('getObject', params);
+              return {
+                statusCode: 200,
+                body: url,
+              };  
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

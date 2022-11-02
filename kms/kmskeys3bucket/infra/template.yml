@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a KMS key used to encrypt the objects of a S3 bucket
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: tg-kms-bucket-123456
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  KMSKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: KMS key for a S3 bucket
+      KeySpec: SYMMETRIC_DEFAULT
+      MultiRegion: false
+      EnableKeyRotation: true
+      PendingWindowInDays: 7
+      Enabled: true
+      KeyPolicy:
+        Id: KeyDefault
+        Version: 2012-10-17
+        Statement:
+          - Sid: Allow root access of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+          - Sid: Allow administration of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/Admin"
+            Action:
+              - kms:Create*
+              - kms:Describe*
+              - kms:Enable*
+              - kms:List*
+              - kms:Put*
+              - kms:Update*
+              - kms:Revoke*
+              - kms:Disable*
+              - kms:Get*
+              - kms:Delete*
+              - kms:ScheduleKeyDeletion
+              - kms:CancelKeyDeletion
+            Resource: "*"
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+              KMSMasterKeyID: !Ref KMSKey
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

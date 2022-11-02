@@ -1,0 +1,233 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a REST API Gateway and a Lambda function as backend
+
+Parameters:
+
+  ApiName:
+    Type: String
+    Default: ApiGatewayLambda
+
+  BucketLambdaSourceCode:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  BucketKeyLambdaSourceCode:
+    Type: String
+    Default: ApiGatewayLambda.zip
+
+  StageName:
+    Type: String
+    Default: dev
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ApiName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:CreateLogGroup
+              - logs:PutLogEvents
+            Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Ref ApiName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: !Ref BucketKeyLambdaSourceCode
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: Lambda
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt Lambda.Arn
+      Principal: apigateway.amazonaws.com
+
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    DependsOn: Lambda
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+  
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: customers
+
+  CustomerByIdResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !Ref CustomerResource
+      PathPart: "{customer_id}"
+    
+  MethodGetCustomers: 
+    Type: 'AWS::ApiGateway::Method'
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      RequestParameters:
+        'method.request.querystring.customer_name': false
+      MethodResponses:
+        - StatusCode: 200
+        - StatusCode: 500
+      Integration:
+        Type: AWS
+        IntegrationResponses:
+          - StatusCode: 200
+          - StatusCode: 500
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+        RequestTemplates:
+          application/json: "{ \"httpMethod\": \"$context.httpMethod\", \"path\": \"/customers\", \"queries\": { \"customer_name\":\"$input.params('customer_name')\" } }"
+
+  MethodPostCustomers: 
+    Type: 'AWS::ApiGateway::Method'
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: 201
+        - StatusCode: 500
+      Integration:
+        Type: AWS
+        IntegrationResponses:
+          - StatusCode: 201
+          - StatusCode: 500
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+        RequestTemplates:
+          application/json: "{ \"httpMethod\": \"$context.httpMethod\", \"path\": \"/customers\", \"body\": $input.json('$') }"
+
+  MethodGetCustomersById: 
+    Type: 'AWS::ApiGateway::Method'
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerByIdResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      RequestParameters:
+        'method.request.path.customer_id': true
+      MethodResponses:
+        - StatusCode: 200
+        - StatusCode: 404
+        - StatusCode: 500
+      Integration:
+        Type: AWS
+        IntegrationResponses:
+          - StatusCode: 200
+          - StatusCode: 404
+          - StatusCode: 500
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+        RequestTemplates:
+          application/json: "{ \"httpMethod\": \"$context.httpMethod\", \"path\": \"/customers/{customer_id}\", \"paths\": { \"customer_id\":\"$input.params('customer_id')\" } }"
+
+  MethodPutCustomersById: 
+    Type: 'AWS::ApiGateway::Method'
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerByIdResource
+      HttpMethod: PUT
+      AuthorizationType: NONE
+      RequestParameters:
+        'method.request.path.customer_id': true
+      MethodResponses:
+        - StatusCode: 204
+        - StatusCode: 404
+        - StatusCode: 500
+      Integration:
+        Type: AWS
+        IntegrationResponses:
+          - StatusCode: 204
+          - StatusCode: 404
+          - StatusCode: 500
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+        RequestTemplates:
+          application/json: "{ \"httpMethod\": \"$context.httpMethod\", \"path\": \"/customers/{customer_id}\", \"paths\": { \"customer_id\":\"$input.params('customer_id')\" }, \"body\": $input.json('$') }"
+
+  MethodDeleteCustomersById: 
+    Type: 'AWS::ApiGateway::Method'
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerByIdResource
+      HttpMethod: DELETE
+      AuthorizationType: NONE
+      RequestParameters:
+        'method.request.path.customer_id': true
+      MethodResponses:
+        - StatusCode: 204
+        - StatusCode: 404
+        - StatusCode: 500
+      Integration:
+        Type: AWS
+        IntegrationResponses:
+          - StatusCode: 204
+          - StatusCode: 404
+          - StatusCode: 500
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+        RequestTemplates:
+          application/json: "{ \"httpMethod\": \"$context.httpMethod\", \"path\": \"/customers/{customer_id}\", \"paths\": { \"customer_id\":\"$input.params('customer_id')\" } }"
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: [ MethodGetCustomers, MethodPostCustomers, MethodGetCustomersById, MethodPutCustomersById, MethodDeleteCustomersById ]
+    Properties:
+      RestApiId: !Ref RestApi
+      StageName: !Ref StageName
+
+Outputs:
+
+  ApiGatewayId:
+    Value: !Ref RestApi

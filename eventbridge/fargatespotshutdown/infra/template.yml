@@ -1,0 +1,144 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates two Event Bridge rules to handle Fargate Spot events
+
+Parameters:
+
+  ClusterName:
+    Type: String
+    Default: fargate-spot
+
+  TopicName1:
+    Type: String
+    Default: task-termination-notice
+
+  TopicName2:
+    Type: String
+    Default: task-placement-failure
+
+  RuleName1:
+    Type: String
+    Default: task-termination-notice
+
+  RuleName2:
+    Type: String
+    Default: task-placement-failure
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+      CapacityProviders:
+        - FARGATE_SPOT
+      DefaultCapacityProviderStrategy:
+        - CapacityProvider: FARGATE_SPOT
+          Weight: 1
+      ClusterSettings:
+        - Name: containerInsights
+          Value: disabled
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Topic1:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Ref TopicName1
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  TopicPolicy1:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sns:Publish
+            Resource: "*"
+      Topics:
+        - !Ref Topic1
+
+  Topic2:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Ref TopicName2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  TopicPolicy2:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sns:Publish
+            Resource: "*"
+      Topics:
+        - !Ref Topic2
+
+  Rule1:
+    Type: AWS::Events::Rule
+    DependsOn: Topic1
+    Properties:
+      Name: !Ref RuleName1
+      Description: !Ref RuleName1
+      EventPattern:
+        {
+          "source": ["aws.ecs"],
+          "detail-type": ["ECS Task State Change"],
+          "detail":
+            {
+              "stopCode": ["TerminationNotice"],
+              "clusterArn":
+                [
+                  "arn:aws:ecs:*:*:cluster/fargate-spot",
+                ],
+            },
+        }
+      State: ENABLED
+      Targets:
+        - Id: !Sub ${RuleName1}A
+          Arn: !GetAtt Topic1.TopicArn
+
+  Rule2:
+    Type: AWS::Events::Rule
+    DependsOn: Topic2
+    Properties:
+      Name: !Ref RuleName2
+      Description: !Ref RuleName2
+      EventPattern:
+        {
+          "source": [
+            "aws.ecs"
+          ],
+          "detail-type": [
+            "ECS Deployment State Change"
+          ],
+          "detail": {
+            "eventName": [
+              "SERVICE_TASK_PLACEMENT_FAILURE"
+            ],
+            "clusterArn": [
+              "arn:aws:ecs:*:*:cluster/fargate-spot"
+            ],
+            "reason": [
+              "RESOURCE:FARGATE"
+            ]
+          }
+        }
+      State: ENABLED
+      Targets:
+        - Id: !Sub ${RuleName2}A
+          Arn: !GetAtt Topic2.TopicArn

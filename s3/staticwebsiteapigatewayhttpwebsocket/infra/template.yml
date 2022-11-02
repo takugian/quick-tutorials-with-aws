@@ -1,0 +1,202 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a bucket used as a static website that consumes a websocket
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: tg-staticwebsitewebsocket-123456
+
+  ApiName:
+    Type: String
+    Default: ApiGatewayWebSocket
+
+  StageName:
+    Type: String
+    Default: dev
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  StaticWebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicRead
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StaticWebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowPublic
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: !Sub arn:aws:s3:::${BucketName}/*
+            Principal: "*"
+
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Version: v1
+      ProtocolType: WEBSOCKET
+      DisableExecuteApiEndpoint: false
+      DisableSchemaValidation: false
+      RouteSelectionExpression: $request.body.action
+
+  DefaultIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      IntegrationType: MOCK
+      IntegrationMethod: POST
+      TemplateSelectionExpression: 200
+      RequestTemplates:
+        "200": '{ "statusCode": 200 }'
+
+  DefaultIntegrationResponse:
+    Type: AWS::ApiGatewayV2::IntegrationResponse
+    Properties:
+      ApiId: !Ref Api
+      IntegrationId: !Ref DefaultIntegration
+      IntegrationResponseKey: $default
+      TemplateSelectionExpression: 200
+      ResponseTemplates:
+        "200": '{ "statusCode": 200, "connectionId": "$context.connectionId" }'
+
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: DefaultIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $default
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref DefaultIntegration]]
+
+  DefaultRouteResponse:
+    Type: AWS::ApiGatewayV2::RouteResponse
+    Properties:
+      ApiId: !Ref Api
+      RouteId: !Ref DefaultRoute
+      RouteResponseKey: $default
+
+  ConnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      IntegrationType: MOCK
+      IntegrationMethod: POST
+      TemplateSelectionExpression: 200
+      RequestTemplates:
+        "200": '{ "statusCode": 200 }'
+
+  ConnectIntegrationResponse:
+    Type: AWS::ApiGatewayV2::IntegrationResponse
+    Properties:
+      ApiId: !Ref Api
+      IntegrationId: !Ref ConnectIntegration
+      IntegrationResponseKey: $default
+      TemplateSelectionExpression: 200
+
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: ConnectIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $connect
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref ConnectIntegration]]
+
+  ConnectRouteResponse:
+    Type: AWS::ApiGatewayV2::RouteResponse
+    Properties:
+      ApiId: !Ref Api
+      RouteId: !Ref ConnectRoute
+      RouteResponseKey: $default
+
+  DisconnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      IntegrationType: MOCK
+      IntegrationMethod: POST
+      TemplateSelectionExpression: 200
+      RequestTemplates:
+        "200": '{ "statusCode": 200 }'
+
+  DisconnectIntegrationResponse:
+    Type: AWS::ApiGatewayV2::IntegrationResponse
+    Properties:
+      ApiId: !Ref Api
+      IntegrationId: !Ref DisconnectIntegration
+      IntegrationResponseKey: $default
+      TemplateSelectionExpression: 200
+
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DependsOn: DisconnectIntegration
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      ApiKeyRequired: false
+      Target: !Join ["/", [integrations, !Ref DisconnectIntegration]]
+
+  DisconnectRouteResponse:
+    Type: AWS::ApiGatewayV2::RouteResponse
+    Properties:
+      ApiId: !Ref Api
+      RouteId: !Ref DisconnectRoute
+      RouteResponseKey: $default
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn: [DefaultRoute, ConnectRoute, DisconnectRoute]
+    Properties:
+      ApiId: !Ref Api
+
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      ApiId: !Ref Api
+      AutoDeploy: false
+      DeploymentId: !Ref Deployment
+
+:
+  WebsiteURL:
+    Value: !GetAtt StaticWebsiteBucket.WebsiteURL
+    Description: URL for website hosted on S3
+
+  S3BucketSecureURL:
+    Value: !Join
+      - ""
+      - - "https://"
+        - !GetAtt StaticWebsiteBucket.DomainName
+    Description: Name of S3 bucket to hold website content
+
+  ApiGatewayId:
+    Value: !Ref Api

@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SNS Topic with a SQS queue subscription
+
+Parameters:
+  TopicName:
+    Type: String
+    Default: SNSSubscriptionSQS
+
+  QueueName:
+    Type: String
+    Default: SNSSubscriptionSQS
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Topic:
+    Type: AWS::SNS::Topic
+    DependsOn: Queue
+    Properties:
+      TopicName: !Ref TopicName
+      # KmsMasterKeyId: !Ref KmsMasterKeyId
+      Subscription:
+        - Endpoint: !GetAtt Queue.Arn
+          Protocol: sqs
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    DependsOn: Topic
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Sid: AllowSNSSendMessage
+            Effect: Allow
+            Principal:
+              Service: sns.amazonaws.com
+            Action:
+              - sqs:SendMessage
+            Resource: !GetAtt Queue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref Topic
+      Queues:
+        - !Ref Queue

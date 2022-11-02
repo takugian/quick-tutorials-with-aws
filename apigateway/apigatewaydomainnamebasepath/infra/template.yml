@@ -1,0 +1,108 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a REST API Gateway with domain name and base path
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: api.takugian.com
+
+  BasePath:
+    Type: String
+    Default: awsquickstarts
+
+  ApiName:
+    Type: String
+    Default: ApiGatewayDomainNameBasePath
+
+  StageName:
+    Type: String
+    Default: dev
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: customers
+
+  MethodGetCustomers:
+    Type: AWS::ApiGateway::Method
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: 200
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseTemplates:
+              application/json: '[ { "id": "1", "name": "CRISTIANO RONALDO" } ]'
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: [MethodGetCustomers]
+    Properties:
+      RestApiId: !Ref RestApi
+
+  Stage:
+    Type: AWS::ApiGateway::Stage
+    DependsOn: [Deployment]
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      RestApiId: !Ref RestApi
+      DeploymentId: !Ref Deployment
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+
+  GatewayDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref DomainName
+      CertificateArn: !Ref Certificate
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  BasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: !Ref BasePath
+      DomainName: !Ref GatewayDomainName
+      RestApiId: !Ref RestApi
+      Stage: !Ref StageName
+
+Outputs:
+  ApiGatewayId:
+    Value: !Ref RestApi
+
+  DomainName:
+    Value: !GetAtt GatewayDomainName.DistributionDomainName

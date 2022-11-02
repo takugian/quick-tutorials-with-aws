@@ -1,0 +1,269 @@
+{
+    "Comment": "A description of my state machine",
+    "StartAt": "DynamoDB GetItem Request1",
+    "States": {
+      "DynamoDB GetItem Request1": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:dynamodb:getItem",
+        "Parameters": {
+          "TableName": "QTSFRequest",
+          "Key": {
+            "requestId": {
+              "S.$": "$.requestId"
+            },
+            "status": {
+              "S.$": "$.status"
+            }
+          }
+        },
+        "Next": "Choice",
+        "ResultPath": "$.Item"
+      },
+      "Choice": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.Item.Item.requestId",
+            "IsPresent": true,
+            "Next": "Fail"
+          }
+        ],
+        "Default": "DynamoDB PutItem Request"
+      },
+      "Fail": {
+        "Type": "Fail",
+        "Error": "request duplicated"
+      },
+      "DynamoDB PutItem Request": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::dynamodb:putItem",
+        "Parameters": {
+          "TableName": "QTSFRequest",
+          "Item": {
+            "requestId": {
+              "S.$": "$.requestId"
+            },
+            "status": {
+              "S": "CHECKING"
+            },
+            "customerId": {
+              "S.$": "$.customerId"
+            },
+            "validations": {
+              "L": [
+                {
+                  "M": {
+                    "rule": {
+                      "S": "RULE_1"
+                    },
+                    "status": {
+                      "S": "CHECKING"
+                    }
+                  }
+                },
+                {
+                  "M": {
+                    "rule": {
+                      "S": "RULE_2"
+                    },
+                    "status": {
+                      "S": "CHECKING"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "Next": "Parallel",
+        "ResultPath": null
+      },
+      "Parallel": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "SQS SendMessage Rule1",
+            "States": {
+              "SQS SendMessage Rule1": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::sqs:sendMessage",
+                "Parameters": {
+                  "MessageBody.$": "$",
+                  "QueueUrl": "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/QTSFValidateRule1"
+                },
+                "Next": "Lambda Invoke ValidateRule1",
+                "ResultPath": null
+              },
+              "Lambda Invoke ValidateRule1": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::lambda:invoke",
+                "OutputPath": "$.Payload",
+                "Parameters": {
+                  "Payload.$": "$",
+                  "FunctionName": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:QTSFValidateRule1:$LATEST"
+                },
+                "Retry": [
+                  {
+                    "ErrorEquals": [
+                      "Lambda.ServiceException",
+                      "Lambda.AWSLambdaException",
+                      "Lambda.SdkClientException"
+                    ],
+                    "IntervalSeconds": 2,
+                    "MaxAttempts": 6,
+                    "BackoffRate": 2
+                  }
+                ],
+                "Next": "DynamoDB UpdateItem Request1"
+              },
+              "DynamoDB UpdateItem Request1": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::dynamodb:updateItem",
+                "Parameters": {
+                  "TableName": "QTSFRequest",
+                  "Key": {
+                    "requestId": {
+                      "S.$": "$.body.requestId"
+                    },
+                    "status": {
+                      "S": "CHECKING"
+                    }
+                  },
+                  "AttributeUpdates": {
+                    "customerId": {
+                      "Value": {
+                        "S.$": "$.body.customerId"
+                      }
+                    },
+                    "validations": {
+                      "Value": {
+                        "L": [
+                          {
+                            "M": {
+                              "rule": {
+                                "S": "RULE_1"
+                              },
+                              "status": {
+                                "S.$": "$.body.status"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "SQS SendMessage Rule2",
+            "States": {
+              "SQS SendMessage Rule2": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::sqs:sendMessage",
+                "Parameters": {
+                  "MessageBody.$": "$",
+                  "QueueUrl": "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/QTSFValidateRule2"
+                },
+                "Next": "Lambda Invoke ValidateRule2",
+                "ResultPath": null
+              },
+              "Lambda Invoke ValidateRule2": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::lambda:invoke",
+                "OutputPath": "$.Payload",
+                "Parameters": {
+                  "Payload.$": "$",
+                  "FunctionName": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:QTSFValidateRule2:$LATEST"
+                },
+                "Retry": [
+                  {
+                    "ErrorEquals": [
+                      "Lambda.ServiceException",
+                      "Lambda.AWSLambdaException",
+                      "Lambda.SdkClientException"
+                    ],
+                    "IntervalSeconds": 2,
+                    "MaxAttempts": 6,
+                    "BackoffRate": 2
+                  }
+                ],
+                "Next": "DynamoDB UpdateItem Request2"
+              },
+              "DynamoDB UpdateItem Request2": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::dynamodb:updateItem",
+                "Parameters": {
+                  "TableName": "QTSFRequest",
+                  "Key": {
+                    "requestId": {
+                      "S.$": "$.body.requestId"
+                    },
+                    "status": {
+                      "S": "CHECKING"
+                    }
+                  },
+                  "AttributeUpdates": {
+                    "customerId": {
+                      "Value": {
+                        "S.$": "$.body.customerId"
+                      }
+                    },
+                    "validations": {
+                      "Value": {
+                        "L": [
+                          {
+                            "M": {
+                              "rule": {
+                                "S": "RULE_2"
+                              },
+                              "status": {
+                                "S.$": "$.body.status"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "End": true
+              }
+            }
+          }
+        ],
+        "Next": "DynamoDB GetItem Request2",
+        "ResultPath": null
+      },
+      "DynamoDB GetItem Request2": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::dynamodb:getItem",
+        "Parameters": {
+          "TableName": "QTSFRequest",
+          "Key": {
+            "requestId": {
+              "S.$": "$.requestId"
+            },
+            "status": {
+              "S.$": "$.status"
+            }
+          }
+        },
+        "Next": "SQS SendMessage"
+      },
+      "SQS SendMessage": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "MessageBody.$": "$",
+          "QueueUrl": "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/QTSFRequestValidated"
+        },
+        "Next": "Success"
+      },
+      "Success": {
+        "Type": "Succeed"
+      }
+    }
+  }

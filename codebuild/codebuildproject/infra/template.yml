@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CodeBuild Project integrated with a CodeCommit Repository
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: PocCodeBuild
+
+  CodeCommitCloneHTTPSURL:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  ServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ProjectName}CodeBuildProjectServiceRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: !Sub ${ProjectName}CodeBuildProjectServiceRolePolicy
+          PolicyDocument:
+            Statement:
+              # - Effect: Allow
+              #   Resource:
+              #     - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${ProjectName}
+              #     - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${ProjectName}:*
+              #   Action:
+              #     - logs:CreateLogGroup
+              #     - logs:CreateLogStream
+              #     - logs:PutLogEvents
+              # - Effect: Allow
+              #   Resource:
+              #     - !Sub arn:aws:s3:::codepipeline-${AWS::Region}-*
+              #   Action:
+              #     - s3:PutObject
+              #     - s3:GetObject
+              #     - s3:GetObjectVersion
+              #     - s3:GetBucketAcl
+              #     - s3:GetBucketLocation
+              - Effect: Allow
+                Resource:
+                  - !Sub arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:*
+                Action:
+                  - codecommit:GitPull
+              # - Effect: Allow
+              #   Action:
+              #     - codebuild:CreateReportGroup
+              #     - codebuild:CreateReport
+              #     - codebuild:UpdateReport
+              #     - codebuild:BatchPutTestCases
+              #     - codebuild:BatchPutCodeCoverages
+                Resource:
+                  - !Sub arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:report-group/*
+
+  Project:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Ref ProjectName
+      Description: !Ref ProjectName
+      ServiceRole: !GetAtt ServiceRole.Arn
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
+        EnvironmentVariables:
+          - Name: ENV_VAR_1
+            Type: PLAINTEXT
+            Value: value1
+      Source:
+        Location: !Ref CodeCommitCloneHTTPSURL
+        Type: CODECOMMIT
+      TimeoutInMinutes: 10
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

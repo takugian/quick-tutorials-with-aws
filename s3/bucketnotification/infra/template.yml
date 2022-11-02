@@ -1,0 +1,156 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates two buckets with SQS notification and Lambda notification
+
+Parameters:
+  LambdaConsumerName:
+    Type: String
+    Default: BucketNotification
+
+  BucketLambdaSourceCode:
+    Type: String
+    Default: tg-quicklabs-lambdasrc
+
+  BucketKeyLambdaConsumerSourceCode:
+    Type: String
+    Default: BucketNotification.zip
+
+  QueueName:
+    Type: String
+    Default: Queue
+
+  BucketNotificationLambdaName:
+    Type: String
+    Default: tg-notification-lambda-123456
+
+  BucketNotificationQueueName:
+    Type: String
+    Default: tg-notification-queue-123456
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  LambdaConsumerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${LambdaConsumerName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${LambdaConsumerName}LogPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+        - PolicyName: !Sub ${LambdaConsumerName}S3Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:Get*
+                Resource:
+                  - !Sub arn:aws:s3:::${BucketNotificationLambdaName}
+                  - !Sub arn:aws:s3:::${BucketNotificationLambdaName}/*
+
+  LambdaConsumer:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref LambdaConsumerName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaConsumerExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        S3Bucket: !Ref BucketLambdaSourceCode
+        S3Key: !Ref BucketKeyLambdaConsumerSourceCode
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt LambdaConsumer.Arn
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !Sub arn:aws:s3:::${BucketNotificationLambdaName}
+
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName
+      DelaySeconds: 0
+      MessageRetentionPeriod: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    DependsOn: [Queue]
+    Properties:
+      Queues:
+        - !Sub https://sqs:${AWS::Region}.amazonaws.com/${AWS::AccountId}/${QueueName}
+      PolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - sqs:SendMessage
+            Resource: !GetAtt Queue.Arn
+            Principal: "*"
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Sub arn:aws:s3:::${BucketNotificationQueueName}
+
+  BucketNotificationLambda:
+    Type: AWS::S3::Bucket
+    DependsOn: [LambdaConsumer, LambdaPermission]
+    Properties:
+      BucketName: !Ref BucketNotificationLambdaName
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:*
+            # Filter:
+            Function: !GetAtt LambdaConsumer.Arn
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  BucketNotificationQueue:
+    Type: AWS::S3::Bucket
+    DependsOn: [Queue, QueuePolicy]
+    Properties:
+      BucketName: !Ref BucketNotificationQueueName
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+      NotificationConfiguration:
+        QueueConfigurations:
+          - Event: s3:ObjectCreated:*
+            # Filter:
+            Queue: !GetAtt Queue.Arn
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

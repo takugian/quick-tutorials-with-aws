@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an Event Bridge rule to schedule a Lambda function
+
+Parameters:
+  LambdaFunctionName:
+    Type: String
+    Default: LambdaFunctionScheduled
+
+  RuleName:
+    Type: String
+    Default: LambdaFunctionScheduledRule
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${LambdaFunctionName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${LambdaFunctionName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+            console.log('Hello, Scheduled Lambda');
+            console.log('event', JSON.stringify(event));
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ScheduledRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Ref RuleName
+      Description: !Ref RuleName
+      ScheduleExpression: rate(1 minute)
+      State: ENABLED
+      Targets:
+        - Id: !Sub ${RuleName}1
+          Arn: !GetAtt Lambda.Arn
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt Lambda.Arn
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt ScheduledRule.Arn

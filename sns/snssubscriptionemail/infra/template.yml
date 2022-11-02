@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SNS Topic with an email subscription
+
+Parameters:
+  TopicName:
+    Type: String
+    Default: SNSSubscriptionEmail
+
+  AlarmEmail:
+    Type: String
+
+  # KmsMasterKeyId:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Ref TopicName
+      # KmsMasterKeyId: !Ref KmsMasterKeyId
+      Subscription:
+        - Endpoint: !Ref AlarmEmail
+          Protocol: email
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

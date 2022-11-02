@@ -1,0 +1,124 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a symmetric key and an asymmetric key both with alias
+
+Parameters:
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  SymmetricKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: Symmetric KMS key
+      KeySpec: SYMMETRIC_DEFAULT
+      MultiRegion: false
+      EnableKeyRotation: true
+      PendingWindowInDays: 7
+      Enabled: true
+      KeyPolicy:
+        Id: KeyDefault
+        Version: 2012-10-17
+        Statement:
+          - Sid: Allow root access of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+          - Sid: Allow administration of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/Admin"
+            Action:
+              - kms:Create*
+              - kms:Describe*
+              - kms:Enable*
+              - kms:List*
+              - kms:Put*
+              - kms:Update*
+              - kms:Revoke*
+              - kms:Disable*
+              - kms:Get*
+              - kms:Delete*
+              - kms:ScheduleKeyDeletion
+              - kms:CancelKeyDeletion
+            Resource: "*"
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/Developer"
+            Action:
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey
+              - kms:GenerateDataKeyWithoutPlaintext
+            Resource: "*"
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  SymmetricKeyAlias:
+    Type: "AWS::KMS::Alias"
+    Properties:
+      AliasName: alias/symmetricKey
+      TargetKeyId: !Ref SymmetricKey
+
+  AsymmetricKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: RSA-3072 asymmetric KMS key for signing and verification
+      KeySpec: RSA_3072
+      MultiRegion: false
+      KeyUsage: SIGN_VERIFY
+      PendingWindowInDays: 7
+      Enabled: true
+      KeyPolicy:
+        Id: KeyDefault
+        Version: 2012-10-17
+        Statement:
+          - Sid: Allow root access of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+          - Sid: Allow administration of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::{AWS::AccountId}:role/Admin"
+            Action:
+              - kms:Create*
+              - kms:Describe*
+              - kms:Enable*
+              - kms:List*
+              - kms:Put*
+              - kms:Update*
+              - kms:Revoke*
+              - kms:Disable*
+              - kms:Get*
+              - kms:Delete*
+              - kms:ScheduleKeyDeletion
+              - kms:CancelKeyDeletion
+            Resource: "*"
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::{AWS::AccountId}:role/Developer"
+            Action:
+              - kms:Sign
+              - kms:Verify
+              - kms:DescribeKey
+            Resource: "*"
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  AsymmetricKeyAlias:
+    Type: "AWS::KMS::Alias"
+    Properties:
+      AliasName: alias/asymmetricKey
+      TargetKeyId: !Ref AsymmetricKey
