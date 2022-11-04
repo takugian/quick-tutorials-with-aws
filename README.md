@@ -390,21 +390,21 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [SQS]
 
-- [sqs] - SQS Queue
 - [sqsdlq] - SQS Queue with DLQ feature enabled
 - [sqsecsnode] - Integration between a SQS Queue and two ECS tasks `backlog`
 - [sqsfifo] - SQS Queue with FIFO enabled
 - [sqsjavasdk] - Integration between a SQS Queue and Java SDK
 - [sqslambda] - Integration between a SQS Queue and two Lambda functions
+- [sqsqueue] - SQS Queue
 - [sqsqueuepolicy] - SQS Queue policy
 
 [SQS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SQS.html
-[sqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqs
 [sqsdlq]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsdlq
 [sqsecsnode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsecsnode
 [sqsfifo]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsfifo
 [sqsjavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsjavasdk
 [sqslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqslambda
+[sqsqueue]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsqueue
 [sqsqueuepolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsqueuepolicy
 
 ### [Step Functions]
