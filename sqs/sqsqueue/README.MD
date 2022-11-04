@@ -1,4 +1,4 @@
-# sqs
+# sqsqueue
 
 This project creates a SQS Queue.
 
