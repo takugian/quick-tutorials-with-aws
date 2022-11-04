@@ -1,7 +1,6 @@
 # sqs
 
-This project creates:
-- A SQS Queue;
+This project creates a SQS Queue.
 
 ## Helpful links
 

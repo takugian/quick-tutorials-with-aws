@@ -1,7 +1,6 @@
 # snsfanoutsqs
 
-This project creates:
-- A SNS Topic with fanout to SQS queues;
+This project creates a SNS Topic with fanout to SQS queues.
 
 ## How to test
 

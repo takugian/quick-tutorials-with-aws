@@ -1,8 +1,6 @@
 # stepfunctionscomplete
 
-This project creates:
-- Resources of the state machine: Lambdas, DynamoDB table and SQS queues;
-- Step functions state machine;
+This project creates a Step function state machine.
 
 ## How to test
 

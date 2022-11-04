@@ -1,8 +1,6 @@
 # sqsdlq
 
-This project creates:
-- A SQS Queue with DLQ feature enabled;
-- A Lambda function to produce and test the queue;
+This project creates a SQS Queue with DLQ feature enabled.
 
 ## Helpful links
 

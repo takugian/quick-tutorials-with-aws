@@ -1,7 +1,6 @@
 # snssubscriptionlambda
 
-This project creates:
-- A SNS Topic with a Lambda function subscription;
+This project createsa a SNS Topic with a Lambda function subscription.
 
 - [What is Amazon SNS?][1]
 

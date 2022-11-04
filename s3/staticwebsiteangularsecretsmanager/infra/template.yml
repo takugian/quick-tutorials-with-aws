@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a bucket used as a static website to deploy an AngularJS app integrated to Secrets Manager
+Description: Creates a S3 Bucket used as a static website and Secrets Manager to deploy an AngularJS app
 
 Parameters:
   AppName:

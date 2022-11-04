@@ -1,8 +1,6 @@
 # loadbalancerlistenerrules
 
-This project creates:
-- An Application Load Balancer in front of a Lambda function with listener rules configured;
-- A Lambda function;
+This project creates an Application Load Balancer with listener rules configured.
 
 ## How to test
 

@@ -1,8 +1,6 @@
 # privatebucketpresignedurl
 
-This project creates:
-- A private S3 bucket;
-- A Lambda function that creates a Pre Signed URL to access the private bucket;
+This project creates a private S3 bucket and a Lambda function that creates a Pre Signed URL.
 
 ## Helpful links
 

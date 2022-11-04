@@ -1,7 +1,6 @@
 # sqslambda
 
-This project creates:
-- A SQS Queue;
+This project creates a SQS Queue with:
 - A private Lambda function to produce messages to the queue using SQS SDK;
 - A private Lambda function to consume messages from the queue using event sourcing mapping;
 - A VPC Endpoint to allow the integration between the private Lambda functions and the SQS queue;

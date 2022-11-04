@@ -1,7 +1,6 @@
 # sqsjavasdk
 
-This project creates:
-- A SQS Queue;
+This project creates an integration between a SQS Queue and Java SDK.
 
 #### How to test
 

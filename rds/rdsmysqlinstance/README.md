@@ -1,8 +1,6 @@
 # rdsmysqlinstance
 
-This project creates:
-- A RDS DB Instance inside a VPC using MySQL engine
-    - Enable monitoring;
+This project creates a RDS DB Instance inside a VPC using MySQL engine.
 
 ## Helpful links
 

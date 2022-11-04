@@ -1,7 +1,6 @@
 # basicsecuritygroup
 
-This project creates:
-- A Security Group with ingress and egress configurations;
+This project creates a Security Group with ingress and egress configurations.
 
 ## Helpful links
 

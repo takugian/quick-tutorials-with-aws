@@ -1,7 +1,6 @@
 # snsfilterpolicy
 
-This project creates:
-- A SNS Topic with subscription filter applied;
+This project creates a SNS Topic with subscription filter applied.
 
 ## How to test
 

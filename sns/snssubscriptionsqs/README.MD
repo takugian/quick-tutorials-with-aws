@@ -1,7 +1,6 @@
 # snssubscriptionsqs
 
-This project creates:
-- A SNS Topic with a SQS queue subscription;
+This project creates a SNS Topic with a SQS queue subscription.
 
 ## Helpful links
 

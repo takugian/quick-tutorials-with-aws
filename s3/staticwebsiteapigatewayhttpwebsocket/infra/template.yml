@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a bucket used as a static website that consumes a websocket
+Description: Creates a S3 Bucket used as a static website that consumes a websocket
 
 Parameters:
   BucketName:

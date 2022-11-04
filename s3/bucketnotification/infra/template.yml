@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates two buckets with SQS notification and Lambda notification
+Description: Creates a S3 bucket with SQS notification and Lambda notification
 
 Parameters:
   LambdaConsumerName:

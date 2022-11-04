@@ -1,7 +1,6 @@
 # sqsqueuepolicy
 
-This project creates:
-- A SQS Queue policy;
+This project creates a SQS Queue policy.
 
 ## Helpful links
 

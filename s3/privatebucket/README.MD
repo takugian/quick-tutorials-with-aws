@@ -1,7 +1,6 @@
 # privatebucket
 
-This project creates:
-- A private S3 bucket;
+This project creates a private S3 bucket.
 
 ## Helpful links
 

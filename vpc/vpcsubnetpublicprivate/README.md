@@ -1,9 +1,6 @@
 # vpcsubnetpublicprivate
 
-This project creates:
-- A VPC
-    - Two private subnets configured;
-    - Two public subnets configured;
+This project creates a VPC with two private subnets and two public subnets configured.
 
 ## Helpful links
 

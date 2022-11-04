@@ -1,7 +1,6 @@
 # secretlambda
 
-This project creates:
-- A Lambda function that gets a secret from Secrets Manager;
+This project creates a Lambda function that gets a secret from Secrets Manager.
 
 ## Helpful links
 

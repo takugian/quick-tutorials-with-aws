@@ -1,8 +1,6 @@
 # loadbalancerweight
 
-This project creates:
-- An Application Load Balancer in front of a Lambda function with weight listener rules;
-- A Lambda function;
+This project creates an Application Load Balancer with weight listener rules.
 
 ## Helpful links
 

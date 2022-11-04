@@ -1,9 +1,6 @@
 # networkloadbalancerecs
 
-This project creates:
-- A Network Load Balancer in front of an ECS App;
-- An ECS App running NodeJS;
-- A CloudWatch LogGroup;
+This project creates a Network Load Balancer in front of an ECS App.
 
 ## Local deploy
 

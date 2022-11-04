@@ -1,11 +1,6 @@
 # staticwebsiteapigatewayhttpwebsocket
 
-This project creates:
-- A S3 Bucket used as a static website that consumes a websocket;
-- A websocket API Gateway;
-    - $default route enabled;
-    - $connect route enabled;
-    - $disconnect route enabled;
+This project creates a S3 Bucket used as a static website that consumes a websocket.
 
 ## How to invoke
 

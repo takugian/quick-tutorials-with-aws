@@ -1,8 +1,6 @@
 # applicationloadbalancerlambda
 
-This project creates:
-- An Application Load Balancer in front of a Lambda function;
-- A Lambda function;
+This project creates an Application Load Balancer in front of a Lambda function.
 
 ## Helpful links
 

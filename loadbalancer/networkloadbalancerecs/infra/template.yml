@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an ECS App using NodeJS, a CloudWatch LogGroup and a Network Load Balancer
+Description: Creates a Network Load Balancer in front of an ECS App
 
 Parameters:
   ClusterName:

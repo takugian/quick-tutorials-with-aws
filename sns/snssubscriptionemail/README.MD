@@ -1,7 +1,6 @@
 # snssubscriptionemail
 
-This project creates:
-- A SNS Topic with an email subscription;
+This project creates a SNS Topic with an email subscription.
 
 - [What is Amazon SNS?][1]
 

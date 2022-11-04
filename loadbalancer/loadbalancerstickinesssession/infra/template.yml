@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an Application Load Balancer with Stickiness Session
+Description: Creates an Application Load Balancer with stickiness session enabled
 
 Parameters:
   FunctionName:

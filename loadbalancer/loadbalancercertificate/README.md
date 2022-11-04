@@ -1,8 +1,6 @@
 # loadbalancercertificate
 
-This project creates:
-- An Application Load Balancer in front of a Lambda function with a certificate;
-- A Lambda function;
+This project creates an Application Load Balancer with a public certificate.
 
 ## Helpful links
 

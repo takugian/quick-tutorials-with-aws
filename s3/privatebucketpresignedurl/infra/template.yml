@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a private bucket and a Lambda function that creates a Pre Signed URL
+Description: Creates a private S3 bucket and a Lambda function that creates a Pre Signed URL
 
 Parameters:
   BucketName:

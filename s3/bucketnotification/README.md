@@ -1,8 +1,6 @@
 # bucketnotification
 
-This project creates:
-- A S3 bucket with SQS notification;
-- A S3 bucket with Lambda notification;
+This project creates a S3 bucket with SQS notification and Lambda notification.
 
 ## Helpful links
 

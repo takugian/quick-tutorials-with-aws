@@ -1,8 +1,6 @@
 # loadbalancerhealthcheck
 
-This project creates:
-- An Application Load Balancer in front of a Lambda function with health check enabled;
-- A Lambda function;
+This project creates an Application Load Balancer with health check enabled.
 
 ## Helpful links
 

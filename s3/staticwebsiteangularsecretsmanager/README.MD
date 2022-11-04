@@ -1,8 +1,6 @@
 # staticwebsiteangularsecretsmanager
 
-This project creates:
-- A S3 Bucket used as a static website to deploy an AngularJS app;
-- A secret using Secrets Manager to integrate to the app;
+This project creates a S3 Bucket used as a static website and Secrets Manager to deploy an AngularJS app.
 
 ## AngularJS deploy
 

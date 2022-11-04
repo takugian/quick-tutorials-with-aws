@@ -1,7 +1,6 @@
 # snsjavasdk
 
-This project creates:
-- A SNS Topic;
+This project creates an integration between a SNS topic and Java SDK.
 
 #### How to test
 

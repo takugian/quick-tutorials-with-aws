@@ -1,7 +1,6 @@
 # secretattachrds
 
-This project creates:
-- A Secret attaches to a RDS instance;
+This project creates a Secret attaches to a RDS instance.
 
 ## Helpful links
 

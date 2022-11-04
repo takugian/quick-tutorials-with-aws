@@ -1,7 +1,6 @@
 # sshsecuritygroup
 
-This project creates:
-- A Security Group to allow SSH conection;
+This project creates a Security Group to allow SSH conection.
 
 ## Helpful links
 

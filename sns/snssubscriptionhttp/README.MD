@@ -1,7 +1,6 @@
 # snssubscriptionhttp
 
-This project creates:
-- A SNS Topic with a HTTP service subscription;
+This project creates a SNS Topic with a HTTP service subscription.
 
 - [What is Amazon SNS?][1]
 

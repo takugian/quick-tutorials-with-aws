@@ -1,8 +1,6 @@
 # secretgeneratepassword
 
-This project creates:
-- A Secret with dynamic password;
-- A Secret with hardcoded password;
+This project creates a Secret with dynamic password and a Secret with hardcoded password.
 
 ## Helpful links
 

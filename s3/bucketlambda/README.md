@@ -1,7 +1,6 @@
 # bucketlambda
 
-This project creates:
-- A private bucket consumed by a Lambda function;
+This project creates a private bucket consumed by a Lambda function.
 
 ## Helpful links
 

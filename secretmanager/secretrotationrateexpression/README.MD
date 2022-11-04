@@ -1,7 +1,6 @@
 # secretrotationrateexpression
 
-This project creates:
-- A Secret rotation schedule with a rate expression;
+This project creates a Secret rotation schedule with a rate expression.
 
 ## Helpful links
 

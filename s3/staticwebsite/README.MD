@@ -1,8 +1,6 @@
 # staticwebsite
 
-This project creates:
-- A S3 Bucket used as a static website;
-- A S3 Bucket used to store logs of static website;
+This project creates a S3 Bucket used as a static website.
 
 ## Helpful links
 

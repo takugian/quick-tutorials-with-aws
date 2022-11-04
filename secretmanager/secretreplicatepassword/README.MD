@@ -1,7 +1,6 @@
 # secretreplicatepassword
 
-This project creates:
-- A Secret replicated to two regions;
+This project creates a Secret replicated to two regions.
 
 ## Helpful links
 

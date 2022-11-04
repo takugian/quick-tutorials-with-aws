@@ -1,7 +1,6 @@
 # sqsfifo
 
-This project creates:
-- A SQS Queue FIFO;
+This project creates a SQS Queue with FIFO enabled.
 
 ## Helpful links
 

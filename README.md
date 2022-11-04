@@ -6,8 +6,6 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [API Gateway]
 
-Amazon API Gateway tutorials.
-
 - [apigatewayapikeyusageplan] - REST API Gateway with usage plan and API Key configured
 - [apigatewaydomainnamebasepath] - REST API Gateway with domain name and base path
 - [apigatewaylambda] - Public REST API Gateway and a Lambda function as backend
@@ -26,8 +24,6 @@ Amazon API Gateway tutorials.
 [apigatewayvpclink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayvpclink
 
 ### [API Gateway V2]
-
-Amazon API Gateway V2 resource type reference.
 
 - [apigatewaychatroomwebsocket] - Complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewaycognitoauthorizer] - REST API Gateway using Cognito as authorizer `backlog`
@@ -54,8 +50,6 @@ Amazon API Gateway V2 resource type reference.
 
 ### [Aurora]
 
-Amazon Relational Database Service resource type reference.
-
 - [auroramysqlcluster] - Aurora cluster using MySQL engine
 - [aurorajava] - Integration between Aurora tables and Java `backlog`
 
@@ -65,16 +59,12 @@ Amazon Relational Database Service resource type reference.
 
 ### [Certificate Manager]
 
-AWS Certificate Manager resource type reference.
-
 - [publiccertificate] - Public certificate
 
 [Certificate Manager]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CertificateManager.html
 [publiccertificate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/certificatemanager/publiccertificate
 
 ### [CloudFront]
-
-Amazon CloudFront resource type reference.
 
 - [cloudfrontapigateway] - CloudFront distribution in front of an API Gateway
 - [cloudfrontcachepolicy] - CloudFront wuth cache policy configured # `backlog`
@@ -94,8 +84,6 @@ Amazon CloudFront resource type reference.
 [originaccessidentity]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccessidentity
 
 ### [CloudWatch]
-
-Amazon CloudWatch resource type reference.
 
 - [cloudwatchalarmsapigateway] - CloudWatch Alarms for an API Gateway
 - [cloudwatchalarmsdynamodb] - CloudWatch Alarms and DynamoDB `backlog`
@@ -118,16 +106,12 @@ Amazon CloudWatch resource type reference.
 
 ### [CodeBuild]
 
-AWS CodeBuild resource type reference.
-
 - [codebuildproject] - CodeBuild Project integrated with a CodeCommit Repository
 
 [CodeBuild]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CodeBuild.html
 [codebuildproject]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/codebuild/codebuildproject
 
 ### [CodeCommit]
-
-AWS CodeCommit resource type reference.
 
 - [codecommitrepository] - CodeCommit Repository that triggers events to a SNS topic
 
@@ -136,16 +120,12 @@ AWS CodeCommit resource type reference.
 
 ### [CodeDeploy]
 
-AWS CodeDeploy resource type reference.
-
 - [codedeployapplication] - CodeDeploy Application of a Lambda function
 
 [CodeDeploy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CodeDeploy.html
 [codedeployapplication]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/codedeploy/codedeployapplication
 
 ### [CodePipeline]
-
-AWS CodePipeline resource type reference.
 
 - [completepipeline] - Complete pipeline using CodeCommit, CodeBuild and CodeDeploy `backlog`
 
@@ -154,16 +134,12 @@ AWS CodePipeline resource type reference.
 
 ### [Cognito]
 
-Amazon Cognito resource type reference.
-
 - [cognitouserpool] - User pool `backlog`
 
 [Cognito]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Cognito.html
 [cognitouserpool]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cognito/cognitouserpool
 
 ### [DynamoDB]
-
-Amazon DynamoDB resource type reference.
 
 - [daxcluster] - DynamoDB DAX cluster
 - [dynamojavasdk] - Integration between a DynamoDB table and Java SDK
@@ -186,8 +162,6 @@ Amazon DynamoDB resource type reference.
 
 ### [EC2]
 
-Amazon Elastic Compute Cloud resource type reference.
-
 - [bastionhost] - ECS Instance prepared to be used as a bastion host
 - [ec2autoscalinggrouppolicy] - Auto Scaling Group and Auto Scaling Policy
 
@@ -196,8 +170,6 @@ Amazon Elastic Compute Cloud resource type reference.
 [ec2autoscalinggrouppolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ec2/ec2autoscalinggrouppolicy
 
 ### [ECS]
-
-Amazon ECS resource type reference.
 
 - [ecsappgrpc] - ECS with gRPC `backlog`
 - [ecsappjava] - ECS App using Java
@@ -216,8 +188,6 @@ Amazon ECS resource type reference.
 
 ### [ElastiCache]
 
-Amazon ElastiCache resource type reference.
-
 - [elasticacheredis] - ElastiCache Redis cluster
 - [elasticacheredislambda] - Integration between an ElastiCache Redis cluster and a Lambda function
 
@@ -226,8 +196,6 @@ Amazon ElastiCache resource type reference.
 [elasticacheredislambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredislambda
 
 ### [EventBridge]
-
-Amazon EventBridge resource type reference.
 
 - [fargatespotshutdown] - Event Bridge rule that handles Fargate Spot shutdown events
 - [scheduledecstask] - Event Bridge rule to schedule an ECS task
@@ -240,16 +208,12 @@ Amazon EventBridge resource type reference.
 
 ### [Glue]
 
-AWS Glue resource type reference.
-
 - [gluecrawlerjob] - Glue crawler and a Glue database.
 
 [Glue]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Glue.html
 [gluecrawlerjob]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/glue/gluecrawlerjob
 
 ### [IAM]
-
-AWS Identity and Access Management resource type reference.
 
 - [policy] - IAM Policy
 - [role] - IAM Role
@@ -264,8 +228,6 @@ AWS Identity and Access Management resource type reference.
 
 ### [KMS]
 
-AWS Key Management Service resource type reference.
-
 - [kmskeyalias] - KMS Key Symmetric and Asymmetric with alias
 - [kmskeys3bucket] - KMS key used to encrypt the objects of a S3 bucket
 - [kmskeysecretsmanager] - KMS key used to encrypt the secret stored in secrets manager
@@ -276,8 +238,6 @@ AWS Key Management Service resource type reference.
 [kmskeysecretsmanager]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/kms/kmskeysecretsmanager
 
 ### [Lambda]
-
-AWS Lambda resource type reference.
 
 - [lambdaalias] - Lambda function with versions and an alias with routing configuration
 - [lambdaapplication] -Lambda application `backlog`
@@ -302,106 +262,167 @@ AWS Lambda resource type reference.
 [lambdanovpcconfig]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdanovpcconfig
 [lambdaprivate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaprivate
 
-### Load Balancer
+### [Load Balancer]
 
-- (O) Application Load Balancer and Lambda #applicationloadbalancerlambda
-- (O) Load Balancer with Certificate #loadbalancercertificate
-- (O) Load Balancer with Health Check #loadbalancerhealthcheck
-- (O) Load Balancer with Listener Rules #loadbalancerlistenerrules
-- (O) Load Balancer with Stickiness Session #loadbalancerstickinesssession
-- (O) Load Balancer with weight #loadbalancerweight
-- (O) Network Load Balancer and ECS #networkloadbalancerecs
+- [applicationloadbalancerlambda] - Application Load Balancer in front of a Lambda function
+- [loadbalancercertificate] - Application Load Balancer with a public certificate
+- [loadbalancerhealthcheck] - Application Load Balancer with health check enabled
+- [loadbalancerlistenerrules] - Application Load Balancer with listener rules configured
+- [loadbalancerstickinesssession] - Application Load Balancer with stickiness session enabled
+- [loadbalancerweight] - Application Load Balancer with weight listener rules
+- [networkloadbalancerecs] - Network Load Balancer in front of an ECS App
 
-### MSK
+[Load Balancer]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ElasticLoadBalancingV2.html
+[applicationloadbalancerlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/applicationloadbalancerlambda
+[loadbalancercertificate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancercertificate
+[loadbalancerhealthcheck]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerhealthcheck
+[loadbalancerlistenerrules]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerlistenerrules
+[loadbalancerstickinesssession]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerstickinesssession
+[loadbalancerweight]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerweight
+[networkloadbalancerecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/networkloadbalancerecs
 
-- ( ) MSK Cluster #msqcluster
-- ( ) MSK Cluster, Kafka Topic, Lambda producer and Lambda consumer #msklambda
-- ( ) MSK Cluster, Kafka Topic, ECS producer and ECS consumer #mskecs
-    
-### RDS
+### [MSK]
 
-- (O) RDS Table #rdsmysqlinstance 
-- (O) RDS Table, Secrets Manager and Lambda #rdsmysqlsecretsmanagerlambda
-- ( ) RDS Teste Local
+- [mskcluster] - MSK Cluster `backlog`
+- [mskecs] - Integration between an ECS task and a MSK Cluster `backlog`
+- [msklambda] - Integration between a Lambda function and a MSK Cluster `backlog`
 
-### Route 53
+[MSK]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_MSK.html
+[mskcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/msk/mskcluster
+[mskecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/msk/mskecs
+[msklambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/msk/msklambda
 
-### S3
+### [RDS]
 
-- (O) Bucket and Lambda #bucketlambda
-- (O) Bucket notification, Lambda and SQS #bucketnotification
-- (O) Bucket private #privatebucket
-- (O) Pre Signed URL #privatebucketpresignedurl
-- (O) Bucket public #publicbucket
-- ( ) S3 Java SDK #s3javasdk
-- (O) Bucket Static Web #staticwebsite
-- (O) Bucket Static Web, Angular and Secrets Manager #staticwebsiteangularsecretsmanager
-- (O) Bucket Static Web and API Gateway HTTP Web Socket #staticwebsiteapigatewayhttpwebsocket
-- ( ) Bucket Static Web, AWS SDK and Cognito Credentials
-- ( ) Bucket Logging #loggingbucket
-- ( ) PrivateLink #privatelink
+- [rdsmysqlinstance] - RDS DB Instance inside a VPC using MySQL engine
+- [rdsmysqljava] - Integration between RDS MySQL tables and Java `backlog`
+- [rdsmysqlsecretsmanagerlambda] - Integration between a Lambda function and a RDS DB Instance using Secrets Manager
 
-### SAM
+[RDS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_RDS.html
+[rdsmysqlinstance]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/rds/rdsmysqlinstance
+[rdsmysqljava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/rds/rdsmysqljava
+[rdsmysqlsecretsmanagerlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/rds/rdsmysqlsecretsmanagerlambda
 
-- (O) Lambda function, VPC config and Endpoint #functionendpoint
-- ( ) API Gateway, Lambda Game REST API, DynamoDB, SQS #samapigatewaygamerestapi
+### [Route 53]
 
-### Secret Manager
+- [hostedzone] - Route 53 Hosted Zone `backlog`
 
-- (O) Secret attach to a RDS instance #secretattachrds
-- (O) Secret generate password #secretgeneratepassword
-- (O) Secret replicate password #secretreplicatepassword
-- (C) Secret Manager and ECS task #secretecstask
-- (O) Secret Manager and Lambda #secretlambda
-- ( ) Secret Manager Java SDK #secretmanagerjavasdk
-- (O) Secret rotation rate expression #secretrotationrateexpression
+[Route 53]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Route53.html
+[hostedzone]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/hostedzone
 
-### Security Group
+### [S3]
 
-- (O) Basic Security Group #basicsecuritygroup
-- (O) SSH Security Group #sshsecuritygroup
+- [bucketlambda] - Private bucket consumed by a Lambda function
+- [bucketnotification] - S3 bucket with SQS notification and Lambda notification
+- [loggingbucket] - S3 Bucket with logging enabled `backlog`
+- [privatebucket] - Private S3 bucket
+- [privatebucketcognito] - Private S3 Bucket and Cognito Credentials `backlog`
+- [privatebucketpresignedurl] - Private S3 bucket and a Lambda function that creates a Pre Signed URL
+- [privatelink] - S3 Bucket witk PrivateLink enabled `backlog`
+- [publicbucket] - Public S3 bucket
+- [s3javasdk] - Integration between a S3 bucket and Java SDK `backlog`
+- [staticwebsite] - S3 Bucket used as a static website
+- [staticwebsiteangularsecretsmanager] - S3 Bucket used as a static website and Secrets Manager to deploy an AngularJS app
+- [staticwebsiteapigatewayhttpwebsocket] - S3 Bucket used as a static website that consumes a websocket
 
-### Shield
+[S3]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_S3.html
+[bucketlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketlambda
+[bucketnotification]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketnotification
+[loggingbucket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/loggingbucket
+[privatebucket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucket
+[privatebucketcognito]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucketcognito
+[privatebucketpresignedurl]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucketpresignedurl
+[privatelink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatelink
+[publicbucket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/publicbucket
+[s3javasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/s3javasdk
+[staticwebsite]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/staticwebsite
+[staticwebsiteangularsecretsmanager]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/staticwebsiteangularsecretsmanager
+[staticwebsiteapigatewayhttpwebsocket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/staticwebsiteapigatewayhttpwebsocket
 
-### SNS
+### [Secret Manager]
 
-- ( ) SNS Fanout SQS #snsfanoutlambda
-- (O) SNS Fanout SQS #snsfanoutsqs
-- (O) SNS Topic Filter #snsfilterpolicy
-- (O) SNS Java SDK #snsjavasdk
-- (O) SNS Subscription email #snssubscriptionemail
-- (O) SNS Subscription HTTPs #snssubscriptionhttp
-- (O) SNS Subscription Lambda #snssubscriptionlambda
-- (O) SNS Subscription SQS #snssubscriptionsqs
+- [secretattachrds] - Secret attaches to a RDS instance
+- [secretecstask] - ECS task that gets a secret from Secrets Manager `backlog`
+- [secretgeneratepassword] - Secret with dynamic password and a Secret with hardcoded password
+- [secretlambda] - Lambda function that gets a secret from Secrets Manager
+- [secretmanagerjavasdk] - Integration between Secrets Manager and Java SDK `backlog`
+- [secretreplicatepassword] - Secret replicated to two regions
+- [secretrotationrateexpression] - Secret rotation schedule with a rate expression
 
-### SQS
+[Secret Manager]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SecretsManager.html
+[secretattachrds]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretattachrds
+[secretecstask]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretecstask
+[secretgeneratepassword]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretgeneratepassword
+[secretlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretlambda
+[secretmanagerjavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretmanagerjavasdk
+[secretreplicatepassword]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretreplicatepassword
+[secretrotationrateexpression]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretrotationrateexpression
 
-- (O) SQS Queue #sqs
-- (O) SQS DLQ #sqsdlq
-- (O) SQS FIFO #sqsfifo
-- (O) SQS Java SDK #sqsjavasdk
-- (O) SQS, Lambda producer and Lambda consumer #sqslambda
-- (C) SQS, ECS producer and ECS consumer #sqsecsnode
-- (O) SQS Queue Policy #sqsqueuepolicy
+### [Security Group]
 
-### Step Functions
+- [basicsecuritygroup] - Security Group with ingress and egress configurations
+- [sshsecuritygroup] - Security Group to allow SSH conection
 
-- (O) Step Functions with Lambda, SQS, DynamoDB, #stepfunctionscomplete
+[Security Group]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_EC2.html
+[basicsecuritygroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/securitygroup/basicsecuritygroup
+[sshsecuritygroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/securitygroup/sshsecuritygroup
 
-### VPC
+### [SNS]
 
-- (O) VPC Endpoint #vpcendpoint
-- (O) VPC and Subnet Private #vpcsubnetprivate
-- (O) VPC, Subnet Public and Subnet Private #vpcsubnetpublicprivate
-- (O) VPC, Subnet Public, Subnet Private and NAT Gateway #vpcsubnetpublicprivatenatgateway
+- [snsfanoutlambda] SNS Topic with fanout to Lambda functions `backlog`
+- [snsfanoutsqs] - SNS Topic with fanout to SQS queues
+- [snsfilterpolicy] - SNS Topic with subscription filter applied
+- [snsjavasdk] - Integration between a SNS topic and Java SDK
+- [snssubscriptionemail] - SNS Topic with an email subscription
+- [snssubscriptionhttp] - SNS Topic with a HTTPS subscription
+- [snssubscriptionlambda] - SNS Topic with a Lambda subscription
+- [snssubscriptionsqs] - SNS Topic with a SQS subscription
 
-### WAF
+[SNS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
+[snsfanoutlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsfanoutlambda
+[snsfanoutsqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsfanoutsqs
+[snsfilterpolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsfilterpolicy
+[snsjavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsjavasdk
+[snssubscriptionemail]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snssubscriptionemail
+[snssubscriptionhttp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snssubscriptionhttp
+[snssubscriptionlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snssubscriptionlambda
+[snssubscriptionsqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snssubscriptionsqs
 
-----------------------------------------------------------------------------------------------------------------------
+### [SQS]
 
-### Revisar...
+- [sqs] - SQS Queue
+- [sqsdlq] - SQS Queue with DLQ feature enabled
+- [sqsecsnode] - Integration between a SQS Queue and two ECS tasks `backlog`
+- [sqsfifo] - SQS Queue with FIFO enabled
+- [sqsjavasdk] - Integration between a SQS Queue and Java SDK
+- [sqslambda] - Integration between a SQS Queue and two Lambda functions
+- [sqsqueuepolicy] - SQS Queue policy
 
-- revisar segurança, security groups por exemplo
-- revisar default policies e roles
-- revisar policies e roles - filter
-- dynamo auto scaling write and read
+[SQS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SQS.html
+[sqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqs
+[sqsdlq]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsdlq
+[sqsecsnode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsecsnode
+[sqsfifo]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsfifo
+[sqsjavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsjavasdk
+[sqslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqslambda
+[sqsqueuepolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsqueuepolicy
+
+### [Step Functions]
+
+- [stepfunctionscomplete] - Step function state machine
+
+[Step Functions]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_StepFunctions.html
+[stepfunctionscomplete]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/stepfunctions/stepfunctionscomplete
+
+### [VPC]
+
+- [vpcendpoint] - VPC Endpoint
+- [vpcsubnetprivate] - VPC with two private subnets configured
+- [vpcsubnetpublicprivate] - VPC with two private subnets and two public subnets configured
+- [vpcsubnetpublicprivatenatgateway] - VPC with private subnets, public subnets and NAT Gateways configured
+
+[VPC]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_EC2.html
+[vpcendpoint]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/vpc/vpcendpoint
+[vpcsubnetprivate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/vpc/vpcsubnetprivate
+[vpcsubnetpublicprivate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/vpc/vpcsubnetpublicprivate
+[vpcsubnetpublicprivatenatgateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/vpc/vpcsubnetpublicprivatenatgateway

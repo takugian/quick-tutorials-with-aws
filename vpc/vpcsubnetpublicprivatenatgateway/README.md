@@ -1,10 +1,6 @@
 # vpcsubnetpublicprivatenatgateway
 
-This project creates:
-- A VPC
-    - Two private subnets configured;
-    - Two public subnets configured;
-    - Two NAT Gateways configured;
+This project creates a VPC with private subnets, public subnets and NAT Gateways configured.
 
 ## Helpful links
 

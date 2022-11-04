@@ -1,8 +1,6 @@
 # loadbalancerstickinesssession
 
-This project creates:
-- An Application Load Balancer in front of a Lambda function with stickiness session enabled
-- A Lambda function;
+This project creates an Application Load Balancer with stickiness session enabled.
 
 ## Helpful links
 

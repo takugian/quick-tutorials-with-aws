@@ -1,7 +1,6 @@
 # vpcendpoint
 
-This project creates:
-- A VPC Endpoint;
+This project creates a VPC Endpoint.
 
 ## Helpful links
 

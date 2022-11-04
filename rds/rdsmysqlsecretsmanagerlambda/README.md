@@ -1,7 +1,6 @@
 # rdsmysqlsecretsmanagerlambda
 
-This project creates:
-- A RDS DB Instance inside a VPC using MySQL engine
+This project creates a RDS DB Instance inside a VPC using MySQL engine with
     - A Lambda function to connect to the table;
     - A VPC Endpoint to allow access to Secrets Manager from Lambda function;
     - Username and password for the database connection using Secrets Manager;

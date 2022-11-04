@@ -1,7 +1,6 @@
 # publicbucket
 
-This project creates:
-- A public S3 bucket;
+This project creates a public S3 bucket.
 
 ## Helpful links
 
