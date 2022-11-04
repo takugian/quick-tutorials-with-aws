@@ -1,7 +1,6 @@
 # lambdanode
 
-This project creates:
-- A Lambda function using NodeJs as the runtime;
+This project creates a Lambda function using NodeJs as the runtime.
 
 ## Pre requirements
 

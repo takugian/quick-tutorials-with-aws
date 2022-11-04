@@ -1,7 +1,6 @@
 # fargatespotshutdown
 
-This project creates:
-- An Event Bridge rule with the folllowing events from a cluster using Fargate Spot:
+This project creates an Event Bridge rule with the folllowing events from a cluster using Fargate Spot:
     - Termination notice of a task;
     - Placement failure of a task;
 - Two SNS Topics to receive the events

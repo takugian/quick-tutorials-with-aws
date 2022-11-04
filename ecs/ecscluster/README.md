@@ -1,7 +1,6 @@
 # ecscluster
 
-This project creates:
-- ECS Cluster;
+This project creates an ECS Cluster.
 
 ## Helpful links
 

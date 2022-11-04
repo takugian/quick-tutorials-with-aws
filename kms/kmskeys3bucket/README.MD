@@ -1,7 +1,6 @@
 # kmskeys3bucket
 
-This project creates:
-- KMS key used to encrypt the objects of a S3 bucket;
+This project creates a KMS key used to encrypt the objects of a S3 bucket.
 
 ## Helpful links
 

@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an ECS App with Auto Scaling configured
+Description: Creates an ECS App using NodeJS with Auto Scaling configured
 
 Parameters:
   ClusterName:

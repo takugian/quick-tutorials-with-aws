@@ -1,7 +1,6 @@
 # lambdadlq
 
-This project creates:
-- A Lambda function with DLQ config;
+This project creates a Lambda function with DLQ configured.
 
 ## Execute Lambda function asynchronously 
 

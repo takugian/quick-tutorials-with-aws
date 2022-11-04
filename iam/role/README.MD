@@ -1,7 +1,6 @@
 # role
 
-This project creates:
-- An IAM Role;
+This project creates an IAM Role.
 
 ## Helpful links
 

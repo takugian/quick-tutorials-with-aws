@@ -1,9 +1,6 @@
 # lambdaalias
 
-This project creates:
-- A Lambda function;
-- Two Lambda versions;
-- A Lambda alias with routing configuration;
+This project creates a Lambda function with versions and an alias with routing configuration.
 
 ## How to test
 

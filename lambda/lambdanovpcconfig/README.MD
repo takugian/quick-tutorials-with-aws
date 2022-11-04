@@ -1,7 +1,6 @@
 # lambdanovpcconfig
 
-This project creates:
-- A Lambda function without VPC config;
+This project creates a Lambda function without VPC configured.
 
 ## Helpful links
 

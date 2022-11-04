@@ -1,7 +1,6 @@
 # ecsappjava
 
-This project creates:
-- ECS App using Java
+This project creates an ECS App using Java, and:
     - CloudWatch Logs enabled;
     - Fargate compatibility;
     - Public IP address enabled;

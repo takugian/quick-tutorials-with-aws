@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an ElastiCache Redis cluster integrated to a Lambda function
+Description: Creates an integration between an ElastiCache Redis cluster and a Lambda function
 
 Parameters:
   ClusterName:

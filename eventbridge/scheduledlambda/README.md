@@ -1,7 +1,6 @@
 # scheduledlambda
 
-This project creates:
-- An Event Bridge rule to schedule a Lambda function;
+This project creates an Event Bridge rule to schedule a Lambda function.
 
 ## Helpful links
 

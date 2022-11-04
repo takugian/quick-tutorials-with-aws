@@ -1,7 +1,6 @@
 # policy
 
-This project creates:
-- An IAM Policy;
+This project creates an IAM Policy.
 
 ## Helpful links
 

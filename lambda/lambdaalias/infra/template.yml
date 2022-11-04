@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a Lambda function with two versions and an alias
+Description: Creates a Lambda function with versions and an alias with routing configuration
 
 Parameters:
   FunctionName:

@@ -1,8 +1,6 @@
 # lambdaendpoint
 
-This project creates:
-- A Lambda function with VPC configuration;
-- A Lambda endpoint;
+This project creates a Lambda function with endpoint enabled.
 
 ## Helpful links
 

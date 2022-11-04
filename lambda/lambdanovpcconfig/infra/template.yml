@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a Lambda function without VPC config
+Description: Creates a Lambda function without VPC configured
 
 Parameters:
   FunctionName:

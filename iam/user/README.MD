@@ -1,7 +1,6 @@
 # user
 
-This project creates:
-- An IAM User with login profile enabled;
+This project creates an IAM User with login profile enabled.
 
 ## Helpful links
 

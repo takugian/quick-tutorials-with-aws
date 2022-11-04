@@ -1,8 +1,6 @@
 # lambdaautoscaling
 
-This project creates:
-- A Lambda function
-    - Auto Scaling configured;
+This project creates a Lambda function with Auto Scaling configured.
 
 ## Helpful links
 

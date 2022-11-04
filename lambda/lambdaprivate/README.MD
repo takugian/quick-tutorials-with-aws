@@ -1,7 +1,6 @@
 # lambdaprivate
 
-This project creates:
-- A Lambda function with VPC configuration;
+This project creates a Lambda function with VPC configuration.
 
 ## Helpful links
 

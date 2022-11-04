@@ -1,7 +1,6 @@
 # usergroup
 
-This project creates:
-- An IAM User Group;
+This project creates an IAM User Group.
 
 ## Helpful links
 

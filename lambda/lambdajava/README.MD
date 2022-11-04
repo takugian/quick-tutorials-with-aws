@@ -1,7 +1,6 @@
 # lambdajava
 
-This project creates:
-- A Lambda function using Java as the runtime;
+This project creates a Lambda function using Java as the runtime.
 
 ## Pre requirements
 

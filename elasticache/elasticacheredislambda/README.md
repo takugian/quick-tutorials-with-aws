@@ -1,8 +1,6 @@
 # elasticacheredislambda
 
-This project creates:
-- An ElastiCache Redis cluster;
-- A Lambda function to consume the cluster;
+This project creates an integration between an ElastiCache Redis cluster and a Lambda function.
 
 ## Helpful links
 

@@ -1,8 +1,6 @@
 # gluecrawlerjob
 
-This project creates:
-- A Glue crawler;
-- A Glue database;
+This project creates a Glue crawler and a Glue database.
 
 This project provides a script to create a Glue job located in /etl/etl.py;
 

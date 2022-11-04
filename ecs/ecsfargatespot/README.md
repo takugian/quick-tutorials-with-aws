@@ -1,10 +1,6 @@
 # ecsfargatespot
 
-This project creates:
-- ECS App using NodeJS
-    - CloudWatch Logs enabled;
-    - Fargate Spot compatibility;
-    - Public IP address enabled;
+This project creates an ECS App using NodeJS using cluster with Fargate Spot compatibility enabled.
 
 ## Helpful links
 

@@ -1,7 +1,6 @@
 # elasticacheredis
 
-This project creates:
-- An ElastiCache Redis cluster;
+This project creates an ElastiCache Redis cluster.
 
 ## Helpful links
 

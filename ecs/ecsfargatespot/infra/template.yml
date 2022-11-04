@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an ECS App using NodeJS and Fargate Spot
+Description: Creates an ECS App using NodeJS using cluster with Fargate Spot compatibility enabled
 
 Parameters:
   ClusterName:

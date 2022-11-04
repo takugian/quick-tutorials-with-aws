@@ -1,7 +1,6 @@
 # bastionhost
 
-This project creates:
-- ECS Instance prepared to be used as a bastion host
+This project creates an ECS Instance prepared to be used as a bastion host.
 
 ## Helpful links
 

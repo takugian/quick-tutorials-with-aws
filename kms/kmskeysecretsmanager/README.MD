@@ -1,7 +1,6 @@
 # kmskeysecretmanager
 
-This project creates:
-- KMS key used to encrypt the secret stored in secrets manager;
+This project creates a KMS key used to encrypt the secret stored in secrets manager.
 
 ## Helpful links
 

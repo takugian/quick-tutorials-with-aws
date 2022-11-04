@@ -1,7 +1,6 @@
 # scheduledecstask
 
-This project creates:
-- An Event Bridge rule to schedule an ECS task;
+This project creates an Event Bridge rule to schedule an ECS task.
 
 ## Helpful links
 

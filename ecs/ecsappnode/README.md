@@ -1,7 +1,6 @@
 # ecsappnode
 
-This project creates:
-- ECS App using NodeJS
+This project creates an ECS App using NodeJS, and:
     - CloudWatch Logs enabled;
     - Fargate compatibility;
     - Public IP address enabled;

@@ -184,60 +184,123 @@ Amazon DynamoDB resource type reference.
 [dynamotableindexes]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableindexes
 [dynamotablelambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotablelambda
 
-### EC2
+### [EC2]
 
-- (O) Bastion Host #bastionhost
-- (O) Auto Scaling Group and Auto Scaling Policy #ec2autoscalinggrouppolicy
+Amazon Elastic Compute Cloud resource type reference.
 
-### ECS
+- [bastionhost] - ECS Instance prepared to be used as a bastion host
+- [ec2autoscalinggrouppolicy] - Auto Scaling Group and Auto Scaling Policy
 
-- ( ) ECS with gRPC #ecsappgrpc
-- (O) ECS App Java #ecsappjava
-- (O) ECS App NodeJS #ecsappnode
-- (O) ECS App and Auto Scaling #ecsautoscaling
-- (O) ECS Cluster #ecscluster
-- (O) ECS Fargate Spot #ecsfargatespot
+[EC2]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_EC2.html
+[bastionhost]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ec2/bastionhost
+[ec2autoscalinggrouppolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ec2/ec2autoscalinggrouppolicy
 
-### ElastiCache
+### [ECS]
 
-- (O) Elasticache Redis #elasticacheredis
-- (O) Elasticache Redis and Lambda #elasticacheredislambda
+Amazon ECS resource type reference.
 
-### EventBridge
+- [ecsappgrpc] - ECS with gRPC `backlog`
+- [ecsappjava] - ECS App using Java
+- [ecsappnode] - ECS App using NodeJS
+- [ecsautoscaling] - ECS App using NodeJS with Auto Scaling configured
+- [ecscluster] - ECS Cluster
+- [ecsfargatespot] - ECS App using NodeJS using cluster with Fargate Spot compatibility enabled
 
-- (O) Fargate Spot shutdown event #fargatespotshutdown 
-- (O) Scheduled ECS Task #scheduledecstask
-- (O) Scheduled Lambda #scheduledlambda
+[ECS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ECS.html
+[ecsappgrpc]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappgrpc
+[ecsappjava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappjava
+[ecsappnode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappnode
+[ecsautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsautoscaling
+[ecscluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecscluster
+[ecsfargatespot]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsfargatespot
 
-### Glue
+### [ElastiCache]
 
-- (O) Crawler and Job #gluecrawlerjob
+Amazon ElastiCache resource type reference.
 
-### IAM
+- [elasticacheredis] - ElastiCache Redis cluster
+- [elasticacheredislambda] - Integration between an ElastiCache Redis cluster and a Lambda function
 
-- (O) User #user
-- (O) User Group #usergroup 
-- (O) Role #role
-- (O) Policy #policy
+[ElastiCache]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ElastiCache.html
+[elasticacheredis]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredis
+[elasticacheredislambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredislambda
 
-### KMS
+### [EventBridge]
 
-- (O) KMS Key Symmetric and Asymmetric with alias #kmskeyalias
-- (O) KMS Key and S3 #kmskeys3bucket
-- (O) KMS Key and Secrets Manager #kmskeysecretsmanager
+Amazon EventBridge resource type reference.
 
-### Lambda
+- [fargatespotshutdown] - Event Bridge rule that handles Fargate Spot shutdown events
+- [scheduledecstask] - Event Bridge rule to schedule an ECS task
+- [scheduledlambda] - Event Bridge rule to schedule a Lambda function
 
-- (O) Lambda Alias #lambdaalias 
-- ( ) Lambda Application #lambdaapplication
-- (O) Lambda Auto Scaling #lambdaautoscaling
-- (O) Lambda DLQ #lambdadlq
-- (O) Lambda Endpoint #lambdaendpoint
-- (O) Lambda Java #lambdajava
-- (O) Lambda Node #lambdanode
-- (O) Lambda No VPC Config #lambdanovpcconfig
-- (O) Private Lambda #lambdaprivate
-- ( ) Lambda Layer
+[EventBridge]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Events.html
+[fargatespotshutdown]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/eventbridge/fargatespotshutdown
+[scheduledecstask]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/eventbridge/scheduledecstask
+[scheduledlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/eventbridge/scheduledlambda
+
+### [Glue]
+
+AWS Glue resource type reference.
+
+- [gluecrawlerjob] - Glue crawler and a Glue database.
+
+[Glue]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Glue.html
+[gluecrawlerjob]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/glue/gluecrawlerjob
+
+### [IAM]
+
+AWS Identity and Access Management resource type reference.
+
+- [policy] - IAM Policy
+- [role] - IAM Role
+- [user] - IAM User with login profile enabled
+- [usergroup] - IAM User Group 
+
+[IAM]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_IAM.html
+[policy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/policy
+[role]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/role
+[user]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/user
+[usergroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/usergroup
+
+### [KMS]
+
+AWS Key Management Service resource type reference.
+
+- [kmskeyalias] - KMS Key Symmetric and Asymmetric with alias
+- [kmskeys3bucket] - KMS key used to encrypt the objects of a S3 bucket
+- [kmskeysecretsmanager] - KMS key used to encrypt the secret stored in secrets manager
+
+[KMS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_KMS.html
+[kmskeyalias]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/kms/kmskeyalias
+[kmskeys3bucket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/kms/kmskeys3bucket
+[kmskeysecretsmanager]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/kms/kmskeysecretsmanager
+
+### [Lambda]
+
+AWS Lambda resource type reference.
+
+- [lambdaalias] - Lambda function with versions and an alias with routing configuration
+- [lambdaapplication] -Lambda application `backlog`
+- [lambdaautoscaling] - Lambda function with Auto Scaling configured
+- [lambdadlq] - Lambda function with DLQ configured
+- [lambdaendpoint] - Lambda function with endpoint enabled
+- [lambdajava] - Lambda function using Java as the runtime
+- [lambdalayer] - Lambda function with a Lambda layer `backlog`
+- [lambdanode] - Lambda function using NodeJs as the runtime
+- [lambdanovpcconfig] - Lambda function without VPC configured
+- [lambdaprivate] - Lambda function with VPC configuration
+
+[Lambda]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Lambda.html
+[lambdaalias]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaalias
+[lambdaapplication]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaapplication
+[lambdaautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaautoscaling
+[lambdadlq]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdadlq
+[lambdaendpoint]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaendpoint
+[lambdajava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdajava
+[lambdalayer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdalayer
+[lambdanode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdanode
+[lambdanovpcconfig]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdanovpcconfig
+[lambdaprivate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaprivate
 
 ### Load Balancer
 
