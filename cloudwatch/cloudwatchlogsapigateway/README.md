@@ -1,7 +1,6 @@
 # cloudwatchlogsapigateway
 
-This project creates:
--  A CloudWatch Logs for an API Gateway;
+This project creates a CloudWatch Logs for an API Gateway.
 
 ## Helpful links
 

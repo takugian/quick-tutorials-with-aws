@@ -1,8 +1,6 @@
 # dynamostreamlambda
 
-This project creates:
-- A DynamoDB table with Streams enabled;
-- A Lambda function to consume the DynamoDB Streams;
+This project creates a DynamoDB Stream integrated with a Lambda function.
 
 ## Helpful links
 

@@ -1,7 +1,6 @@
 # cloudwatchalarmssqs
 
-This project creates:
-- A CloudWatch Alarms checking a SQS queue;
+This project creates a CloudWatch Alarms for a SQS queue.
 
 ## Helpful links
 

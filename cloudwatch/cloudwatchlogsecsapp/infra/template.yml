@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Log Group for an ECS App
+Description: Creates a CloudWatch Logs for an ECS task
 
 Parameters:
   EcsAppName:

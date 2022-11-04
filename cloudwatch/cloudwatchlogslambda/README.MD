@@ -1,7 +1,6 @@
 # cloudwatchlogslambda
 
-This project creates:
--  A CloudWatch Logs for a Lambda function;
+This project creates a CloudWatch Logs for a Lambda function.
 
 ## Helpful links
 

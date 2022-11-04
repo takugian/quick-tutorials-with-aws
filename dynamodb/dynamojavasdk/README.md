@@ -1,7 +1,6 @@
 # dynamojavasdk
 
-This project creates:
-- A DynamoDB table;
+This project creates a DynamoDB table for an integration with Java SDK.
 
 ## Helpful links
 

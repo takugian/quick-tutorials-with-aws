@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a DynamoDB table with streams enabled and a Lambda function to consume it
+Description: Creates a DynamoDB Stream integrated with a Lambda function
 
 Parameters:
   TableName:

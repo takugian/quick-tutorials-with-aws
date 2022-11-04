@@ -1,7 +1,6 @@
 # cloudwatchlogsecsapp
 
-This project creates:
--  A CloudWatch Logs for an ECS App;
+This project creates a CloudWatch Logs for an ECS task.
 
 ## Helpful links
 

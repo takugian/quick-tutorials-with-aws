@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Log Group for an API Gateway
+Description: Creates a CloudWatch Logs for an API Gateway
 
 Parameters:
   ApiName:

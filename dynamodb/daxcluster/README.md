@@ -1,7 +1,6 @@
 # daxcluster
 
-This project creates:
-- A DAX Cluster;
+This project creates a DAX Cluster.
 
 ## Helpful links
 

@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a DynamoDB table with Auto Scaling configured
+Description: Creates a DynamoDB table with auto Scaling configured
 
 Parameters:
   TableName:

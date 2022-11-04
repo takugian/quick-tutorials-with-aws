@@ -1,7 +1,6 @@
 # dynamotable
 
-This project creates:
-- A DynamoDB table;
+This project creates a DynamoDB table.
 
 ## Helpful links
 

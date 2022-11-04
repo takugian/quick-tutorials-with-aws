@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Alarm for an API Gateway
+Description: Creates a CloudWatch Alarms for an API Gateway
 
 Parameters:
   ApiName:

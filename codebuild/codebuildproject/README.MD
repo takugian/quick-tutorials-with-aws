@@ -1,7 +1,6 @@
 # codebuildproject
 
-This project creates:
-- A CodeBuild Project integrated with a CodeCommit Repository;
+This project creates a CodeBuild Project integrated with a CodeCommit Repository.
 
 ## Helpful links
 

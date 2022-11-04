@@ -1,8 +1,6 @@
 # dynamotableautoscaling
 
-This project creates:
-- A DynamoDB table
-    - Auto Scaling configured;
+This project creates a DynamoDB table with auto Scaling configured.
 
 ## Helpful links
 

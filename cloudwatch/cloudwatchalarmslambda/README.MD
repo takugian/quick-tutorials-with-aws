@@ -1,7 +1,6 @@
 # cloudwatchalarmslambda
 
-This project creates:
-- A CloudWatch Alarms checking a Lambda function;
+This project creates a CloudWatch Alarms for a Lambda function.
 
 ## Helpful links
 

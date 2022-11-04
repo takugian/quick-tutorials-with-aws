@@ -1,7 +1,6 @@
 # codedeployapplication
 
-This project creates:
-- A CodeDeploy Application of a Lambda function;
+This project creates a CodeDeploy Application of a Lambda function.
 
 ## Helpful links
 

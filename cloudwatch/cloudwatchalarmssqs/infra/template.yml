@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Alarms checking a SQS queue
+Description: Creates a CloudWatch Alarms for a SQS queue
 
 Parameters:
   QueueName:

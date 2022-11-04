@@ -52,21 +52,29 @@ Amazon API Gateway V2 resource type reference.
 [apigatewayopenapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayopenapi
 [apigatewayv2vpclink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayv2vpclink
 
-### Aurora
+### [Aurora]
+
+Amazon Relational Database Service resource type reference.
 
 - [auroramysqlcluster] - Aurora cluster using MySQL engine
 - [aurorajava] - Integration between Aurora tables and Java `backlog`
 
+[Aurora]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_RDS.html
 [auroramysqlcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/aurora/auroramysqlcluster
 [aurorajava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/aurora/aurorajava
 
-### Certificate Manager
+### [Certificate Manager]
+
+AWS Certificate Manager resource type reference.
 
 - [publiccertificate] - Public certificate
 
+[Certificate Manager]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CertificateManager.html
 [publiccertificate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/certificatemanager/publiccertificate
 
-### CloudFront
+### [CloudFront]
+
+Amazon CloudFront resource type reference.
 
 - [cloudfrontapigateway] - CloudFront distribution in front of an API Gateway
 - [cloudfrontcachepolicy] - CloudFront wuth cache policy configured # `backlog`
@@ -76,6 +84,7 @@ Amazon API Gateway V2 resource type reference.
 - [cloudfronts3staticwebsite] - CloudFront distribution in front of a S3 Static Website
 - [originaccessidentity] - Cloud Front Origin Access Identity (OAI)
 
+[CloudFront]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CloudFront.html
 [cloudfrontapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontapigateway
 [cloudfrontcachepolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontcachepolicy
 [cloudfrontfunction]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontfunction
@@ -84,47 +93,96 @@ Amazon API Gateway V2 resource type reference.
 [cloudfronts3staticwebsite]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfronts3staticwebsite
 [originaccessidentity]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccessidentity
 
-### CloudWatch
+### [CloudWatch]
 
-- (O) CloudWatch Alarms and API Gateway #cloudwatchalarmsapigateway
-- ( ) CloudWatch Alarms and DynamoDB #cloudwatchalarmsdynamodb
-- ( ) CloudWatch Alarms and ECS #cloudwatchalarmsecs
-- (O) CloudWatch Alarms and Lambda #cloudwatchalarmslambda
-- (O) CloudWatch Alarms and SQS #cloudwatchalarmssqs
-- (O) CloudWatch Logs and API Gateway #cloudwatchlogsapigateway
-- (O) CloudWatch Logs and ECS #cloudwatchlogsecsapp
-- (O) CloudWatch Logs and Lambda #cloudwatchlogslambda
+Amazon CloudWatch resource type reference.
 
-### CodeBuild
+- [cloudwatchalarmsapigateway] - CloudWatch Alarms for an API Gateway
+- [cloudwatchalarmsdynamodb] - CloudWatch Alarms and DynamoDB `backlog`
+- [cloudwatchalarmsecs] - CloudWatch Alarms and ECS `backlog`
+- [cloudwatchalarmslambda] - CloudWatch Alarms for a Lambda function
+- [cloudwatchalarmssqs] - CloudWatch Alarms for a SQS queue
+- [cloudwatchlogsapigateway] - CloudWatch Logs for an API Gateway
+- [cloudwatchlogsecsapp] - CloudWatch Logs for an ECS task
+- [cloudwatchlogslambda] - CloudWatch Logs for a Lambda function
 
-- (O) Project #codebuildproject
+[CloudWatch]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CloudWatch.html
+[cloudwatchalarmsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsapigateway
+[cloudwatchalarmsdynamodb]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsdynamodb
+[cloudwatchalarmsecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsecs
+[cloudwatchalarmslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmslambda
+[cloudwatchalarmssqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmssqs
+[cloudwatchlogsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsapigateway
+[cloudwatchlogsecsapp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsecsapp
+[cloudwatchlogslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogslambda
 
-### CodeCommit
+### [CodeBuild]
 
-- (O) Repository #codecommitrepository
+AWS CodeBuild resource type reference.
 
-### CodeDeploy
+- [codebuildproject] - CodeBuild Project integrated with a CodeCommit Repository
 
-- (O) Application #codedeployapplication
+[CodeBuild]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CodeBuild.html
+[codebuildproject]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/codebuild/codebuildproject
 
-### CodePipeline
+### [CodeCommit]
 
-- ( )
+AWS CodeCommit resource type reference.
 
-### Cognito @codar
+- [codecommitrepository] - CodeCommit Repository that triggers events to a SNS topic
 
-- ( )
+[CodeCommit]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CodeCommit.html
+[codecommitrepository]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/codecommit/codecommitrepository
 
-### DynamoDB
+### [CodeDeploy]
 
-- (O) DynamoDB DAX #daxcluster
-- (O) DynamoDB Java SDK #dynamojavasdk
-- (O) DynamoDB Stream and Lambda #dynamostreamlambda
-- (O) DynamoDB Table #dynamotable
-- (O) DynamoDB Table and Auto Scaling #dynamotableautoscaling
-- (C) DynamoDB Table and ECS #dynamotableecsappnode
-- (O) DynamoDB Table #dynamotableindexes
-- (O) DynamoDB Table and Lambda #dynamotablelambda
+AWS CodeDeploy resource type reference.
+
+- [codedeployapplication] - CodeDeploy Application of a Lambda function
+
+[CodeDeploy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CodeDeploy.html
+[codedeployapplication]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/codedeploy/codedeployapplication
+
+### [CodePipeline]
+
+AWS CodePipeline resource type reference.
+
+- [completepipeline] - Complete pipeline using CodeCommit, CodeBuild and CodeDeploy `backlog`
+
+[CodePipeline]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CodePipeline.html
+[completepipeline]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/codepipeline/completepipeline
+
+### [Cognito]
+
+Amazon Cognito resource type reference.
+
+- [cognitouserpool] - User pool `backlog`
+
+[Cognito]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Cognito.html
+[cognitouserpool]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cognito/cognitouserpool
+
+### [DynamoDB]
+
+Amazon DynamoDB resource type reference.
+
+- [daxcluster] - DynamoDB DAX cluster
+- [dynamojavasdk] - Integration between a DynamoDB table and Java SDK
+- [dynamostreamlambda] - DynamoDB Stream integrated with a Lambda function
+- [dynamotable] - DynamoDB table
+- [dynamotableautoscaling] - DynamoDB table with auto Scaling configured
+- [dynamotableecsappnode] - Integration between a DynamoDB table and an ECS task `backlog`
+- [dynamotableindexes] - DynamoDB table with Global Secondary Index (GSI) and Local Secondary Index (LSI) configured
+- [dynamotablelambda] - Integration between a DynamoDB table and a Lambda function
+
+[DynamoDB]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_DynamoDB.html
+[daxcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/daxcluster
+[dynamojavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamojavasdk
+[dynamostreamlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamostreamlambda
+[dynamotable]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotable
+[dynamotableautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableautoscaling
+[dynamotableecsappnode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableecsappnode
+[dynamotableindexes]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableindexes
+[dynamotablelambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotablelambda
 
 ### EC2
 

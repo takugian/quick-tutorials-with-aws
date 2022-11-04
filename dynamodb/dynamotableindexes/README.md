@@ -1,9 +1,6 @@
 # dynamotableindexes
 
-This project creates:
-- A DynamoDB table
-    - Global Secondary Index configured;
-    - Local Secondary Index configured;
+This project creates a DynamoDB table with Global Secondary Index (GSI) and Local Secondary Index (LSI) configured.
 
 ## Helpful links
 

@@ -1,7 +1,6 @@
 # codecommitrepository
 
-This project creates:
-- A CodeCommit Repository that triggers events to a SNS topic;
+This project creates a CodeCommit Repository that triggers events to a SNS topic.
 
 ## Pre requirements
 
