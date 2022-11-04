@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudFront distribution in front a private bucket
+Description: Creates a CloudFront distribution in front of a S3 Bucket
 
 Parameters:
   BucketName:

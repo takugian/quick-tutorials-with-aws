@@ -1,8 +1,6 @@
 # cloudfrontloadbalancer
 
-This project creates:
-- CloudFront distribution in front on an Application Load Balancer
-- An Application Load Balancer in front on a Lambda function 
+This project creates a CloudFront distribution in front of a Load Balancer.
 
 ## How to invoke
 

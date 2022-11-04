@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudFront distribution in front if an Application Load Balancer
+Description: Creates a CloudFront distribution in front of a Load Balancer
 
 Parameters:
   QuickStartName:
@@ -9,19 +9,15 @@ Parameters:
 
   VpcId:
     Type: String
-    Default: vpc-0d1b84f8a177dcfe7
 
   SubnetId1:
     Type: String
-    Default: subnet-0c7d6a7e645723d38
 
   SubnetId2:
     Type: String
-    Default: subnet-03f5af28ac6350b5c
 
   SecurityGroupId:
     Type: String
-    Default: sg-0487cc44f61202398
 
   Owner:
     Type: String

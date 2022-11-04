@@ -1,7 +1,7 @@
 # cloudfrontapigateway
 
 This project creates:
-- CloudFront distribution in front an API Gateway
+- CloudFront distribution in front of an API Gateway
     - CachingOptimized as the cache policy configured;
     - Georestriction configured;
 

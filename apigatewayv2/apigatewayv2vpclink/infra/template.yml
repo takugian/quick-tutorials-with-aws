@@ -9,15 +9,12 @@ Parameters:
 
   SubnetId1:
     Type: String
-    Default: subnet-0c7d6a7e645723d38
 
   SubnetId2:
     Type: String
-    Default: subnet-03f5af28ac6350b5c
 
   SecurityGroupId:
     Type: String
-    Default: sg-0487cc44f61202398
 
   Owner:
     Type: String

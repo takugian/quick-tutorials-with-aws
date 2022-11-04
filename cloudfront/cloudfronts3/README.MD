@@ -1,7 +1,7 @@
 # cloudfronts3
 
 This project creates:
-- A CloudFront distribution in front a S3 private bucket
+- A CloudFront distribution in front of a S3 Bucket
     - CachingOptimized as the cache policy configured;
     - Georestriction configured;
 

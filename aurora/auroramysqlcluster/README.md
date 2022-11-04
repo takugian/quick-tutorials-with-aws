@@ -1,8 +1,6 @@
 # auroramysqlcluster
 
-This project creates:
-- An Aurora Cluster inside using MySQL engine
-    - Enable monitoring;
+This project creates an Aurora cluster using MySQL engine.
 
 ## Helpful links
 

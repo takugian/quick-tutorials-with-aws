@@ -8,13 +8,13 @@ A lot of AWS tutorials for you!!! ;)
 
 Amazon API Gateway tutorials.
 
-- [apigatewayapikeyusageplan] - A REST API Gateway with usage plan and API Key configured
-- [apigatewaydomainnamebasepath] - A REST API Gateway with domain name and base path
-- [apigatewaylambda] - A public REST API Gateway and a Lambda function as backend
-- [apigatewaylambdaauthorizer] - A REST API Gateway with a Lambda function as authorizer
-- [apigatewaymock] - A REST API Gateway with a mocked backend
-- [apigatewayprivateloadbalancer] - A private REST API Gateway integrated with a Network Load Balancer and an ECS task
-- [apigatewayvpclink] - A VPC Link 
+- [apigatewayapikeyusageplan] - REST API Gateway with usage plan and API Key configured
+- [apigatewaydomainnamebasepath] - REST API Gateway with domain name and base path
+- [apigatewaylambda] - Public REST API Gateway and a Lambda function as backend
+- [apigatewaylambdaauthorizer] - REST API Gateway with a Lambda function as authorizer
+- [apigatewaymock] - REST API Gateway with a mocked backend
+- [apigatewayprivateloadbalancer] - Private REST API Gateway integrated with a Network Load Balancer and an ECS task
+- [apigatewayvpclink] - VPC Link 
 
 [API Gateway]: https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html
 [apigatewayapikeyusageplan]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayapikeyusageplan
@@ -29,17 +29,16 @@ Amazon API Gateway tutorials.
 
 Amazon API Gateway V2 resource type reference.
 
-- [apigatewaychatroomwebsocket] - A complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
-- [apigatewaycognitoauthorizer] - A REST API Gateway using Cognito as authorizer `in progress`
-- [apigatewaycustominterceptor] - A REST API Gateway with a custom interceptor `in progress`
-- [apigatewayecsappgamerestapi] - A complete CRUD REST API using an API Gateway, a ECS task as backend, a Lambda function as authorizer and a DynamoDB table `in progress`
-- [apigatewaygamerestapi] - A complete CRUD REST API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
-- [apigatewayhttplambda] - A REST API Gateway integrated to a Lambda function
-
-- [apigatewayhttpwebsocketlambda] - A WebSocket API Gateway integrated to a Lambda function
-- [apigatewayhttpwebsocketmock] - A WebSocket API Gateway integrated to a mocked backend
-- [apigatewayopenapi] - A REST API Gateway deployed using OpenAPI
-- [apigatewayv2vpclink] - A VPC Link 
+- [apigatewaychatroomwebsocket] - Complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
+- [apigatewaycognitoauthorizer] - REST API Gateway using Cognito as authorizer `backlog`
+- [apigatewaycustominterceptor] - REST API Gateway with a custom interceptor `backlog`
+- [apigatewayecsappgamerestapi] - Complete CRUD REST API using an API Gateway, a ECS task as backend, a Lambda function as authorizer and a DynamoDB table `backlog`
+- [apigatewaygamerestapi] - Complete CRUD REST API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
+- [apigatewayhttplambda] - REST API Gateway integrated to a Lambda function
+- [apigatewayhttpwebsocketlambda] - WebSocket API Gateway integrated to a Lambda function
+- [apigatewayhttpwebsocketmock] - WebSocket API Gateway integrated to a mocked backend
+- [apigatewayopenapi] - REST API Gateway deployed using OpenAPI
+- [apigatewayv2vpclink] - VPC Link 
 
 [API Gateway V2]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ApiGatewayV2.html
 [apigatewaychatroomwebsocket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaychatroomwebsocket
@@ -55,22 +54,35 @@ Amazon API Gateway V2 resource type reference.
 
 ### Aurora
 
-- (O) Aurora Cluster #auroramysqlcluster
-- ( ) Aurora Teste Local
+- [auroramysqlcluster] - Aurora cluster using MySQL engine
+- [aurorajava] - Integration between Aurora tables and Java `backlog`
+
+[auroramysqlcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/aurora/auroramysqlcluster
+[aurorajava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/aurora/aurorajava
 
 ### Certificate Manager
 
-- (O) Certificate #publiccertificate
+- [publiccertificate] - Public certificate
+
+[publiccertificate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/certificatemanager/publiccertificate
 
 ### CloudFront
 
-- (O) CloudFront and API Gateway #cloudfrontapigateway
-- (O) CloudFront and Load Balancer #cloudfrontloadbalancer
-- (O) CloudFront and S3 Bucket #cloudfronts3
-- (O) CloudFront and S3 Static Webite #cloudfronts3staticwebsite
-- (O) OAI #originaccessidentity
-- ( ) CloudFront Function #cloudfrontfunction
-- ( ) Cache Policy
+- [cloudfrontapigateway] - CloudFront distribution in front of an API Gateway
+- [cloudfrontcachepolicy] - CloudFront wuth cache policy configured # `backlog`
+- [cloudfrontfunction] - CloudFront function `backlog`
+- [cloudfrontloadbalancer] - CloudFront distribution in front of a Load Balancer
+- [cloudfronts3] - CloudFront distribution in front of a S3 Bucket
+- [cloudfronts3staticwebsite] - CloudFront distribution in front of a S3 Static Website
+- [originaccessidentity] - Cloud Front Origin Access Identity (OAI)
+
+[cloudfrontapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontapigateway
+[cloudfrontcachepolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontcachepolicy
+[cloudfrontfunction]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontfunction
+[cloudfrontloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontloadbalancer
+[cloudfronts3]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfronts3
+[cloudfronts3staticwebsite]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfronts3staticwebsite
+[originaccessidentity]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccessidentity
 
 ### CloudWatch
 

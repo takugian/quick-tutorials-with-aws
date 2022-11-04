@@ -5,27 +5,21 @@ Description: Creates a complete CRUD REST API using an API Gateway, a Lambda fun
 Parameters:
   VpcId:
     Type: String
-    Default: vpc-0d1b84f8a177dcfe7
   
   RouteTableId1:
     Type: String
-    Default: rtb-0a7b385520065f0e3
 
   SubnetId1:
     Type: String
-    Default: subnet-0c7d6a7e645723d38
 
   SubnetId2:
     Type: String
-    Default: subnet-03f5af28ac6350b5c
 
   SecurityGroupId:
     Type: String
-    Default: sg-0487cc44f61202398
 
   VpcLinkId:
     Type: String
-    Default: 9a4p8t
 
   BucketLambdaSourceCode:
     Type: String

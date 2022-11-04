@@ -1,7 +1,6 @@
 # publiccertificate
 
-This project creates:
-- A public certificate;
+This project creates a public certificate.
 
 ## Helpful links
 
