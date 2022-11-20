@@ -3,34 +3,63 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a DynamoDB table
 
 Parameters:
-  TableName:
+
+  TableClass:
     Type: String
-    Default: Customer
+    Default: STANDARD
+    AllowedValues:
+      - STANDARD
+      - STANDARD_INFREQUENT_ACCESS
+
+  BillingMode:
+    Type: String
+    Default: PAY_PER_REQUEST
+    AllowedValues:
+      - PAY_PER_REQUEST
+      - PROVISIONED
+  
+  ReadCapacityUnits:
+    Type: Number
+    Default: 0
+
+  WriteCapacityUnits:
+    Type: Number
+    Default: 0
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
+
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref TableName
+      TableName: Person
       AttributeDefinitions:
-        - AttributeName: customer_id
+        - AttributeName: person_document_number
           AttributeType: S
-        - AttributeName: birth_at
+        - AttributeName: person_birth_country
           AttributeType: S
       KeySchema:
-        - AttributeName: customer_id
+        - AttributeName: person_document_number
           KeyType: HASH
-        - AttributeName: birth_at
+        - AttributeName: person_birth_country
           KeyType: RANGE
-      TableClass: STANDARD
-      BillingMode: PAY_PER_REQUEST
+      TableClass: !Ref TableClass
+      BillingMode: !Ref BillingMode
       ProvisionedThroughput:
-        ReadCapacityUnits: 0
-        WriteCapacityUnits: 0
+        ReadCapacityUnits: !Ref ReadCapacityUnits
+        WriteCapacityUnits: !Ref WriteCapacityUnits
+      # SSESpecification:
+      #   KMSMasterKeyId: !Ref KMSMasterKeyId
+      #   SSEEnabled: false
+      #   SSEType: KMS
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      TimeToLiveSpecification:
+        AttributeName: person_create_date
+        Enabled: true
       Tags:
         - Key: Owner
           Value: !Ref Owner

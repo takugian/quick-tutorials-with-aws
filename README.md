@@ -217,6 +217,7 @@ A lot of AWS tutorials for you!!! ;)
 
 - [policy] - IAM Policy
 - [role] - IAM Role
+- [roledynamodb] - IAM Roles for DynamoDB `backlog`
 - [user] - IAM User with login profile enabled
 - [usergroup] - IAM User Group 
 
@@ -225,6 +226,10 @@ A lot of AWS tutorials for you!!! ;)
 [role]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/role
 [user]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/user
 [usergroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/usergroup
+
+### [Kinesis]
+
+- [kinesisstream] - Kinesis stream `backlog`
 
 ### [KMS]
 

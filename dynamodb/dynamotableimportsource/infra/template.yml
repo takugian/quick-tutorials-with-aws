@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a DynamoDB table and import data from a S3 bucket
+
+Parameters:
+
+  ImportSourceSpecificationInputFormat:
+    Type: String
+    Default: CSV
+    AllowedValues:
+      - CSV
+      - DYNAMODB_JSON
+      - ION
+  
+  ImportSourceSpecificationS3BucketSource:
+    Type: String
+    Default: tg-quicklabs-data
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Person
+      AttributeDefinitions:
+        - AttributeName: person_document_number
+          AttributeType: S
+        - AttributeName: person_birth_country
+          AttributeType: S
+      KeySchema:
+        - AttributeName: person_document_number
+          KeyType: HASH
+        - AttributeName: person_birth_country
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      ImportSourceSpecification:
+        InputCompressionType: NONE
+        InputFormat: !Ref ImportSourceSpecificationInputFormat
+        S3BucketSource: 
+            S3Bucket: !Ref ImportSourceSpecificationS3BucketSource
+            # S3KeyPrefix: !Ref S3KeyPrefix
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
