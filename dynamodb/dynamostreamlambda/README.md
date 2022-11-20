@@ -2,6 +2,10 @@
 
 This project creates a DynamoDB Stream integrated with a Lambda function.
 
+## How to test
+
+You need to create some items to test. Only items with customer_number equals to 123456789 or items with customer_country_birth equals to BRAZIL will trigger the event to the Lambda function.
+
 ## Helpful links
 
 - [What Is Amazon DynamoDB?][1]

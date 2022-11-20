@@ -3,13 +3,15 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a DynamoDB Stream integrated with a Lambda function
 
 Parameters:
-  TableName:
-    Type: String
-    Default: Customer
 
-  LambdaConsumerName:
+  StreamViewType:
     Type: String
-    Default: LambdaConsumeDynamoTable
+    Default: NEW_IMAGE
+    AllowedValues:
+      - KEYS_ONLY  
+      - NEW_IMAGE 
+      - OLD_IMAGE
+      - NEW_AND_OLD_IMAGES
 
   Owner:
     Type: String
@@ -19,19 +21,16 @@ Resources:
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref TableName
+      TableName: Customer
       AttributeDefinitions:
-        - AttributeName: customer_id
+        - AttributeName: customer_number
           AttributeType: S
       KeySchema:
-        - AttributeName: customer_id
+        - AttributeName: customer_number
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
-      ProvisionedThroughput:
-        ReadCapacityUnits: 0
-        WriteCapacityUnits: 0
       StreamSpecification:
-        StreamViewType: NEW_IMAGE
+        StreamViewType: !Ref StreamViewType
       Tags:
         - Key: Owner
           Value: !Ref Owner
@@ -39,7 +38,7 @@ Resources:
   LambdaConsumerExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${LambdaConsumerName}ExecutionRole
+      RoleName: LambdaConsumeDynamoTableExecutionRole
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -51,7 +50,7 @@ Resources:
               - sts:AssumeRole
       Path: "/"
       Policies:
-        - PolicyName: !Sub ${LambdaConsumerName}ExecutionRolePolicy
+        - PolicyName: LambdaConsumeDynamoTableLogsPolicy
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -62,7 +61,7 @@ Resources:
                   - logs:PutLogEvents
                 Resource: "*"
 
-        - PolicyName: !Sub ${LambdaConsumerName}DynamoDBRolePolicy
+        - PolicyName: LambdaConsumeDynamoTableDynamoDBPolicy
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -72,21 +71,19 @@ Resources:
                   - dynamodb:GetRecords
                   - dynamodb:GetShardIterator
                   - dynamodb:ListStreams
-                Resource: !Sub "arn:aws:dynamodb:*:*:table/${TableName}/stream/*"
+                Resource: !Sub "arn:aws:dynamodb:*:*:table/Customer/stream/*"
 
   LambdaConsumer:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: !Ref LambdaConsumerName
+      FunctionName: LambdaConsumeDynamoTable
       Runtime: nodejs14.x
       Role: !GetAtt LambdaConsumerExecutionRole.Arn
       Handler: index.handler
       Code:
         ZipFile: |
-          const AWS = require("aws-sdk");
-          const sqs = new AWS.SQS({ apiVersion: '2012-11-05' });
           exports.handler = async (event, context) => {
-              console.log(`Event ${JSON.stringify(event)}`);
+              console.log(`Event received: ${JSON.stringify(event)}`);
               return { statusCode: 200, body: JSON.stringify("OK"), };
           };
       Tags:
@@ -95,9 +92,14 @@ Resources:
 
   DynamoDBEventSourceMapping:
     Type: AWS::Lambda::EventSourceMapping
-    Properties:
-      Enabled: true
+    Properties:           
       EventSourceArn: !GetAtt Table.StreamArn
-      # FilterCriteria: Json
-      FunctionName: !Ref LambdaConsumerName
+      FunctionName: !GetAtt LambdaConsumer.Arn
+      FilterCriteria:
+        Filters:
+          - Pattern: "{ \"dynamodb\": { \"Keys\": { \"customer_number\": { \"S\": [ \"123456789\" ] } } } }"
+          - Pattern: "{ \"dynamodb\": { \"NewImage\": { \"customer_country_birth\": { \"S\": [ \"BRAZIL\" ] } } } }"
+      BatchSize: 1
+      MaximumBatchingWindowInSeconds: 5
       StartingPosition: LATEST
+      Enabled: true
