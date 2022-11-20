@@ -2,6 +2,8 @@
 
 This project creates a DynamoDB table with auto Scaling configured.
 
+There is also an example using scheduled scaling.
+
 ## Helpful links
 
 - [What Is Amazon DynamoDB?][1]

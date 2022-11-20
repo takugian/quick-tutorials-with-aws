@@ -3,19 +3,17 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a DynamoDB table with auto Scaling configured
 
 Parameters:
-  TableName:
-    Type: String
-    Default: Customer
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
+
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref TableName
+      TableName: Customer
       AttributeDefinitions:
         - AttributeName: CustomerId
           AttributeType: S
@@ -34,16 +32,6 @@ Resources:
         - Key: Owner
           Value: !Ref Owner
 
-  WriteCapacityScalableTarget:
-    Type: AWS::ApplicationAutoScaling::ScalableTarget
-    Properties:
-      MaxCapacity: 4
-      MinCapacity: 2
-      ResourceId: !Sub table/${TableName}
-      RoleARN: !GetAtt ScalingRole.Arn
-      ScalableDimension: dynamodb:table:WriteCapacityUnits
-      ServiceNamespace: dynamodb
-
   ScalingRole:
     Type: AWS::IAM::Role
     Properties:
@@ -58,7 +46,7 @@ Resources:
               - sts:AssumeRole
       Path: "/"
       Policies:
-        - PolicyName: !Sub ${TableName}ScalingRolePolicy
+        - PolicyName: CustomerScalingRolePolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -73,15 +61,42 @@ Resources:
                   - cloudwatch:DeleteAlarms
                 Resource: "*"
 
-  WriteScalingPolicy:
+  ScalableTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      ServiceNamespace: dynamodb
+      ResourceId: !Sub table/Customer
+      ScalableDimension: dynamodb:table:ReadCapacityUnits 
+      # ScalableDimension: dynamodb:table:WriteCapacityUnits
+      # ScalableDimension: dynamodb:index:ReadCapacityUnits 
+      MaxCapacity: 4
+      MinCapacity: 2      
+      RoleARN: !GetAtt ScalingRole.Arn
+      # ScheduledActions:
+      #   ScheduledActionName: ScheduledAction
+      #   Schedule: rate(1 minute)
+      #   Schedule: at(2022-11-20T10:00:00)
+      #   StartTime: 2022-11-20T10:00:00
+      #   EndTime: 2022-11-20T10:05:00
+      #   Timezone: String 
+      #   ScalableTargetAction: 
+      #     MaxCapacity: 8
+      #     MinCapacity: 4       
+
+  ScalingPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
-      PolicyName: !Sub ${TableName}WriteAutoScalingPolicy
+      PolicyName: CustomerReadAutoScalingPolicy
       PolicyType: TargetTrackingScaling
-      ScalingTargetId: !Ref WriteCapacityScalableTarget
+      ScalingTargetId: !Ref ScalableTarget
       TargetTrackingScalingPolicyConfiguration:
-        TargetValue: 50.0
+        TargetValue: 75.0
         ScaleInCooldown: 60
         ScaleOutCooldown: 60
+        DisableScaleIn: false
         PredefinedMetricSpecification:
-          PredefinedMetricType: DynamoDBWriteCapacityUtilization
+          PredefinedMetricType: DynamoDBReadCapacityUtilization
+          # PredefinedMetricType: DynamoDBWriteCapacityUtilization  
+          
+     
+  
