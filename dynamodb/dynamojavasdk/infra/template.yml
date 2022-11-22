@@ -3,34 +3,37 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a DynamoDB table
 
 Parameters:
-  TableName:
+
+  ImportSourceSpecificationS3BucketSource:
     Type: String
-    Default: Customer
+    Default: tg-quicklabs-data
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
+
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref TableName
+      TableName: Person
       AttributeDefinitions:
-        - AttributeName: customer_id
+        - AttributeName: person_document_number
           AttributeType: S
-        - AttributeName: birth_at
+        - AttributeName: person_birth_country
           AttributeType: S
       KeySchema:
-        - AttributeName: customer_id
+        - AttributeName: person_document_number
           KeyType: HASH
-        - AttributeName: birth_at
+        - AttributeName: person_birth_country
           KeyType: RANGE
       TableClass: STANDARD
       BillingMode: PAY_PER_REQUEST
-      ProvisionedThroughput:
-        ReadCapacityUnits: 0
-        WriteCapacityUnits: 0
+      ImportSourceSpecification:
+        InputFormat: CSV
+        S3BucketSource: 
+            S3Bucket: !Ref ImportSourceSpecificationS3BucketSource
       Tags:
         - Key: Owner
           Value: !Ref Owner
