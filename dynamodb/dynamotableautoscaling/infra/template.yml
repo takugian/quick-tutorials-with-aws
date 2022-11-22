@@ -46,7 +46,19 @@ Resources:
               - sts:AssumeRole
       Path: "/"
       Policies:
-        - PolicyName: CustomerScalingRolePolicy
+        - PolicyName: ScalingCustomerLogsPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricAlarm
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:GetMetricStatistics
+                  - cloudwatch:SetAlarmState
+                  - cloudwatch:DeleteAlarms
+                Resource: "*"
+        - PolicyName: ScalingCustomerDynamoDBPolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -54,12 +66,7 @@ Resources:
                 Action:
                   - dynamodb:DescribeTable
                   - dynamodb:UpdateTable
-                  - cloudwatch:PutMetricAlarm
-                  - cloudwatch:DescribeAlarms
-                  - cloudwatch:GetMetricStatistics
-                  - cloudwatch:SetAlarmState
-                  - cloudwatch:DeleteAlarms
-                Resource: "*"
+                Resource: !Sub "arn:aws:dynamodb:*:*:table/Customer"
 
   ScalableTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
