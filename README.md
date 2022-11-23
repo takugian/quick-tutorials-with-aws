@@ -27,7 +27,6 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewaychatroomwebsocket] - Complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewaycognitoauthorizer] - REST API Gateway using Cognito as authorizer `backlog`
-- [apigatewaycustominterceptor] - REST API Gateway with a custom interceptor `backlog`
 - [apigatewayecsappgamerestapi] - Complete CRUD REST API using an API Gateway, a ECS task as backend, a Lambda function as authorizer and a DynamoDB table `backlog`
 - [apigatewaygamerestapi] - Complete CRUD REST API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewayhttplambda] - REST API Gateway integrated to a Lambda function
@@ -39,7 +38,6 @@ A lot of AWS tutorials for you!!! ;)
 [API Gateway V2]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ApiGatewayV2.html
 [apigatewaychatroomwebsocket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaychatroomwebsocket
 [apigatewaycognitoauthorizer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaycognitoauthorizer
-[apigatewaycustominterceptor]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayv2lambda
 [apigatewaygamerestapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaygamerestapi
 [apigatewayecsappgamerestapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayecsappgamerestapi
 [apigatewayhttplambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayhttplambda
@@ -67,7 +65,7 @@ A lot of AWS tutorials for you!!! ;)
 ### [CloudFront]
 
 - [cloudfrontapigateway] - CloudFront distribution in front of an API Gateway
-- [cloudfrontcachepolicy] - CloudFront wuth cache policy configured # `backlog`
+- [cloudfrontcachepolicy] - CloudFront with cache policy configured `backlog`
 - [cloudfrontfunction] - CloudFront function `backlog`
 - [cloudfrontloadbalancer] - CloudFront distribution in front of a Load Balancer
 - [cloudfronts3] - CloudFront distribution in front of a S3 Bucket
@@ -219,19 +217,27 @@ A lot of AWS tutorials for you!!! ;)
 
 - [policy] - IAM Policy
 - [role] - IAM Role
-- [roledynamodb] - IAM Roles for DynamoDB `backlog`
+- [rolecloudwatchlogs] - IAM Roles for CloudWatch Logs
+- [roledynamodb] - IAM Roles for DynamoDB
+- [roles3] - IAM Roles for S3
 - [user] - IAM User with login profile enabled
 - [usergroup] - IAM User Group 
 
 [IAM]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_IAM.html
 [policy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/policy
 [role]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/role
+[rolecloudwatchlogs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/rolecloudwatchlogs
+[roledynamodb]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/roledynamodb
+[roles3]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/roles3
 [user]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/user
 [usergroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/usergroup
 
 ### [Kinesis]
 
 - [kinesisstream] - Kinesis stream `backlog`
+
+[Kinesis]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Kinesis.html
+[kinesisstream]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/iam/kinesisstream
 
 ### [KMS]
 
@@ -247,7 +253,7 @@ A lot of AWS tutorials for you!!! ;)
 ### [Lambda]
 
 - [lambdaalias] - Lambda function with versions and an alias with routing configuration
-- [lambdaapplication] -Lambda application `backlog`
+- [lambdaapplication] - Lambda application `backlog`
 - [lambdaautoscaling] - Lambda function with Auto Scaling configured
 - [lambdadlq] - Lambda function with DLQ configured
 - [lambdaendpoint] - Lambda function with endpoint enabled

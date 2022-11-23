@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an IAM Role for DynamoDB
+
+Parameters:
+
+  RoleName:
+    Type: String
+
+  ServiceName:
+    Type: String
+    Default: lambda.amazonaws.com
+  
+  TableName:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - !Ref ServiceName
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${RoleName}ORMPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:                  
+                  - dynamodb:DescribeTable
+                  - dynamodb:DescribeGlobalTable
+                Resource: !Sub arn:aws:dynamodb:*:*:table/${TableName}
+        - PolicyName: !Sub ${RoleName}ReadPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchGetItem
+                  - dynamodb:Scan
+                  - dynamodb:Query
+                  - dynamodb:GetItem
+                Resource: !Sub arn:aws:dynamodb:*:*:table/${TableName}
+        - PolicyName: !Sub ${RoleName}WritePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:UpdateItem
+                Resource: !Sub arn:aws:dynamodb:*:*:table/${TableName}
+        - PolicyName: !Sub ${RoleName}StreamPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:DescribeStream
+                  - dynamodb:ListStreams
+                  - dynamodb:GetShardIterator
+                  - dynamodb:GetRecords
+                Resource: !Sub "arn:aws:dynamodb:*:*:table/${TableName}/stream/*"
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

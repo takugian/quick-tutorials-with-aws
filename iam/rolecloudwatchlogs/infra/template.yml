@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an IAM Role for CloudWatch Logs
+
+Parameters:
+
+  RoleName:
+    Type: String
+
+  ServiceName:
+    Type: String
+    Default: lambda.amazonaws.com
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - !Ref ServiceName
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${RoleName}LogPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:                  
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an IAM Role for S3
+
+Parameters:
+
+  RoleName:
+    Type: String
+
+  ServiceName:
+    Type: String
+    Default: lambda.amazonaws.com
+
+  BucketName:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - !Ref ServiceName
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${RoleName}ReadPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetBucketAcl
+                  - s3:GetBucketLocation
+                  - s3:GetObjectVersion
+                  - s3:GetBucketNotification
+                Resource: !Sub arn:aws:s3:*:*:${BucketName}
+        - PolicyName: !Sub ${RoleName}WritePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:DeleteObjectVersion
+                Resource: !Sub arn:aws:s3:*:*:${BucketName}
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
