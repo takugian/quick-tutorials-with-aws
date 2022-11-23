@@ -37,17 +37,6 @@ Parameters:
     AllowedPattern: "[a-zA-Z0-9]*"
     Default: root123456
 
-  DBAllocatedStorage:
-    Type: Number
-    Default: 50
-
-  # KmsKeyId:
-  #   Type: String
-
-  BackupRetentionPeriod:
-    Type: Number
-    Default: 0
-
   Owner:
     Type: String
     Default: tg
@@ -75,21 +64,6 @@ Resources:
           ToPort: 3306
           CidrIp: 0.0.0.0/0
 
-  EnhancedMonitoringRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: ""
-            Effect: Allow
-            Principal:
-              Service: monitoring.rds.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
-      Path: "/"
-
   DBInstance:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -97,27 +71,16 @@ Resources:
       DBName: !Ref DBName
       DBInstanceClass: !Ref DBInstanceClass
       Engine: mysql
-      EngineVersion: 8.0.16
+      EngineVersion: 8.0
       Port: 3306
       MasterUsername: !Ref DBUsername
       MasterUserPassword: !Ref DBPassword
       DBSubnetGroupName: !Ref DBSubnetGroup
+      PubliclyAccessible: true
       VPCSecurityGroups:
         - !GetAtt SecurityGroup.GroupId
-      StorageType: io1
-      AllocatedStorage: !Ref DBAllocatedStorage
-      # MaxAllocatedStorage: !Ref MaxAllocatedStorage
-      BackupRetentionPeriod: !Ref BackupRetentionPeriod
-      MonitoringInterval: 60
-      MonitoringRoleArn: !GetAtt EnhancedMonitoringRole.Arn
-      AllowMajorVersionUpgrade: false
-      AutoMinorVersionUpgrade: false
-      # KmsKeyId: !Ref KmsKeyId
-      ## Use for multi AZ
-      # MultiAZ: true
-      ## Use for single AZ
-      # AvailabilityZone: !Ref AvailabilityZone 
-      
+      StorageType: standard
+      AllocatedStorage: 5
       Tags:
         - Key: Owner
           Value: !Ref Owner

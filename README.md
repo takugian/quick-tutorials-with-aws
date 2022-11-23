@@ -308,13 +308,17 @@ A lot of AWS tutorials for you!!! ;)
 ### [RDS]
 
 - [rdsmysqlinstance] - RDS DB Instance inside a VPC using MySQL engine
-- [rdsmysqljava] - Integration between RDS MySQL tables and Java `backlog`
+- [rdsmysqljava] - Integration between RDS MySQL tables and Java
 - [rdsmysqlsecretsmanagerlambda] - Integration between a Lambda function and a RDS DB Instance using Secrets Manager
+- [rdsmysqltablelambda] - Integration between a RDS MySQL table and a Lambda function
+- [rdsproxy] - RDS Proxy `backlog`
 
 [RDS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_RDS.html
 [rdsmysqlinstance]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/rds/rdsmysqlinstance
 [rdsmysqljava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/rds/rdsmysqljava
 [rdsmysqlsecretsmanagerlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/rds/rdsmysqlsecretsmanagerlambda
+[rdsmysqltablelambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/rds/rdsmysqltablelambda
+[rdsproxy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/rds/rdsproxy
 
 ### [Route 53]
 
