@@ -1,6 +1,6 @@
-# publicbucket
+# s3javasdk
 
-This project creates a public S3 bucket.
+This project creates a S3 bucket for an integration with Java SDK.
 
 ## Helpful links
 

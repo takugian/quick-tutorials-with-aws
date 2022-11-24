@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a public bucket
+
+Parameters:
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: tg-public-bucket-123456
+      AccessControl: PublicReadWrite
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

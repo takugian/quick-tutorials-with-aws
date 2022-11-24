@@ -337,7 +337,7 @@ A lot of AWS tutorials for you!!! ;)
 - [privatebucketpresignedurl] - Private S3 bucket and a Lambda function that creates a Pre Signed URL
 - [privatelink] - S3 Bucket witk PrivateLink enabled `backlog`
 - [publicbucket] - Public S3 bucket
-- [s3javasdk] - Integration between a S3 bucket and Java SDK `backlog`
+- [s3javasdk] - Integration between a S3 bucket and Java SDK
 - [staticwebsite] - S3 Bucket used as a static website
 - [staticwebsiteangularsecretsmanager] - S3 Bucket used as a static website and Secrets Manager to deploy an AngularJS app
 - [staticwebsiteapigatewayhttpwebsocket] - S3 Bucket used as a static website that consumes a websocket
