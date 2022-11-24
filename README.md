@@ -27,7 +27,7 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewaychatroomwebsocket] - Complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewaycognitoauthorizer] - REST API Gateway using Cognito as authorizer `backlog`
-- [apigatewayecsappgamerestapi] - Complete CRUD REST API using an API Gateway, a ECS task as backend, a Lambda function as authorizer and a DynamoDB table `backlog`
+- [apigatewayecsappgamerestapi] - Complete CRUD REST API using Cloud Front, API Gateway, ECS task as backend, a Lambda function as authorizer and a RDS MySQL table `backlog`
 - [apigatewaygamerestapi] - Complete CRUD REST API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewayhttplambda] - REST API Gateway integrated to a Lambda function
 - [apigatewayhttpwebsocketlambda] - WebSocket API Gateway integrated to a Lambda function
@@ -67,6 +67,7 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudfrontapigateway] - CloudFront distribution in front of an API Gateway
 - [cloudfrontcachepolicy] - CloudFront with cache policy configured `backlog`
 - [cloudfrontfunction] - CloudFront function `backlog`
+- [cloudfrontlambdaedge] - Cloud Front Lambda@Edge`backlog`
 - [cloudfrontloadbalancer] - CloudFront distribution in front of a Load Balancer
 - [cloudfronts3] - CloudFront distribution in front of a S3 Bucket
 - [cloudfronts3staticwebsite] - CloudFront distribution in front of a S3 Static Website
@@ -76,6 +77,7 @@ A lot of AWS tutorials for you!!! ;)
 [cloudfrontapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontapigateway
 [cloudfrontcachepolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontcachepolicy
 [cloudfrontfunction]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontfunction
+[cloudfrontlambdaedge]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontlambdaedge
 [cloudfrontloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontloadbalancer
 [cloudfronts3]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfronts3
 [cloudfronts3staticwebsite]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfronts3staticwebsite
