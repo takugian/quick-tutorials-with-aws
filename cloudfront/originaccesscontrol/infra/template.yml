@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudFront Origin Access Control (OAC)
+
+Parameters:
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  CloudFrontOriginAccessControl :
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: OACDefault
+        Description: OACDefault        
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4

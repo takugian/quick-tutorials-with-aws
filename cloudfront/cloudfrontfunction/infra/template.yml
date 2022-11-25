@@ -1,11 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudFront distribution in front of a S3 Static Website
+Description: Creates a CloudFront Distribution with a CloudFront function
 
 Parameters:
-  LoggingBucketName:
-    Type: String
-    Default: tg-staticwebsite-logging-123456
 
   StaticWebsiteBucketName:
     Type: String
@@ -19,31 +16,44 @@ Parameters:
     Default: tg
 
 Resources:
-  LoggingBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Ref LoggingBucketName
-      AccessControl: LogDeliveryWrite
 
-  LoggingBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    DependsOn: LoggingBucket
+  Function:
+    Type: AWS::CloudFront::Function
     Properties:
-      Bucket: !Ref LoggingBucketName
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: AllowCloudFrontServicePrincipal
-            Effect: Allow
-            Principal:
-              Service: cloudfront.amazonaws.com
-            Action:
-              - s3:GetBucketAcl
-              - s3:PutBucketAcl
-            Resource: !Sub arn:aws:s3:::${LoggingBucketName}/*
-            Condition:
-              StringEquals:
-                AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${OriginAccessControlId}
+      Name: RedirectByHeader
+      AutoPublish: true
+      FunctionCode: |
+        function handler(event) {
+        
+          var request = event.request;
+
+          if (request.uri.substr(3, 1) != '/') {
+
+            var headers = request.headers;
+            var nextUri;
+
+            if (headers['x-channel-name']) {
+              var channelName = headers['x-channel-name'].value.toLowerCase();
+              if (channelName == 'mobile') {
+                nextUri = '/' + channelName + request.uri;
+                return {
+                  'statusCode': 302,
+                  'statusDescription': 'Found',
+                  'headers': {
+                    'location': { value: nextUri }
+                  }
+                }
+              }
+            }
+
+          }
+
+          return request;
+
+        }
+      FunctionConfig: 
+        Comment: RedirectByHeader
+        Runtime: cloudfront-js-1.0
 
   StaticWebsiteBucket:
     Type: AWS::S3::Bucket
@@ -83,7 +93,7 @@ Resources:
 
   Distribution:
     Type: AWS::CloudFront::Distribution
-    DependsOn: [LoggingBucketPolicy, StaticWebsiteBucketPolicy]
+    DependsOn: [Function, StaticWebsiteBucketPolicy]
     Properties:
       DistributionConfig:
         Comment: !Sub ${StaticWebsiteBucketName}Distribution
@@ -96,8 +106,6 @@ Resources:
             ConnectionTimeout: 10
             CustomOriginConfig:
               OriginProtocolPolicy: http-only
-              OriginKeepaliveTimeout: 5
-              OriginReadTimeout: 30
         DefaultCacheBehavior:
           TargetOriginId: !Sub ${StaticWebsiteBucketName}Origin
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
@@ -105,14 +113,9 @@ Resources:
             - GET
             - HEAD
           ViewerProtocolPolicy: allow-all
-        Logging:
-          Bucket: !Sub ${LoggingBucketName}.s3.amazonaws.com
-          Prefix: logs
-        Restrictions:
-          GeoRestriction:
-            RestrictionType: whitelist
-            Locations:
-              - BR
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt Function.FunctionARN
         Enabled: true
       Tags:
         - Key: Owner

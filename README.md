@@ -66,11 +66,12 @@ A lot of AWS tutorials for you!!! ;)
 
 - [cloudfrontapigateway] - CloudFront distribution in front of an API Gateway
 - [cloudfrontcachepolicy] - CloudFront with cache policy configured `backlog`
-- [cloudfrontfunction] - CloudFront function `backlog`
-- [cloudfrontlambdaedge] - Cloud Front Lambda@Edge`backlog`
+- [cloudfrontfunction] - CloudFront function
+- [cloudfrontlambdaedge] - Cloud Front Lambda@Edge
 - [cloudfrontloadbalancer] - CloudFront distribution in front of a Load Balancer
 - [cloudfronts3] - CloudFront distribution in front of a S3 Bucket
 - [cloudfronts3staticwebsite] - CloudFront distribution in front of a S3 Static Website
+- [originaccesscontrol] - Cloud Front Origin Access Control (OAC)
 - [originaccessidentity] - Cloud Front Origin Access Identity (OAI)
 
 [CloudFront]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CloudFront.html
@@ -81,6 +82,7 @@ A lot of AWS tutorials for you!!! ;)
 [cloudfrontloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontloadbalancer
 [cloudfronts3]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfronts3
 [cloudfronts3staticwebsite]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfronts3staticwebsite
+[originaccesscontrol]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccesscontrol
 [originaccessidentity]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccessidentity
 
 ### [CloudWatch]
