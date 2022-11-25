@@ -5,14 +5,6 @@ This project creates an ECS App using Java, and:
     - Fargate compatibility;
     - Public IP address enabled;
 
-## Helpful links
-
-- [What is Amazon Elastic Container Service?][1]
-- [What is AWS Fargate?][2]
-
-[1]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html
-[2]: https://docs.aws.amazon.com/AmazonECS/latest/userguide/what-is-fargate.html
-
 ## Pre requirements
 
 - Repository created in Amazon ECR;
@@ -76,3 +68,11 @@ Find the public IP following ECS -> Cluster created > Service created > Configur
 
 - curl http://{TaskPublicIP}:3071/healthcheck
 - curl http://{TaskPublicIP}:3071/customers
+
+## Helpful links
+
+- [What is Amazon Elastic Container Service?][1]
+- [What is AWS Fargate?][2]
+
+[1]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html
+[2]: https://docs.aws.amazon.com/AmazonECS/latest/userguide/what-is-fargate.html

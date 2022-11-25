@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a RDS DB Instance using MySQL engine
+
+Parameters:
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: awsquickstartdatabaseDBSubnetGroup
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: awsquickstartdatabaseSecurityGroup
+      GroupDescription: awsquickstartdatabaseSecurityGroup
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+
+  DBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: dbinstance
+      DBName: awsquickstartdatabase
+      DBInstanceClass: db.t2.micro
+      Engine: mysql
+      EngineVersion: 8.0
+      Port: 3306
+      MasterUsername: root
+      MasterUserPassword: root123456
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      PubliclyAccessible: false
+      VPCSecurityGroups:
+        - !GetAtt SecurityGroup.GroupId
+      StorageType: standard
+      AllocatedStorage: 5
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

@@ -1,0 +1,205 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a REST API Gateway integrated to a Load Balancer
+
+Parameters:
+  VpcId:
+    Type: String
+  
+  # RouteTableId1:
+  #   Type: String
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  # SecurityGroupId:
+  #   Type: String
+
+  VpcLinkId:
+    Type: String
+
+  ApiName:
+    Type: String
+    Default: gameapi
+  
+  LambdaAuthorizerArn:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  # VPCEndpointExecuteApi:
+  #   Type: AWS::EC2::VPCEndpoint
+  #   Properties:
+  #     ServiceName: com.amazonaws.us-east-2.execute-api
+  #     VpcEndpointType: Interface
+  #     PrivateDnsEnabled: true
+  #     VpcId: !Ref VpcId
+  #     SecurityGroupIds:
+  #       - !Ref SecurityGroupId
+  #     SubnetIds:
+  #       - !Ref SubnetId1
+  #       - !Ref SubnetId2
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub Lb${ApiName}
+      Type: network
+      Scheme: internal
+      Subnets:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LoadBalancerTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub LbTarget${ApiName}
+      VpcId: !Ref VpcId
+      Protocol: TCP
+      Port: 80
+      TargetType: ip
+      HealthCheckEnabled: true
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 5
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LoadBalancer
+      Protocol: TCP
+      Port: 80
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref LoadBalancerTargetGroup
+
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Version: 1
+      ProtocolType: HTTP
+      DisableExecuteApiEndpoint: false
+
+  Authorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    DependsOn: Api
+    Properties:
+      Name: Authorizer
+      AuthorizerPayloadFormatVersion: 2.0
+      AuthorizerType: REQUEST
+      ApiId: !Ref Api
+      AuthorizerUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaAuthorizerArn}/invocations
+      IdentitySource:
+        - $request.header.Authorization
+
+  Integration:
+    Type: AWS::ApiGatewayV2::Integration
+    DependsOn: LoadBalancerListener
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      ConnectionType: VPC_LINK
+      ConnectionId: !Ref VpcLinkId
+      IntegrationType: HTTP_PROXY
+      IntegrationMethod: ANY
+      IntegrationUri: !GetAtt LoadBalancerListener.ListenerArn
+      PayloadFormatVersion: 1.0
+      TimeoutInMillis: 30000
+
+  PostGamesRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "POST /games"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  GetGamesRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "GET /games"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  GetGamesByIdRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "GET /games/{game_id}"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  PutGamesByIdRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "PUT /games/{game_id}"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  DeleteGamesByIdRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      RouteKey: "DELETE /games/{game_id}"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      [
+        Api,
+        PostGamesRoute,
+        GetGamesRoute,
+        GetGamesByIdRoute,
+        PutGamesByIdRoute,
+        DeleteGamesByIdRoute,
+      ]
+    Properties:
+      ApiId: !Ref Api
+
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn:
+      [
+        Integration,
+        PostGamesRoute,
+        GetGamesRoute,
+        GetGamesByIdRoute,
+        PutGamesByIdRoute,
+        DeleteGamesByIdRoute,
+        Deployment,
+      ]
+    Properties:
+      StageName: dev
+      Description: dev
+      ApiId: !Ref Api
+      AutoDeploy: false
+      DeploymentId: !Ref Deployment
+      DefaultRouteSettings:
+        DetailedMetricsEnabled: true
+        DataTraceEnabled: false
+        ThrottlingBurstLimit: 10
+        ThrottlingRateLimit: 10

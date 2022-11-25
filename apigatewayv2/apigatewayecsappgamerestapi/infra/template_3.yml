@@ -1,0 +1,138 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Lambda Authorizer
+
+Parameters:
+  # VpcId:
+  #   Type: String
+
+  # SubnetId1:
+  #   Type: String
+
+  # SubnetId2:
+  #   Type: String
+
+  # SecurityGroupId:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  # VPCEndpointExecuteApi:
+  #   Type: AWS::EC2::VPCEndpoint
+  #   Properties:
+  #     ServiceName: com.amazonaws.us-east-2.execute-api
+  #     VpcEndpointType: Interface
+  #     PrivateDnsEnabled: true
+  #     VpcId: !Ref VpcId
+  #     SecurityGroupIds:
+  #       - !Ref SecurityGroupId
+  #     SubnetIds:
+  #       - !Ref SubnetId1
+  #       - !Ref SubnetId2
+
+  LambdaAuthorizerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaAuthorizerExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: LambdaAuthorizerExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  LambdaAuthorizer:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaAuthorizer
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaAuthorizerExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = function (event, context, callback) {
+
+              console.log('Receiving event...', JSON.stringify(event));
+
+              var token = event.headers.authorization;
+
+              switch (token) {
+                  case 'allow':
+                      console.log('Allowing the request...');
+                      callback(null, generatePolicy('user', 'Allow', event.routeArn));
+                      break;
+                  case 'deny':
+                      console.log('Denying the request...');
+                      callback(null, generatePolicy('user', 'Deny', event.routeArn));
+                      break;
+                  case 'unauthorized':
+                      console.log('Unauthoring the request...');
+                      callback("Unauthorized");
+                      break;
+                  default:
+                      console.log('Invalid token');
+                      callback("Error: Invalid token");
+              }
+
+          };
+
+          var generatePolicy = function (principalId, effect, resource) {
+
+              var authResponse = {};
+
+              authResponse.principalId = principalId;
+
+              if (effect && resource) {
+                  var policyDocument = {};
+                  policyDocument.Version = '2012-10-17';
+                  policyDocument.Statement = [];
+                  var statementOne = {};
+                  statementOne.Action = 'execute-api:Invoke';
+                  statementOne.Effect = effect;
+                  statementOne.Resource = resource;
+                  policyDocument.Statement[0] = statementOne;
+                  authResponse.policyDocument = policyDocument;
+              }
+
+              authResponse.context = {
+                  "stringKey": "stringval",
+                  "numberKey": 123,
+                  "booleanKey": true
+              };
+
+              console.log('Policy generated...', authResponse);
+
+              return authResponse;
+
+          }
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaAuthorizerPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: LambdaAuthorizer
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaAuthorizer.Arn
+      Principal: apigateway.amazonaws.com
