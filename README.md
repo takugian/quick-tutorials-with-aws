@@ -257,7 +257,6 @@ A lot of AWS tutorials for you!!! ;)
 ### [Lambda]
 
 - [lambdaalias] - Lambda function with versions and an alias with routing configuration
-- [lambdaapplication] - Lambda application `backlog`
 - [lambdaautoscaling] - Lambda function with Auto Scaling configured
 - [lambdadlq] - Lambda function with DLQ configured
 - [lambdaendpoint] - Lambda function with endpoint enabled
@@ -269,7 +268,6 @@ A lot of AWS tutorials for you!!! ;)
 
 [Lambda]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Lambda.html
 [lambdaalias]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaalias
-[lambdaapplication]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaapplication
 [lambdaautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaautoscaling
 [lambdadlq]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdadlq
 [lambdaendpoint]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaendpoint
