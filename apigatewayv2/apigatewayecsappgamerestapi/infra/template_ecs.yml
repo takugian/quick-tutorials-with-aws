@@ -4,7 +4,7 @@ Description: Creates an ECS App using Java and Fargate
 
 Parameters:
 
-  ServiceName:
+  ApiName:
     Type: String
     Default: gameapi
 
@@ -16,6 +16,9 @@ Parameters:
 
   SubnetId2:
     Type: String
+  
+  TargetGroupArn:
+    Type: String
 
   Owner:
     Type: String
@@ -26,7 +29,7 @@ Resources:
   CloudWatchLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /aws/ecs/${ServiceName}
+      LogGroupName: !Sub /aws/ecs/${ApiName}
       RetentionInDays: 7
 
   ECSCluster:
@@ -40,7 +43,7 @@ Resources:
   ExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${ServiceName}ExecutionRole
+      RoleName: !Sub ${ApiName}ExecutionRole
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -49,7 +52,7 @@ Resources:
             Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: !Sub ${ServiceName}ExecutionRolePolicy
+        - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
           PolicyDocument:
             Statement:
               - Effect: Allow
@@ -66,7 +69,7 @@ Resources:
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${ServiceName}TaskRole
+      RoleName: !Sub ${ApiName}TaskRole
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -74,7 +77,7 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: !Sub ${ServiceName}TaskRolePolicy
+        - PolicyName: !Sub ${ApiName}TaskRolePolicy
           PolicyDocument:
             Statement:
               - Effect: Allow
@@ -87,8 +90,8 @@ Resources:
   ServiceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub Sg${ServiceName}
-      GroupDescription: !Sub Sg${ServiceName}
+      GroupName: !Sub Sg${ApiName}
+      GroupDescription: !Sub Sg${ApiName}
       VpcId: !Ref VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -106,7 +109,7 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     DependsOn: CloudWatchLogGroup
     Properties:
-      Family: !Sub family-${ServiceName}
+      Family: !Sub family-${ApiName}
       ExecutionRoleArn: !Ref ExecutionRole
       TaskRoleArn: !Ref TaskRole
       Cpu: 256
@@ -115,8 +118,8 @@ Resources:
       RequiresCompatibilities:
         - FARGATE
       ContainerDefinitions:
-        - Name: !Ref ServiceName
-          Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ServiceName}:v1
+        - Name: !Ref ApiName
+          Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ApiName}:v1
           MemoryReservation: 256
           LogConfiguration:
             LogDriver: awslogs
@@ -134,7 +137,7 @@ Resources:
     Type: AWS::ECS::Service
     Properties:
       Cluster: fargateecscluster
-      ServiceName: !Sub service-${ServiceName}
+      ServiceName: !Sub service-${ApiName}
       TaskDefinition: !Ref TaskDefinition
       LaunchType: FARGATE
       SchedulingStrategy: REPLICA
@@ -142,6 +145,10 @@ Resources:
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
+      LoadBalancers:
+        - ContainerName: !Ref ApiName
+          ContainerPort: 3071
+          TargetGroupArn: !Ref TargetGroupArn
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED # If subnets are public

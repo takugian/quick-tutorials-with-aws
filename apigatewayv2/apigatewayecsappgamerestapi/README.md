@@ -1,6 +1,6 @@
 # apigatewayecsappgamerestapi
 
-This project creates a complete CRUD REST API using CloudFront in front of an API Gateway, an ECS task as backend, a Lambda function as authorizer and a RDS MySQL.
+This project creates a complete CRUD REST API using an API Gateway, an ECS task as backend, a Lambda function as authorizer and a RDS MySQL.
 
 ## Pre requirements
 
@@ -34,60 +34,64 @@ docker run -d -p 3071:3071 --name gameapi gameapi
 
 ### AWS
 
-1 - Create a Cloudformation's stack using template_1.yml file
+1 - Create a Cloudformation's stack using template_lambda_authorizer.yml file
+- This stack will create the Lambda Authorizer
+
+2 - Create a Cloudformation's stack using template_load_balancer.yml file
+- This stack will create the Load Balancer
+
+3 - Create a Cloudformation's stack using template_vpc_link.yml file
+- This stack will create the VPC Link
+
+4 - Create a Cloudformation's stack using template_rds.yml file
 - This stack will create the RDS instance
 
-2 - Go to RDS console, find the database, click on it and check the tab called Connectivity & security. There is your endpoint.
+5 - Go to RDS console, find the database, click on it and check the tab called Connectivity & security. There is your endpoint.
 
-3 - Go to application.properties file from Java project and update the variable {{Endpoint}}
+6 - Go to application.properties file from Java project and update the variable {{Endpoint}}
 
-4 - Credentials configurations
+7 - Credentials configurations
 ```
 aws configure
 ```
 
-5 - Login
+8 - Login
 ```
 aws ecr get-login-password --region {Region} | docker login --username AWS --password-stdin {AccountId}.dkr.ecr.{Region}.amazonaws.com 
 ```
 
-6 - List docker images
+9 - List docker images
 ```
+docker build -t gameapi .
 docker images
 ```
 
-7 - Tag docker image
+10 - Tag docker image
 ```
 docker tag {ImageId} {RepositoryURI}:v1
 ```
 
-8 - Push docker image to ECR repository
+11 - Push docker image to ECR repository
 ```
 docker push {RepositoryURI}:v1
 ```
 
-9 - Create a Cloudformation's stack using template_2.yml file
+12 - Create a Cloudformation's stack using template_ecs.yml file
 - This stack will create the ECS task using the docker previously pushed
 
-10 - Create a Cloudformation's stack using template_3.yml file
-- This stack will create the Lambda authorizer
-
-11 - Create a Cloudformation's stack using template_4.yml file
-- This stack will create the API Gateway and the Load Balancer
-
-12 - Create a Cloudformation's stack using template_5.yml file
-- This stack will create the CloudFront
+13 - Create a Cloudformation's stack using template_api_gateway.yml file
+- This stack will create the API Gateway
 
 #### How to test
 
 List games
 ```
-curl -v https://{cloudfront_domain}/games
+curl -v https://{gateway_domain}/dev/games
 ```
 
 Save game
 ```
-curl --location --request POST 'https://{cloudfront_domain}/games' \
+curl --location --request POST 'https://{gateway_domain}/dev/games' \
 --header 'Authorization: allow' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -100,13 +104,13 @@ curl --location --request POST 'https://{cloudfront_domain}/games' \
 
 Find game
 ```
-curl --location --request GET 'https://{cloudfront_domain}/games/1' \
+curl --location --request GET 'https://{gateway_domain}/dev/games/1' \
 --header 'Authorization: allow'
 ```
 
 Update game
 ```
-curl --location --request PUT 'https://{cloudfront_domain}/dev/games/1' \
+curl --location --request PUT 'https://{gateway_domain}/dev/games/1' \
 --header 'Authorization: allow' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -119,13 +123,9 @@ curl --location --request PUT 'https://{cloudfront_domain}/dev/games/1' \
 
 Delete game
 ```
-curl --location --request DELETE 'https://{cloudfront_domain}/games/1' \
+curl --location --request DELETE 'https://{gateway_domain}/dev/games/1' \
 --header 'Authorization: allow'
 ```
-
-- {restapi_id}: it is the API identifier. Find it in API Gateway's console,
-- {region}: is the Region, and
-- {stage_name} is the stage name of the API deployment.
 
 ## Helpful links
 

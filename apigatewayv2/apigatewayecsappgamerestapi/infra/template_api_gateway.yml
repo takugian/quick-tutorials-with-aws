@@ -1,13 +1,15 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a REST API Gateway integrated to a Load Balancer
+Description: Creates a REST API Gateway
 
 Parameters:
+
+  ApiName:
+    Type: String
+    Default: gameapi
+
   VpcId:
     Type: String
-  
-  # RouteTableId1:
-  #   Type: String
 
   SubnetId1:
     Type: String
@@ -15,17 +17,16 @@ Parameters:
   SubnetId2:
     Type: String
 
-  # SecurityGroupId:
-  #   Type: String
+  SecurityGroupId:
+    Type: String
 
   VpcLinkId:
     Type: String
-
-  ApiName:
-    Type: String
-    Default: gameapi
   
   LambdaAuthorizerArn:
+    Type: String
+  
+  LoadBalancerListenerArn:
     Type: String
 
   Owner:
@@ -34,57 +35,18 @@ Parameters:
 
 Resources:
 
-  # VPCEndpointExecuteApi:
-  #   Type: AWS::EC2::VPCEndpoint
-  #   Properties:
-  #     ServiceName: com.amazonaws.us-east-2.execute-api
-  #     VpcEndpointType: Interface
-  #     PrivateDnsEnabled: true
-  #     VpcId: !Ref VpcId
-  #     SecurityGroupIds:
-  #       - !Ref SecurityGroupId
-  #     SubnetIds:
-  #       - !Ref SubnetId1
-  #       - !Ref SubnetId2
-
-  LoadBalancer:
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  VPCEndpointExecuteApi:
+    Type: AWS::EC2::VPCEndpoint
     Properties:
-      Name: !Sub Lb${ApiName}
-      Type: network
-      Scheme: internal
-      Subnets:
+      ServiceName: com.amazonaws.us-east-2.execute-api
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VpcId
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+      SubnetIds:
         - !Ref SubnetId1
         - !Ref SubnetId2
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
-
-  LoadBalancerTargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Name: !Sub LbTarget${ApiName}
-      VpcId: !Ref VpcId
-      Protocol: TCP
-      Port: 80
-      TargetType: ip
-      HealthCheckEnabled: true
-      TargetGroupAttributes:
-        - Key: deregistration_delay.timeout_seconds
-          Value: 5
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
-
-  LoadBalancerListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      LoadBalancerArn: !Ref LoadBalancer
-      Protocol: TCP
-      Port: 80
-      DefaultActions:
-        - Type: forward
-          TargetGroupArn: !Ref LoadBalancerTargetGroup
 
   Api:
     Type: AWS::ApiGatewayV2::Api
@@ -109,7 +71,6 @@ Resources:
 
   Integration:
     Type: AWS::ApiGatewayV2::Integration
-    DependsOn: LoadBalancerListener
     Properties:
       ApiId: !Ref Api
       Description: !Ref ApiName
@@ -117,7 +78,7 @@ Resources:
       ConnectionId: !Ref VpcLinkId
       IntegrationType: HTTP_PROXY
       IntegrationMethod: ANY
-      IntegrationUri: !GetAtt LoadBalancerListener.ListenerArn
+      IntegrationUri: !Ref LoadBalancerListenerArn
       PayloadFormatVersion: 1.0
       TimeoutInMillis: 30000
 
