@@ -49,11 +49,9 @@ A lot of AWS tutorials for you!!! ;)
 ### [Aurora]
 
 - [auroramysqlcluster] - Aurora cluster using MySQL engine
-- [aurorajava] - Integration between Aurora tables and Java `backlog`
 
 [Aurora]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_RDS.html
 [auroramysqlcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/aurora/auroramysqlcluster
-[aurorajava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/aurora/aurorajava
 
 ### [Certificate Manager]
 
@@ -65,7 +63,6 @@ A lot of AWS tutorials for you!!! ;)
 ### [CloudFront]
 
 - [cloudfrontapigateway] - CloudFront distribution in front of an API Gateway
-- [cloudfrontcachepolicy] - CloudFront with cache policy configured `backlog`
 - [cloudfrontfunction] - CloudFront function
 - [cloudfrontlambdaedge] - Cloud Front Lambda@Edge
 - [cloudfrontloadbalancer] - CloudFront distribution in front of a Load Balancer
@@ -76,7 +73,6 @@ A lot of AWS tutorials for you!!! ;)
 
 [CloudFront]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CloudFront.html
 [cloudfrontapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontapigateway
-[cloudfrontcachepolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontcachepolicy
 [cloudfrontfunction]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontfunction
 [cloudfrontlambdaedge]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontlambdaedge
 [cloudfrontloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfrontloadbalancer
