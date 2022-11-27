@@ -4,10 +4,6 @@ Description: Creates a Load Balancer
 
 Parameters:
 
-  ApiName:
-    Type: String
-    Default: gameapi
-
   VpcId:
     Type: String
 
@@ -26,7 +22,7 @@ Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: !Sub Lb${ApiName}
+      Name: LoadBalancer
       Type: network
       Scheme: internal
       Subnets:
@@ -39,12 +35,14 @@ Resources:
   LoadBalancerTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub LbTarget${ApiName}
+      Name: TargetGroup
       VpcId: !Ref VpcId
       Protocol: TCP
       Port: 80
       TargetType: ip
       HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 10
+      HealthyThresholdCount: 3
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 5

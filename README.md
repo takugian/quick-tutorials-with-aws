@@ -27,7 +27,7 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewaychatroomwebsocket] - Complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewaycognitoauthorizer] - REST API Gateway using Cognito as authorizer `backlog`
-- [apigatewayecsappgamerestapi] - Complete CRUD REST API using an API Gateway, a Load Balancer in front of an ECS task as backend, a Lambda function as authorizer and a RDS MySQL table `backlog`
+- [apigatewayecsappgamerestapi] - Complete CRUD REST API using an API Gateway, a Load Balancer in front of an ECS task as backend, a Lambda function as authorizer and a RDS MySQL table
 - [apigatewaygamerestapi] - Complete CRUD REST API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewayhttplambda] - REST API Gateway integrated to a Lambda function
 - [apigatewayhttpwebsocketlambda] - WebSocket API Gateway integrated to a Lambda function

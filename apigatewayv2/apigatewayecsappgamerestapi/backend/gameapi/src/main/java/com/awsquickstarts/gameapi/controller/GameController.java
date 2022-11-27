@@ -23,7 +23,7 @@ import com.awsquickstarts.gameapi.model.to.GameTo;
 import com.awsquickstarts.gameapi.service.GameService;
 
 @RestController
-@RequestMapping(path = "/games")
+@RequestMapping(path = "/{stage}/games")
 public class GameController {
 
     @Autowired

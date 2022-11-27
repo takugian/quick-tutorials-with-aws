@@ -4,18 +4,14 @@ Description: Creates a VPC Link
 
 Parameters:
 
-  VpcLinkName:
-    Type: String
-    Default: VpcLinkDefault
-
   SubnetId1:
     Type: String
 
   SubnetId2:
     Type: String
 
-  SecurityGroupId:
-    Type: String
+  # SecurityGroupId:
+  #   Type: String
 
   Owner:
     Type: String
@@ -26,9 +22,9 @@ Resources:
   VpcLink:
     Type: AWS::ApiGatewayV2::VpcLink
     Properties:
-      Name: !Ref VpcLinkName
-      SecurityGroupIds:
-        - !Ref SecurityGroupId
+      Name: VpcLinkDefault
+      # SecurityGroupIds:
+      #   - !Ref SecurityGroupId
       SubnetIds:
         - !Ref SubnetId1
         - !Ref SubnetId2

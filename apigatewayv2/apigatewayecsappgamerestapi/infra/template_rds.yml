@@ -15,6 +15,7 @@ Parameters:
     Default: tg
 
 Resources:
+
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
