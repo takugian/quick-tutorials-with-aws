@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Alarms for a RDS instance
+
+Parameters:
+  DBInstanceIdentifier:
+    Type: String
+
+  # AlarmEmail:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  # Topic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     TopicName: !Sub ${DBInstanceIdentifier}Topic
+  #     Subscription:
+  #       - Endpoint: !Ref AlarmEmail
+  #         Protocol: email
+  #     Tags:
+  #       - Key: Owner
+  #         Value: !Ref Owner
+
+ DatabaseConnectionsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub DatabaseConnections${DBInstanceIdentifier}
+      AlarmDescription: !Sub DatabaseConnections${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: DatabaseConnections
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+ WriteThroughputAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub WriteThroughput${DBInstanceIdentifier}
+      AlarmDescription: !Sub WriteThroughput${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: WriteThroughput
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+ ReadThroughputAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ReadThroughput${DBInstanceIdentifier}
+      AlarmDescription: !Sub ReadThroughput${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: ReadThroughput
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+ CPUUtilizationAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub CPUUtilization${DBInstanceIdentifier}
+      AlarmDescription: !Sub CPUUtilization${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: CPUUtilization
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 70
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions

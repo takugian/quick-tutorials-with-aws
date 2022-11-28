@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Alarms for a SNS topic
+
+Parameters:
+  TopicName:
+    Type: String
+    Default: CloudWatchAlarmsQueue
+
+  # AlarmEmail:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Ref TopicName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  # AlarmTopic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     Subscription:
+  #       - Endpoint:
+  #           Ref: AlarmEmail
+  #         Protocol: email
+  #     Tags:
+  #       - Key: Owner
+  #         Value: !Ref Owner
+
+  NumberOfMessagesPublishedAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub NumberOfMessagesPublished${TopicName}
+      AlarmDescription: !Sub NumberOfMessagesPublished${TopicName}
+      Namespace: AWS/SNS
+      MetricName: NumberOfMessagesPublished
+      Dimensions:
+        - Name: TopicName
+          Value: !Ref TopicName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  NumberOfNotificationsFailedAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub NumberOfNotificationsFailed${TopicName}
+      AlarmDescription: !Sub NumberOfNotificationsFailed${TopicName}
+      Namespace: AWS/SNS
+      MetricName: NumberOfNotificationsFailed
+      Dimensions:
+        - Name: TopicName
+          Value: !Ref TopicName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions

@@ -3,6 +3,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a CloudWatch Logs for an API Gateway
 
 Parameters:
+
   ApiName:
     Type: String
     Default: CloudWatchLogsApiGateway
@@ -11,19 +12,74 @@ Parameters:
     Type: String
     Default: sandbox
 
-  # KmsKeyId:
-  #   Type: String
-
   Owner:
     Type: String
     Default: tg
 
 Resources:
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ApiName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:CreateLogGroup
+              - logs:PutLogEvents
+            Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Ref ApiName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+            console.log('event', JSON.stringify(event));
+            return {
+              statusCode: 200,
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify("Hello world!"),
+            };
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: Lambda
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt Lambda.Arn
+      Principal: apigateway.amazonaws.com
+
   CloudWatchLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/apigateway/${ApiName}/${StageName}
-      # KmsKeyId: !Ref KmsKeyId
       RetentionInDays: 7
       Tags:
         - Key: Owner
@@ -32,7 +88,7 @@ Resources:
   ApiGatewayCloudWatchRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${ApiName}ExecutionRole
+      RoleName: !Sub ${ApiName}ApiGatewayRole
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -51,65 +107,46 @@ Resources:
     Properties:
       CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
 
-  RestApi:
-    Type: AWS::ApiGateway::RestApi
+  Api:
+    Type: AWS::ApiGatewayV2::Api
     Properties:
       Name: !Ref ApiName
       Description: !Ref ApiName
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
+      Version: 1
+      ProtocolType: HTTP
 
-  CustomerResource:
-    Type: AWS::ApiGateway::Resource
-    DependsOn: RestApi
+  Integration:
+    Type: AWS::ApiGatewayV2::Integration
     Properties:
-      RestApiId: !Ref RestApi
-      ParentId: !GetAtt RestApi.RootResourceId
-      PathPart: customers
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      ConnectionType: INTERNET
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: ANY
+      IntegrationUri: !GetAtt Lambda.Arn
+      PayloadFormatVersion: 2.0
 
-  MethodGetCustomers:
-    Type: AWS::ApiGateway::Method
-    DependsOn: RestApi
+  Route:
+    Type: AWS::ApiGatewayV2::Route
     Properties:
-      RestApiId: !Ref RestApi
-      ResourceId: !Ref CustomerResource
-      HttpMethod: GET
-      AuthorizationType: NONE
-      MethodResponses:
-        - StatusCode: 200
-      Integration:
-        Type: MOCK
+      ApiId: !Ref Api
+      RouteKey: "GET /customers"
+      Target: !Join ["/", [integrations, !Ref Integration]]
 
   Deployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn: MethodGetCustomers
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn: [Api, Route]
     Properties:
-      RestApiId: !Ref RestApi
-      # StageName: !Ref StageName
+      ApiId: !Ref Api
 
-  SandboxStage:
-    Type: AWS::ApiGateway::Stage
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn: [Integration, Route, Deployment]
     Properties:
       StageName: !Ref StageName
       Description: !Ref StageName
-      RestApiId: !Ref RestApi
+      ApiId: !Ref Api
       DeploymentId: !Ref Deployment
-      Variables:
-        Stack: SANDBOX
-      MethodSettings:
-        - ResourcePath: /customers
-          HttpMethod: GET
-          MetricsEnabled: true
-          DataTraceEnabled: true
-          LoggingLevel: INFO
       AccessLogSetting:
         DestinationArn: !GetAtt CloudWatchLogGroup.Arn
-        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLatency":$context.responseLatency}'
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
-
-Outputs:
-  ApiGatewayId:
-    Value: !Ref RestApi
+        Format: "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\" }"

@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Alarms for an ECS task
+
+Parameters:
+  ClusterName:
+    Type: String
+    Default: fargateecscluster
+
+  ServiceName:
+    Type: String
+    Default: CloudWatchAlarmsEcsTask
+
+  AlarmEmail:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${FunctionName}Topic
+      Subscription:
+        - Endpoint: !Ref AlarmEmail
+          Protocol: email
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  CPUUtilizationAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub CPUUtilization${FunctionName}
+      AlarmDescription: !Sub CPUUtilization${FunctionName}
+      Namespace: AWS/ECS
+      MetricName: CPUUtilization
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ClusterName
+        - Name: ServiceName
+          Value: !Ref ServiceName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 50
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      AlarmActions:
+        - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  MemoryUtilizationAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub MemoryUtilization${FunctionName}
+      AlarmDescription: !Sub MemoryUtilization${FunctionName}
+      Namespace: AWS/ECS
+      MetricName: MemoryUtilization
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ClusterName
+        - Name: ServiceName
+          Value: !Ref ServiceName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 50
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      AlarmActions:
+        - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions

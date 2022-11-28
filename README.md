@@ -84,9 +84,18 @@ A lot of AWS tutorials for you!!! ;)
 ### [CloudWatch]
 
 - [cloudwatchalarmsapigateway] - CloudWatch Alarms for an API Gateway
-- [cloudwatchalarmsdynamodb] - CloudWatch Alarms and DynamoDB `backlog`
-- [cloudwatchalarmsecs] - CloudWatch Alarms and ECS `backlog`
+- [cloudwatchalarmsaurora] - CloudWatch Alarms for an Aurora database `backlog`
+- [cloudwatchalarmscloudfront] - CloudWatch Alarms for a CloudFront `backlog`
+- [cloudwatchalarmsdynamodb] - CloudWatch Alarms for a DynamoDB table
+- [cloudwatchalarmsec2] - CloudWatch Alarms for an EC2 instance `backlog`
+- [cloudwatchalarmsecs] - CloudWatch Alarms for an ECS task
+- [cloudwatchalarmsecsclusterautoscaling] - CloudWatch Alarms for an ECS auto scaling `in progress`
+- [cloudwatchalarmselasticache] - CloudWatch Alarms for an ElastiCache `backlog`
 - [cloudwatchalarmslambda] - CloudWatch Alarms for a Lambda function
+- [cloudwatchalarmsloadbalancer] - CloudWatch Alarms for a Load Balancer
+- [cloudwatchalarmsrds] - CloudWatch Alarms for a RDS instance
+- [cloudwatchalarmss3] - CloudWatch Alarms for a S3 bucket
+- [cloudwatchalarmssns] - CloudWatch Alarms for a SNS topic
 - [cloudwatchalarmssqs] - CloudWatch Alarms for a SQS queue
 - [cloudwatchlogsapigateway] - CloudWatch Logs for an API Gateway
 - [cloudwatchlogsecsapp] - CloudWatch Logs for an ECS task
@@ -94,9 +103,18 @@ A lot of AWS tutorials for you!!! ;)
 
 [CloudWatch]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CloudWatch.html
 [cloudwatchalarmsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsapigateway
+[cloudwatchalarmsaurora]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsaurora
+[cloudwatchalarmscloudfront]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmscloudfront
+[cloudwatchalarmsec2]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsec2
 [cloudwatchalarmsdynamodb]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsdynamodb
 [cloudwatchalarmsecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsecs
+[cloudwatchalarmsecsclusterautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsecsclusterautoscaling
+[cloudwatchalarmselasticache]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmselasticache
 [cloudwatchalarmslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmslambda
+[cloudwatchalarmsloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsloadbalancer
+[cloudwatchalarmsrds]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsrds
+[cloudwatchalarmss3]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmss3
+[cloudwatchalarmssns]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmssns
 [cloudwatchalarmssqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmssqs
 [cloudwatchlogsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsapigateway
 [cloudwatchlogsecsapp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsecsapp

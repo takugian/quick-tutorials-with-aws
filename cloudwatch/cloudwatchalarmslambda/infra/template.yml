@@ -59,34 +59,34 @@ Resources:
         - Key: Owner
           Value: !Ref Owner
 
-  LamdaInvocationsAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub LamdaInvocations${FunctionName}
-      AlarmDescription: !Sub LamdaInvocations${FunctionName}
-      Namespace: /aws/lambda
-      MetricName: Invocations
-      Dimensions:
-        - Name: FunctionName
-          Value: !Ref Lambda
-      Statistic: Sum
-      Period: 86400
-      EvaluationPeriods: 1
-      Threshold: 1
-      ComparisonOperator: LessThanThreshold
-      TreatMissingData: breaching
-      ActionsEnabled: true
-      AlarmActions:
-        - !Ref AlarmTopic
-      InsufficientDataActions:
-        - !Ref AlarmTopic
-
-  AlarmTopic:
+  Topic:
     Type: AWS::SNS::Topic
     Properties:
+      TopicName: !Sub ${FunctionName}Topic
       Subscription:
         - Endpoint: !Ref AlarmEmail
           Protocol: email
       Tags:
         - Key: Owner
           Value: !Ref Owner
+
+  LamdaInvocationsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub LamdaInvocations${FunctionName}
+      AlarmDescription: !Sub LamdaInvocations${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: Invocations
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Lambda
+      Statistic: SampleCount
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      AlarmActions:
+        - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions

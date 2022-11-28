@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Alarms for a DynamoDB table
+
+Parameters:
+  TableName:
+    Type: String
+    Default: CloudWatchAlarmsDynamoDB
+
+  # AlarmEmail:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Person
+      AttributeDefinitions:
+        - AttributeName: table_pk
+          AttributeType: S
+        - AttributeName: table_sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: table_pk
+          KeyType: HASH
+        - AttributeName: table_sk
+          KeyType: RANGE
+      TableClass: STANDARD
+      BillingMode: PAY_PER_REQUEST
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  # Topic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     TopicName: !Sub ${TableName}Topic
+  #     Subscription:
+  #       - Endpoint: !Ref AlarmEmail
+  #         Protocol: email
+  #     Tags:
+  #       - Key: Owner
+  #         Value: !Ref Owner
+
+  ConsumedReadCapacityUnitsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ConsumedReadCapacityUnits${TableName}
+      AlarmDescription: !Sub ConsumedReadCapacityUnits${TableName}
+      Namespace: AWS/DynamoDB
+      MetricName: ConsumedReadCapacityUnits
+      Dimensions:
+        - Name: TableName
+          Value: !Ref TableName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  ConsumedWriteCapacityUnitsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ConsumedWriteCapacityUnits${TableName}
+      AlarmDescription: !Sub ConsumedWriteCapacityUnits${TableName}
+      Namespace: AWS/DynamoDB
+      MetricName: ConsumedWriteCapacityUnits
+      Dimensions:
+        - Name: TableName
+          Value: !Ref TableName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions

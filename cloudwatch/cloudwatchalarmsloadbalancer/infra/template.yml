@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Alarms for a Load Balancer
+
+Parameters:
+  LoadBalancerName:
+    Type: String
+  
+  TargetGroup:
+    Type: String
+
+  # AlarmEmail:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  # Topic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     TopicName: !Sub ${TableName}Topic
+  #     Subscription:
+  #       - Endpoint: !Ref AlarmEmail
+  #         Protocol: email
+  #     Tags:
+  #       - Key: Owner
+  #         Value: !Ref Owner
+
+  ActiveConnectionCountAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ActiveConnectionCount${LoadBalancerName}
+      AlarmDescription: !Sub ActiveConnectionCount${LoadBalancerName}
+      Namespace: AWS/ApplicationELB
+      MetricName: ActiveConnectionCount
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !Ref LoadBalancerName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  HTTPCode_ELB_5XX_CountAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub HTTPCode_ELB_5XX_Count${TableName}
+      AlarmDescription: !Sub HTTPCode_ELB_5XX_Count${TableName}
+      Namespace: AWS/ApplicationELB
+      MetricName: HTTPCode_ELB_5XX_Count
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !Ref LoadBalancerName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  UnHealthyHostCountAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub UnHealthyHostCount${TableName}
+      AlarmDescription: !Sub UnHealthyHostCount${TableName}
+      Namespace: AWS/ApplicationELB
+      MetricName: UnHealthyHostCount
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !Ref LoadBalancerName
+        - Name: TargetGroup
+          Value: !Ref TargetGroup
+      Statistic: Minimum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions

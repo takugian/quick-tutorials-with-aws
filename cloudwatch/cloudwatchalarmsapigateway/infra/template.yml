@@ -3,6 +3,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a CloudWatch Alarms for an API Gateway
 
 Parameters:
+
   ApiName:
     Type: String
     Default: CloudWatchAlarmApiGateway
@@ -11,126 +12,258 @@ Parameters:
     Type: String
     Default: sandbox
 
+  AlarmEmail:
+    Type: String
+
   Owner:
     Type: String
     Default: tg
 
 Resources:
-  RestApi:
-    Type: AWS::ApiGateway::RestApi
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ApiName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:CreateLogGroup
+              - logs:PutLogEvents
+            Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Ref ApiName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+
+            console.log('event', JSON.stringify(event));
+
+            let response = {
+              statusCode: 200,
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: null,
+            };
+
+            if (event.routeKey == "GET /customers") {
+
+              const queryStringParameters = event.queryStringParameters;
+
+              if (queryStringParameters == null || queryStringParameters.customer_type == null) {
+
+                response.statusCode = 400;
+                response.body = JSON.stringify("customer_type is required");
+
+              } else if (queryStringParameters.customer_type == "NATURAL") {
+
+                response.body = JSON.stringify([{ customer_id: "1", customer_name: "EMERSON" }]);
+
+              } else {
+
+                response.statusCode = 500;
+                response.body = JSON.stringify("An error has occurred");
+
+              }
+
+            } 
+
+            return response;
+
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: Lambda
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt Lambda.Arn
+      Principal: apigateway.amazonaws.com
+
+  Api:
+    Type: AWS::ApiGatewayV2::Api
     Properties:
       Name: !Ref ApiName
       Description: !Ref ApiName
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
+      Version: 1
+      ProtocolType: HTTP
 
-  CustomerResource:
-    Type: AWS::ApiGateway::Resource
-    DependsOn: RestApi
+  Integration:
+    Type: AWS::ApiGatewayV2::Integration
     Properties:
-      RestApiId: !Ref RestApi
-      ParentId: !GetAtt RestApi.RootResourceId
-      PathPart: customers
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      ConnectionType: INTERNET
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: ANY
+      IntegrationUri: !GetAtt Lambda.Arn
+      PayloadFormatVersion: 2.0
 
-  MethodGetCustomers:
-    Type: AWS::ApiGateway::Method
-    DependsOn: RestApi
+  Route:
+    Type: AWS::ApiGatewayV2::Route
     Properties:
-      RestApiId: !Ref RestApi
-      ResourceId: !Ref CustomerResource
-      HttpMethod: GET
-      AuthorizationType: NONE
-      MethodResponses:
-        - StatusCode: 200
-      Integration:
-        Type: MOCK
+      ApiId: !Ref Api
+      RouteKey: "GET /customers"
+      Target: !Join ["/", [integrations, !Ref Integration]]
 
   Deployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn: MethodGetCustomers
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn: [Api, Route]
     Properties:
-      RestApiId: !Ref RestApi
+      ApiId: !Ref Api
 
   Stage:
-    Type: AWS::ApiGateway::Stage
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn: [Integration, Route, Deployment]
     Properties:
       StageName: !Ref StageName
       Description: !Ref StageName
-      RestApiId: !Ref RestApi
+      ApiId: !Ref Api
       DeploymentId: !Ref Deployment
+      DefaultRouteSettings:
+        DetailedMetricsEnabled: true
+
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${ApiName}Topic
+      Subscription:
+        - Endpoint: !Ref AlarmEmail
+          Protocol: email
       Tags:
         - Key: Owner
           Value: !Ref Owner
 
-  5XXErrorAlarm:
-    Type: AWS::CloudWatch::Alarm
-    DependsOn: Stage
-    Properties:
-      AlarmName: !Sub ${ApiName}5XXError
-      AlarmDescription: !Sub ${ApiName}5XXError
-      Namespace: AWS/ApiGateway
-      MetricName: 5XError
-      Dimensions:
-        - Name: Stage
-          Value: !Ref StageName
-        - Name: ApiName
-          Value: !Ref ApiName
-        - Name: Method
-          Value: GET
-        - Name: Resource
-          Value: customers 
-      Statistic: Sum
-      Period: 300
-      EvaluationPeriods: 1
-      Threshold: 2
-      ComparisonOperator: LessThanThreshold
-      TreatMissingData: breaching
-
   CountAlarm:
     Type: AWS::CloudWatch::Alarm
-    DependsOn: Stage
     Properties:
       AlarmName: !Sub ${ApiName}Count
       AlarmDescription: !Sub ${ApiName}Count
       Namespace: AWS/ApiGateway
       MetricName: Count
       Dimensions:
-        - Name: Stage
-          Value: !Ref StageName
-        - Name: ApiName
-          Value: !Ref ApiName
+        - Name: ApiId
+          Value: !GetAtt Api.ApiId
         - Name: Method
           Value: GET
         - Name: Resource
-          Value: customers
-      Statistic: Sum
-      Period: 300
-      EvaluationPeriods: 1
-      Threshold: 4
-      ComparisonOperator: LessThanThreshold
-      TreatMissingData: breaching
+          Value: /customers
+        - Name: Stage
+          Value: !Ref StageName
+      Statistic: SampleCount
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      AlarmActions:
+        - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  4xxAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${ApiName}4xx
+      AlarmDescription: !Sub ${ApiName}4xx
+      Namespace: AWS/ApiGateway
+      MetricName: 4xx
+      Dimensions:
+        - Name: ApiId
+          Value: !GetAtt Api.ApiId
+        - Name: Method
+          Value: GET
+        - Name: Resource
+          Value: /customers 
+        - Name: Stage
+          Value: !Ref StageName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      AlarmActions:
+        - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  5xxAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${ApiName}5xx
+      AlarmDescription: !Sub ${ApiName}5xx
+      Namespace: AWS/ApiGateway
+      MetricName: 5xx
+      Dimensions:
+        - Name: ApiId
+          Value: !GetAtt Api.ApiId
+        - Name: Method
+          Value: GET
+        - Name: Resource
+          Value: /customers 
+        - Name: Stage
+          Value: !Ref StageName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      AlarmActions:
+        - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
 
   LatencyAlarm:
     Type: AWS::CloudWatch::Alarm
-    DependsOn: Stage
     Properties:
       AlarmName: !Sub ${ApiName}Latency
       AlarmDescription: !Sub ${ApiName}Latency
       Namespace: AWS/ApiGateway
       MetricName: Latency
       Dimensions:
-        - Name: Stage
-          Value: !Ref StageName
-        - Name: ApiName
-          Value: !Ref ApiName
+        - Name: ApiId
+          Value: !GetAtt Api.ApiId
         - Name: Method
           Value: GET
         - Name: Resource
-          Value: customers
+          Value: /customers 
+        - Name: Stage
+          Value: !Ref StageName
       Statistic: Average
-      Period: 300
-      EvaluationPeriods: 1
-      Threshold: 1000
-      ComparisonOperator: LessThanThreshold
-      TreatMissingData: breaching
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 20
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      AlarmActions:
+        - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
