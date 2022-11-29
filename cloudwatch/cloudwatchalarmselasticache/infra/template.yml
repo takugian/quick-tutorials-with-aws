@@ -1,12 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Alarms for an ECS task
+Description: Creates a CloudWatch Alarms for an ElastiCache Redis Cluster
 
 Parameters:
   ClusterName:
-    Type: String
-
-  ServiceName:
     Type: String
 
   # AlarmEmail:
@@ -33,13 +30,11 @@ Resources:
     Properties:
       AlarmName: !Sub CPUUtilization${FunctionName}
       AlarmDescription: !Sub CPUUtilization${FunctionName}
-      Namespace: AWS/ECS
+      Namespace: AWS/ElastiCache
       MetricName: CPUUtilization
       Dimensions:
         - Name: ClusterName
           Value: !Ref ClusterName
-        - Name: ServiceName
-          Value: !Ref ServiceName
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2
@@ -51,18 +46,16 @@ Resources:
       # OKActions
       # InsufficientDataActions
 
-  MemoryUtilizationAlarm:
+  CacheHitsAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub MemoryUtilization${FunctionName}
-      AlarmDescription: !Sub MemoryUtilization${FunctionName}
-      Namespace: AWS/ECS
-      MetricName: MemoryUtilization
+      AlarmName: !Sub CacheHits${FunctionName}
+      AlarmDescription: !Sub CacheHits${FunctionName}
+      Namespace: AWS/ElastiCache
+      MetricName: CacheHits
       Dimensions:
         - Name: ClusterName
           Value: !Ref ClusterName
-        - Name: ServiceName
-          Value: !Ref ServiceName
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2
@@ -74,41 +67,16 @@ Resources:
       # OKActions
       # InsufficientDataActions
 
-  RequestCountAlarm:
+ CacheMissesAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub RequestCount${FunctionName}
-      AlarmDescription: !Sub RequestCount${FunctionName}
-      Namespace: AWS/ECS
-      MetricName: RequestCount
+      AlarmName: !Sub CacheMisses${FunctionName}
+      AlarmDescription: !Sub CacheMisses${FunctionName}
+      Namespace: AWS/ElastiCache
+      MetricName: CacheMisses
       Dimensions:
         - Name: ClusterName
           Value: !Ref ClusterName
-        - Name: ServiceName
-          Value: !Ref ServiceName
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 50
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
-  HTTPCode_Target_5XX_CountAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub HTTPCode_Target_5XX_Count${FunctionName}
-      AlarmDescription: !Sub HTTPCode_Target_5XX_Count${FunctionName}
-      Namespace: AWS/ECS
-      MetricName: HTTPCode_Target_5XX_Count
-      Dimensions:
-        - Name: ClusterName
-          Value: !Ref ClusterName
-        - Name: ServiceName
-          Value: !Ref ServiceName
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2

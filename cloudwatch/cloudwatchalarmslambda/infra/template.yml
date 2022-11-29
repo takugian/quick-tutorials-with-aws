@@ -7,8 +7,8 @@ Parameters:
     Type: String
     Default: CloudWatchAlarmsLambda
 
-  AlarmEmail:
-    Type: String
+  # AlarmEmail:
+  #   Type: String
 
   Owner:
     Type: String
@@ -59,24 +59,45 @@ Resources:
         - Key: Owner
           Value: !Ref Owner
 
-  Topic:
-    Type: AWS::SNS::Topic
-    Properties:
-      TopicName: !Sub ${FunctionName}Topic
-      Subscription:
-        - Endpoint: !Ref AlarmEmail
-          Protocol: email
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
+  # Topic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     TopicName: !Sub ${FunctionName}Topic
+  #     Subscription:
+  #       - Endpoint: !Ref AlarmEmail
+  #         Protocol: email
+  #     Tags:
+  #       - Key: Owner
+  #         Value: !Ref Owner
 
-  LamdaInvocationsAlarm:
+  InvocationsAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub LamdaInvocations${FunctionName}
-      AlarmDescription: !Sub LamdaInvocations${FunctionName}
+      AlarmName: !Sub Invocations${FunctionName}
+      AlarmDescription: !Sub Invocations${FunctionName}
       Namespace: AWS/Lambda
       MetricName: Invocations
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref FunctionName
+      Statistic: SampleCount
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  ErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub Errors${FunctionName}
+      AlarmDescription: !Sub Errors${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: Errors
       Dimensions:
         - Name: FunctionName
           Value: !Ref Lambda
@@ -86,7 +107,91 @@ Resources:
       Threshold: 2
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
-      AlarmActions:
-        - !GetAtt Topic.TopicArn
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  DeadLetterErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub DeadLetterErrors${FunctionName}
+      AlarmDescription: !Sub DeadLetterErrors${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: DeadLetterErrors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Lambda
+      Statistic: SampleCount
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  ProvisionedConcurrencyInvocationsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ProvisionedConcurrencyInvocations${FunctionName}
+      AlarmDescription: !Sub ProvisionedConcurrencyInvocations${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: ProvisionedConcurrencyInvocations
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Lambda
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  DurationAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub Duration${FunctionName}
+      AlarmDescription: !Sub Duration${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: Duration
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Lambda
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  ConcurrentExecutionsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ConcurrentExecutions${FunctionName}
+      AlarmDescription: !Sub ConcurrentExecutions${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: ConcurrentExecutions
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Lambda
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
       # OKActions
       # InsufficientDataActions

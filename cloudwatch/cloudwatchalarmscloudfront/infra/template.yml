@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Alarms for an ECS auto scaling
+Description: Creates a CloudWatch Alarms for a CloudFront distribution
 
 Parameters:
-  ClusterName:
+  DistributionId:
     Type: String
 
   # AlarmEmail:
@@ -17,7 +17,7 @@ Resources:
   # Topic:
   #   Type: AWS::SNS::Topic
   #   Properties:
-  #     TopicName: !Sub ${ClusterName}Topic
+  #     TopicName: !Sub ${DistributionId}Topic
   #     Subscription:
   #       - Endpoint: !Ref AlarmEmail
   #         Protocol: email
@@ -25,20 +25,20 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
-  CapacityProviderReservationAlarm:
+ RequestsAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub CapacityProviderReservation${ClusterName}
-      AlarmDescription: !Sub CapacityProviderReservation${ClusterName}
-      Namespace: AWS/ECS/ManagedScaling
-      MetricName: CapacityProviderReservation
+      AlarmName: !Sub Requests${DistributionId}
+      AlarmDescription: !Sub Requests${DistributionId}
+      Namespace: AWS/CloudFront
+      MetricName: Requests
       Dimensions:
-        - Name: ClusterName
-          Value: !Ref ClusterName
-      Statistic: Average
+        - Name: DistributionId
+          Value: !Ref DistributionId
+      Statistic: Count
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 50
+      Threshold: 10
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:

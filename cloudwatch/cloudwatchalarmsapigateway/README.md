@@ -1,11 +1,23 @@
 # cloudwatchalarmsapigateway
 
-This project creates:
--  A CloudWatch Alarm for an API Gateway
-    - Count alarm configured;
-    - 4XX Error alarm configured;   
-    - 5XX Error alarm configured;    
-    - Latency alarm configured;
+This project creates a CloudWatch Alarms for an API Gateway.
+
+## How to invoke
+
+To return a sucess (200 HTTP code)
+```
+curl -v https://{restapi_id}.execute-api.{region}.amazonaws.com/{stage_name}/customers?customer_type=NATURAL
+```
+
+To return a bad request (400 HTTP code)
+```
+curl -v https://{restapi_id}.execute-api.{region}.amazonaws.com/{stage_name}/customers
+```
+
+To return a internal server error (500 HTTP code)
+```
+curl -v https://{restapi_id}.execute-api.{region}.amazonaws.com/{stage_name}/customers?customer_type=XPTO
+```
 
 ## Helpful links
 

@@ -84,13 +84,13 @@ A lot of AWS tutorials for you!!! ;)
 ### [CloudWatch]
 
 - [cloudwatchalarmsapigateway] - CloudWatch Alarms for an API Gateway
-- [cloudwatchalarmsaurora] - CloudWatch Alarms for an Aurora database `backlog`
-- [cloudwatchalarmscloudfront] - CloudWatch Alarms for a CloudFront `backlog`
+- [cloudwatchalarmsaurora] - CloudWatch Alarms for an Aurora database
+- [cloudwatchalarmscloudfront] - CloudWatch Alarms for a CloudFront
 - [cloudwatchalarmsdynamodb] - CloudWatch Alarms for a DynamoDB table
-- [cloudwatchalarmsec2] - CloudWatch Alarms for an EC2 instance `backlog`
+- [cloudwatchalarmsec2] - CloudWatch Alarms for an EC2 instance
 - [cloudwatchalarmsecs] - CloudWatch Alarms for an ECS task
-- [cloudwatchalarmsecsclusterautoscaling] - CloudWatch Alarms for an ECS auto scaling `in progress`
-- [cloudwatchalarmselasticache] - CloudWatch Alarms for an ElastiCache `backlog`
+- [cloudwatchalarmsecsclusterautoscaling] - CloudWatch Alarms for an ECS auto scaling
+- [cloudwatchalarmselasticache] - CloudWatch Alarms for an ElastiCache
 - [cloudwatchalarmslambda] - CloudWatch Alarms for a Lambda function
 - [cloudwatchalarmsloadbalancer] - CloudWatch Alarms for a Load Balancer
 - [cloudwatchalarmsrds] - CloudWatch Alarms for a RDS instance

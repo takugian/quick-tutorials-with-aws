@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Alarms for an ECS auto scaling
+Description: Creates a CloudWatch Alarms for an EC2 instance
 
 Parameters:
-  ClusterName:
+  InstanceId:
     Type: String
 
   # AlarmEmail:
@@ -17,7 +17,7 @@ Resources:
   # Topic:
   #   Type: AWS::SNS::Topic
   #   Properties:
-  #     TopicName: !Sub ${ClusterName}Topic
+  #     TopicName: !Sub ${InstanceId}Topic
   #     Subscription:
   #       - Endpoint: !Ref AlarmEmail
   #         Protocol: email
@@ -25,16 +25,16 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
-  CapacityProviderReservationAlarm:
+  CPUUtilizationAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub CapacityProviderReservation${ClusterName}
-      AlarmDescription: !Sub CapacityProviderReservation${ClusterName}
-      Namespace: AWS/ECS/ManagedScaling
-      MetricName: CapacityProviderReservation
+      AlarmName: !Sub CPUUtilization${InstanceId}
+      AlarmDescription: !Sub CPUUtilization${InstanceId}
+      Namespace: AWS/EC2
+      MetricName: CPUUtilization
       Dimensions:
-        - Name: ClusterName
-          Value: !Ref ClusterName
+        - Name: InstanceId
+          Value: !Ref InstanceId
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2

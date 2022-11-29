@@ -1,12 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Alarms for an ECS task
+Description: Creates a CloudWatch Alarms for an Aurora instance
 
 Parameters:
-  ClusterName:
-    Type: String
-
-  ServiceName:
+  DBInstanceIdentifier:
     Type: String
 
   # AlarmEmail:
@@ -20,7 +17,7 @@ Resources:
   # Topic:
   #   Type: AWS::SNS::Topic
   #   Properties:
-  #     TopicName: !Sub ${FunctionName}Topic
+  #     TopicName: !Sub ${DBInstanceIdentifier}Topic
   #     Subscription:
   #       - Endpoint: !Ref AlarmEmail
   #         Protocol: email
@@ -28,22 +25,62 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
-  CPUUtilizationAlarm:
+ ActiveTransactionsAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub CPUUtilization${FunctionName}
-      AlarmDescription: !Sub CPUUtilization${FunctionName}
-      Namespace: AWS/ECS
+      AlarmName: !Sub ActiveTransactions${DBInstanceIdentifier}
+      AlarmDescription: !Sub ActiveTransactions${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: ActiveTransactions
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Count
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+ BlockedTransactionsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub BlockedTransactions${DBInstanceIdentifier}
+      AlarmDescription: !Sub BlockedTransactions${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: BlockedTransactions
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Count
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+ CPUUtilizationAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub CPUUtilization${DBInstanceIdentifier}
+      AlarmDescription: !Sub CPUUtilization${DBInstanceIdentifier}
+      Namespace: AWS/RDS
       MetricName: CPUUtilization
       Dimensions:
-        - Name: ClusterName
-          Value: !Ref ClusterName
-        - Name: ServiceName
-          Value: !Ref ServiceName
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 50
+      Threshold: 10
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:
@@ -51,68 +88,20 @@ Resources:
       # OKActions
       # InsufficientDataActions
 
-  MemoryUtilizationAlarm:
+ DatabaseConnectionsAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub MemoryUtilization${FunctionName}
-      AlarmDescription: !Sub MemoryUtilization${FunctionName}
-      Namespace: AWS/ECS
-      MetricName: MemoryUtilization
+      AlarmName: !Sub DatabaseConnections${DBInstanceIdentifier}
+      AlarmDescription: !Sub DatabaseConnections${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: DatabaseConnections
       Dimensions:
-        - Name: ClusterName
-          Value: !Ref ClusterName
-        - Name: ServiceName
-          Value: !Ref ServiceName
-      Statistic: Average
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Count
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 50
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
-  RequestCountAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub RequestCount${FunctionName}
-      AlarmDescription: !Sub RequestCount${FunctionName}
-      Namespace: AWS/ECS
-      MetricName: RequestCount
-      Dimensions:
-        - Name: ClusterName
-          Value: !Ref ClusterName
-        - Name: ServiceName
-          Value: !Ref ServiceName
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 50
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
-  HTTPCode_Target_5XX_CountAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub HTTPCode_Target_5XX_Count${FunctionName}
-      AlarmDescription: !Sub HTTPCode_Target_5XX_Count${FunctionName}
-      Namespace: AWS/ECS
-      MetricName: HTTPCode_Target_5XX_Count
-      Dimensions:
-        - Name: ClusterName
-          Value: !Ref ClusterName
-        - Name: ServiceName
-          Value: !Ref ServiceName
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 50
+      Threshold: 70
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:
