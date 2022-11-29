@@ -97,6 +97,8 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudwatchalarmss3] - CloudWatch Alarms for a S3 bucket
 - [cloudwatchalarmssns] - CloudWatch Alarms for a SNS topic
 - [cloudwatchalarmssqs] - CloudWatch Alarms for a SQS queue
+- [cloudwatchanormalydetector] - CloudWatch Anormaly Detector `backlog`
+- [cloudwatchdashboard] - CloudWatch Dashboard `backlog`
 - [cloudwatchlogsapigateway] - CloudWatch Logs for an API Gateway
 - [cloudwatchlogsecsapp] - CloudWatch Logs for an ECS task
 - [cloudwatchlogslambda] - CloudWatch Logs for a Lambda function
@@ -116,6 +118,8 @@ A lot of AWS tutorials for you!!! ;)
 [cloudwatchalarmss3]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmss3
 [cloudwatchalarmssns]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmssns
 [cloudwatchalarmssqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmssqs
+[cloudwatchanormalydetector]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchanormalydetector
+[cloudwatchdashboard]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchdashboard
 [cloudwatchlogsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsapigateway
 [cloudwatchlogsecsapp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsecsapp
 [cloudwatchlogslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogslambda
