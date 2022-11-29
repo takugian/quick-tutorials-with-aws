@@ -166,7 +166,7 @@ A lot of AWS tutorials for you!!! ;)
 - [dynamostreamlambda] - DynamoDB Stream integrated with a Lambda function
 - [dynamotable] - DynamoDB table
 - [dynamotableautoscaling] - DynamoDB table with auto Scaling configured
-- [dynamotableecsappnode] - Integration between a DynamoDB table and an ECS task `backlog`
+- [dynamotableecsapp] - Integration between a DynamoDB table and an ECS task
 - [dynamotableimportsource] - DynamoDB table and import data from a S3 bucket
 - [dynamotableindexes] - DynamoDB table with Global Secondary Index (GSI) and Local Secondary Index (LSI) configured
 - [dynamotablelambda] - Integration between a DynamoDB table and a Lambda function
@@ -177,7 +177,7 @@ A lot of AWS tutorials for you!!! ;)
 [dynamostreamlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamostreamlambda
 [dynamotable]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotable
 [dynamotableautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableautoscaling
-[dynamotableecsappnode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableecsappnode
+[dynamotableecsapp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableecsapp
 [dynamotableimportsource]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableimportsource
 [dynamotableindexes]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableindexes
 [dynamotablelambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotablelambda
