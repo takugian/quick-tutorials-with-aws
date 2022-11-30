@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a MSK Cluster
+
+Parameters:
+  ClusterName:
+    Type: String
+    Default: mskcluster1
+
+  VpcId:
+    Type: String
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/msk/${ClusterName}
+      RetentionInDays: 7
+
+  # ClusterSecurityGroup:
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:
+  #     GroupName: !Sub Sg${ClusterName}
+  #     GroupDescription: !Sub Sg${ClusterName}
+  #     VpcId: !Ref VpcId
+  #     SecurityGroupIngress:
+  #       - IpProtocol: tcp
+  #         FromPort: 9092
+  #         ToPort: 9092
+  #         CidrIp: 0.0.0.0/0
+  #     SecurityGroupEgress:
+  #       - IpProtocol: "-1"
+  #         CidrIp: 0.0.0.0/0
+  #     Tags:
+  #       - Key: Owner
+  #         Value: !Ref Owner
+
+  # MSKClusterConfiguration:
+  #   Type: AWS::MSK::Configuration
+  #   Properties:
+  #     Name: !Sub ${ClusterName}Configuration
+  #     Description: !Sub ${ClusterName}Configuration
+  #     KafkaVersionsList:
+  #       - 3.3.1
+  #     ServerProperties: fileb://config-file-path
+
+  MSKCluster:
+    Type: AWS::MSK::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+      KafkaVersion: 3.3.1
+      NumberOfBrokerNodes: 2
+      BrokerNodeGroupInfo:
+        ClientSubnets:
+          - !Ref SubnetId1
+          - !Ref SubnetId2
+        ConnectivityInfo:
+          PublicAccess:
+            Type: DISABLED
+        InstanceType: t3.small
+        # SecurityGroups:
+        #   - !GetAtt ClusterSecurityGroup.GroupId
+        StorageInfo:
+          EBSStorageInfo:
+            VolumeSize: 1
+      ClientAuthentication:
+        Unauthenticated:
+          Enabled: true
+      # ConfigurationInfo:
+      #   Arn: MSKClusterConfiguration.Arn
+      #   Revision: 1
+      # EncryptionInfo:
+      #   EncryptionAtRest:
+      #     DataVolumeKMSKeyId: !Ref KMSKey
+      #     EncryptionInTransit:
+      #       ClientBroker: TLS
+      #       InCluster: true
+      EnhancedMonitoring: DEFAULT
+      LoggingInfo:
+        BrokerLogs:
+          CloudWatchLogs:
+            LogGroup: !Ref CloudWatchLogGroup
+            Enabled: true
+      # OpenMonitoring:
+      #   Prometheus:

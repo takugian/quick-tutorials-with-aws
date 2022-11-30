@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a MSK Cluster and Lambda function to consume from a Kafka topic
+
+Parameters:
+  FunctionName:
+    Type: String
+    Default: msklambda
+
+  VpcId:
+    Type: String
+
+  RouteTableId1:
+    Type: String
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/msk/${FunctionName}
+      RetentionInDays: 7
+
+  MSKCluster:
+    Type: AWS::MSK::Cluster
+    Properties:
+      ClusterName: !Ref FunctionName
+      KafkaVersion: 3.3.1
+      NumberOfBrokerNodes: 2
+      BrokerNodeGroupInfo:
+        ClientSubnets:
+          - !Ref SubnetId1
+          - !Ref SubnetId2
+        ConnectivityInfo:
+          PublicAccess:
+            Type: DISABLED
+        InstanceType: t3.small
+        StorageInfo:
+          EBSStorageInfo:
+            VolumeSize: 1
+      ClientAuthentication:
+        Unauthenticated:
+          Enabled: true
+      EnhancedMonitoring: DEFAULT
+      LoggingInfo:
+        BrokerLogs:
+          CloudWatchLogs:
+            LogGroup: !Ref CloudWatchLogGroup
+            Enabled: true
+
+  LambdaConsumerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${FunctionName}Role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${FunctionName}Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  LambdaConsumer:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaConsumerExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+              console.log(`Event received: ${JSON.stringify(event)}`);
+              return { statusCode: 200, body: JSON.stringify("OK"), };
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  EventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      FunctionName: !GetAtt LambdaConsumer.Arn
+      EventSourceArn: !Ref MSKCluster
+      AmazonManagedKafkaEventSourceConfig:
+        ConsumerGroupId: lambda
+      # FilterCriteria: FilterCriteria
+      BatchSize: 100
+      MaximumBatchingWindowInSeconds: 500
+      # SourceAccessConfigurations:
+      #   - SourceAccessConfiguration
+      Enabled: true

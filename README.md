@@ -316,12 +316,14 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [MSK]
 
-- [mskcluster] - MSK Cluster `backlog`
-- [mskecs] - Integration between an ECS task and a MSK Cluster `backlog`
-- [msklambda] - Integration between a Lambda function and a MSK Cluster `backlog`
+- [mskcluster] - MSK Cluster
+- [mskclusterserverless] - Integration between an ECS task and a MSK Cluster
+- [mskecs] - Integration between an ECS task and a MSK Cluster `in progress`
+- [msklambda] - Integration between a Lambda function and a MSK Cluster `in progress`
 
 [MSK]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_MSK.html
 [mskcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/msk/mskcluster
+[mskclusterserverless]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/msk/mskclusterserverless
 [mskecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/msk/mskecs
 [msklambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/msk/msklambda
 

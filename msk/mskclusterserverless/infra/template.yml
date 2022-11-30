@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a MSK Cluster Serverless
+
+Parameters:
+  ClusterName:
+    Type: String
+    Default: mskclusterserverless1
+
+  VpcId:
+    Type: String
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  ClusterServerlessSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub Sg${ClusterName}
+      GroupDescription: !Sub Sg${ClusterName}
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 9092
+          ToPort: 9092
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  MSKClusterServerless:
+    Type: AWS::MSK::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+      ClientAuthentication:
+        Sasl:
+          Iam:
+            Enabled: true
+      VpcConfigs:
+        - SecurityGroups:
+            - !GetAtt ClusterSecurityGroup.GroupId
+          SubnetIds:
+            - !Ref SubnetId1
+            - !Ref SubnetId2
