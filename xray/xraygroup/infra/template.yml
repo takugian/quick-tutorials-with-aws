@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a X-Ray group
+
+Parameters:
+  GroupName:
+    Type: String
+    Default: MyGroup
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Group:
+    Type: AWS::XRay::Group
+    Properties:
+      GroupName: !Ref GroupName
+      FilterExpression: duration > 10
+      InsightsConfiguration:
+        InsightsEnabled: true
+        NotificationsEnabled: true

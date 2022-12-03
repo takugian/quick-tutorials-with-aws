@@ -7,6 +7,7 @@ A lot of AWS tutorials for you!!! ;)
 ### [API Gateway]
 
 - [apigatewayapikeyusageplan] - REST API Gateway with usage plan and API Key configured
+- [apigatewaycache] - REST API Gateway with Cache enabled
 - [apigatewaydomainnamebasepath] - REST API Gateway with domain name and base path
 - [apigatewaylambda] - Public REST API Gateway and a Lambda function as backend
 - [apigatewaylambdaauthorizer] - REST API Gateway with a Lambda function as authorizer
@@ -16,6 +17,7 @@ A lot of AWS tutorials for you!!! ;)
 
 [API Gateway]: https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html
 [apigatewayapikeyusageplan]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayapikeyusageplan
+[apigatewaycache]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaycache
 [apigatewaydomainnamebasepath]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaydomainnamebasepath
 [apigatewaylambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaylambda
 [apigatewaylambdaauthorizer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaylambdaauthorizer
@@ -33,7 +35,7 @@ A lot of AWS tutorials for you!!! ;)
 - [apigatewayhttpwebsocketlambda] - WebSocket API Gateway integrated to a Lambda function
 - [apigatewayhttpwebsocketmock] - WebSocket API Gateway integrated to a mocked backend
 - [apigatewayopenapi] - REST API Gateway deployed using OpenAPI
-- [apigatewayv2vpclink] - VPC Link 
+- [apigatewayv2vpclink] - VPC Link
 
 [API Gateway V2]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ApiGatewayV2.html
 [apigatewaychatroomwebsocket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaychatroomwebsocket
@@ -86,6 +88,7 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudwatchalarmsapigateway] - CloudWatch Alarms for an API Gateway
 - [cloudwatchalarmsaurora] - CloudWatch Alarms for an Aurora database
 - [cloudwatchalarmscloudfront] - CloudWatch Alarms for a CloudFront
+- [cloudwatchalarmscustommetric] - CloudWatch Alarms for a Custom Metric
 - [cloudwatchalarmsdynamodb] - CloudWatch Alarms for a DynamoDB table
 - [cloudwatchalarmsec2] - CloudWatch Alarms for an EC2 instance
 - [cloudwatchalarmsecs] - CloudWatch Alarms for an ECS task
@@ -107,6 +110,7 @@ A lot of AWS tutorials for you!!! ;)
 [cloudwatchalarmsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsapigateway
 [cloudwatchalarmsaurora]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsaurora
 [cloudwatchalarmscloudfront]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmscloudfront
+[cloudwatchalarmscustommetric]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmscustommetric
 [cloudwatchalarmsec2]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsec2
 [cloudwatchalarmsdynamodb]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsdynamodb
 [cloudwatchalarmsecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsecs
@@ -465,3 +469,14 @@ A lot of AWS tutorials for you!!! ;)
 [vpcsubnetprivate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/vpc/vpcsubnetprivate
 [vpcsubnetpublicprivate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/vpc/vpcsubnetpublicprivate
 [vpcsubnetpublicprivatenatgateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/vpc/vpcsubnetpublicprivatenatgateway
+
+### [X-Ray]
+
+- [xrayapigateway] - AWS X-Ray with API Gateway
+- [xraygroup] - AWS X-Ray group
+- [xraysamplingrule] - AWS X-Ray Samping rule `backlog`
+
+[X-Ray]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_XRay.html
+[xrayapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xrayapigateway
+[xraygroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xraygroup
+[xraysamplingrule]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xraysamplingrule 

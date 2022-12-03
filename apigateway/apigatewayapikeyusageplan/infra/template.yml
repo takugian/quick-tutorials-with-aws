@@ -71,7 +71,7 @@ Resources:
         - Key: Owner
           Value: !Ref Owner
 
-  ApiKey:
+  DefaultApiKey:
     Type: AWS::ApiGateway::ApiKey
     DependsOn: [Stage]
     Properties:
@@ -85,7 +85,7 @@ Resources:
         - Key: Owner
           Value: !Ref Owner
 
-  UsagePlan:
+  DefaultUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
     DependsOn: [Stage]
     Properties:
@@ -95,24 +95,68 @@ Resources:
           Stage: !Ref StageName
           Throttle:
             "/customers/GET":
-              BurstLimit: 10
-              RateLimit: 1
+              BurstLimit: 1
+              RateLimit: 2
+      Throttle:
+        BurstLimit: 1
+        RateLimit: 2
       Quota:
-        Limit: 10
+        Limit: 6
         Offset: 0
         Period: DAY
-      Throttle:
-        BurstLimit: 10
-        RateLimit: 1
       Tags:
         - Key: Owner
           Value: !Ref Owner
 
-  UsagePlanKey:
+  DefaultUsagePlanKey:
     Type: AWS::ApiGateway::UsagePlanKey
     Properties:
-      KeyId: !Ref ApiKey
-      UsagePlanId: !Ref UsagePlan
+      KeyId: !Ref DefaultApiKey
+      UsagePlanId: !Ref DefaultUsagePlan
+      KeyType: API_KEY
+
+  PremiumApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn: [Stage]
+    Properties:
+      Name: 8fba83f5-6e23-49a6-bb3c-c52087608012
+      Value: d5a93545-85d2-4e59-942b-f5b27495a756
+      StageKeys:
+        - RestApiId: !Ref RestApi
+          StageName: !Ref StageName
+      Enabled: true
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  PremiumUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    DependsOn: [Stage]
+    Properties:
+      UsagePlanName: Premium Usage Plan
+      ApiStages:
+        - ApiId: !Ref RestApi
+          Stage: !Ref StageName
+          Throttle:
+            "/customers/GET":
+              BurstLimit: 2
+              RateLimit: 4
+      Throttle:
+        BurstLimit: 2
+        RateLimit: 4
+      Quota:
+        Limit: 10
+        Offset: 0
+        Period: DAY
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  PremiumUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref PremiumApiKey
+      UsagePlanId: !Ref PremiumUsagePlan
       KeyType: API_KEY
 
 Outputs:

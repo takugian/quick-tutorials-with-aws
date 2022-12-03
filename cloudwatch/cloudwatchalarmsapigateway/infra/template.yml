@@ -267,3 +267,31 @@ Resources:
       #   - !GetAtt Topic.TopicArn
       # OKActions
       # InsufficientDataActions
+
+  IntegrationLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${ApiName}IntegrationLatency
+      AlarmDescription: !Sub ${ApiName}IntegrationLatency
+      Namespace: AWS/ApiGateway
+      MetricName: IntegrationLatency
+      Dimensions:
+        - Name: ApiId
+          Value: !GetAtt Api.ApiId
+        - Name: Method
+          Value: GET
+        - Name: Resource
+          Value: /customers 
+        - Name: Stage
+          Value: !Ref StageName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 20
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
