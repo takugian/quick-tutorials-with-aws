@@ -81,6 +81,9 @@ Resources:
     Properties:
       Name: !Ref ApiName
       Description: !Ref ApiName
+      # BinaryMediaTypes: !Ref BinaryMediaTypes
+      # DisableExecuteApiEndpoint: false
+      # Policy: Json
       Tags:
         - Key: Owner
           Value: !Ref Owner

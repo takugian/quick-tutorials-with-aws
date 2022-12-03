@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a CloudWatch Logs for an API Gateway
+
+Parameters:
+
+  ApiName:
+    Type: String
+    Default: CloudWatchLogsApiGateway
+
+  StageName:
+    Type: String
+    Default: sandbox
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ApiName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:CreateLogGroup
+              - logs:PutLogEvents
+            Resource: "*"
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: !Ref ApiName
+      Runtime: nodejs14.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = async (event, context) => {
+            console.log('event', JSON.stringify(event));
+            return {
+              statusCode: 200,
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify("Hello world!"),
+            };
+          };
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: Lambda
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt Lambda.Arn
+      Principal: apigateway.amazonaws.com
+
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${ApiName}/${StageName}
+      RetentionInDays: 7
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ApiGatewayCloudWatchRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ApiName}ApiGatewayRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+
+  ApiGatewayAccount:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
+
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      Version: 1
+      ProtocolType: HTTP
+
+  Integration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      Description: !Ref ApiName
+      ConnectionType: INTERNET
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: ANY
+      IntegrationUri: !GetAtt Lambda.Arn
+      PayloadFormatVersion: 2.0
+
+  Route:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: "GET /customers"
+      Target: !Join ["/", [integrations, !Ref Integration]]
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn: [Api, Route]
+    Properties:
+      ApiId: !Ref Api
+
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn: [Integration, Route, Deployment]
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      ApiId: !Ref Api
+      DeploymentId: !Ref Deployment
+      AccessLogSetting:
+        DestinationArn: !GetAtt CloudWatchLogGroup.Arn
+        Format: "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\" }"

@@ -8,6 +8,8 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewayapikeyusageplan] - REST API Gateway with usage plan and API Key configured
 - [apigatewaycache] - REST API Gateway with Cache enabled
+- [apigatewaycanarysetting] - REST API Gateway with Canary setting `backlog`
+- [apigatewayclientcertificate] - REST API Gateway with Client Certificate `backlog`
 - [apigatewaydomainnamebasepath] - REST API Gateway with domain name and base path
 - [apigatewaylambda] - Public REST API Gateway and a Lambda function as backend
 - [apigatewaylambdaauthorizer] - REST API Gateway with a Lambda function as authorizer
@@ -18,6 +20,8 @@ A lot of AWS tutorials for you!!! ;)
 [API Gateway]: https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html
 [apigatewayapikeyusageplan]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayapikeyusageplan
 [apigatewaycache]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaycache
+[apigatewaycanarysetting]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaycanarysetting
+[apigatewayclientcertificate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayclientcertificate
 [apigatewaydomainnamebasepath]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaydomainnamebasepath
 [apigatewaylambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaylambda
 [apigatewaylambdaauthorizer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaylambdaauthorizer
@@ -29,6 +33,7 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewaychatroomwebsocket] - Complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewaycognitoauthorizer] - REST API Gateway using Cognito as authorizer `backlog`
+- [apigatewaydomainname] - REST API Gateway with Domain name `backlog`
 - [apigatewayecsappgamerestapi] - Complete CRUD REST API using an API Gateway, a Load Balancer in front of an ECS task as backend, a Lambda function as authorizer and a RDS MySQL table
 - [apigatewaygamerestapi] - Complete CRUD REST API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewayhttplambda] - REST API Gateway integrated to a Lambda function
@@ -40,6 +45,7 @@ A lot of AWS tutorials for you!!! ;)
 [API Gateway V2]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ApiGatewayV2.html
 [apigatewaychatroomwebsocket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaychatroomwebsocket
 [apigatewaycognitoauthorizer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaycognitoauthorizer
+[apigatewaydomainname]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaydomainname
 [apigatewaygamerestapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewaygamerestapi
 [apigatewayecsappgamerestapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayecsappgamerestapi
 [apigatewayhttplambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayhttplambda
@@ -102,7 +108,8 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudwatchalarmssqs] - CloudWatch Alarms for a SQS queue
 - [cloudwatchanormalydetector] - CloudWatch Anormaly Detector `backlog`
 - [cloudwatchdashboard] - CloudWatch Dashboard `backlog`
-- [cloudwatchlogsapigateway] - CloudWatch Logs for an API Gateway
+- [cloudwatchlogsapigateway] - CloudWatch Logs for an API Gateway `backlog`
+- [cloudwatchlogsapigatewayv2] - CloudWatch Logs for an API Gateway V2 `error`
 - [cloudwatchlogsecsapp] - CloudWatch Logs for an ECS task
 - [cloudwatchlogslambda] - CloudWatch Logs for a Lambda function
 
@@ -125,6 +132,7 @@ A lot of AWS tutorials for you!!! ;)
 [cloudwatchanormalydetector]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchanormalydetector
 [cloudwatchdashboard]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchdashboard
 [cloudwatchlogsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsapigateway
+[cloudwatchlogsapigatewayv2]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsapigatewayv2
 [cloudwatchlogsecsapp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsecsapp
 [cloudwatchlogslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogslambda
 
