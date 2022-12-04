@@ -3,46 +3,44 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a CloudWatch Logs for an API Gateway
 
 Parameters:
-
   ApiName:
     Type: String
-    Default: CloudWatchLogsApiGateway
+    Default: CloudWatchLogsApiGatewayV2
 
   StageName:
     Type: String
-    Default: sandbox
+    Default: dev
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
-
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: !Sub ${ApiName}ExecutionRole
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Path: "/"
       Policies:
-      - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-              - logs:CreateLogStream
-              - logs:CreateLogGroup
-              - logs:PutLogEvents
-            Resource: "*"
+        - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
 
   Lambda:
     Type: AWS::Lambda::Function
@@ -76,36 +74,27 @@ Resources:
       FunctionName: !GetAtt Lambda.Arn
       Principal: apigateway.amazonaws.com
 
-  CloudWatchLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/apigateway/${ApiName}/${StageName}
-      RetentionInDays: 7
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
+  # ApiGatewayCloudWatchRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: !Sub ${ApiName}ApiGatewayRole
+  #     AssumeRolePolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - apigateway.amazonaws.com
+  #           Action:
+  #             - sts:AssumeRole
+  #     Path: "/"
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
 
-  ApiGatewayCloudWatchRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub ${ApiName}ApiGatewayRole
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - apigateway.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Path: "/"
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
-
-  ApiGatewayAccount:
-    Type: AWS::ApiGateway::Account
-    Properties:
-      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
+  # ApiGatewayAccount:
+  #   Type: AWS::ApiGateway::Account
+  #   Properties:
+  #     CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
 
   Api:
     Type: AWS::ApiGatewayV2::Api
@@ -139,6 +128,12 @@ Resources:
     Properties:
       ApiId: !Ref Api
 
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${ApiName}
+      RetentionInDays: 7
+
   Stage:
     Type: AWS::ApiGatewayV2::Stage
     DependsOn: [Integration, Route, Deployment]
@@ -147,6 +142,6 @@ Resources:
       Description: !Ref StageName
       ApiId: !Ref Api
       DeploymentId: !Ref Deployment
-      AccessLogSetting:
+      AccessLogSettings:
         DestinationArn: !GetAtt CloudWatchLogGroup.Arn
-        Format: "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\" }"
+        Format: '{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\" }'

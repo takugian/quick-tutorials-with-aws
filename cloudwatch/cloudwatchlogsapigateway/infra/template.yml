@@ -3,46 +3,44 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a CloudWatch Logs for an API Gateway
 
 Parameters:
-
   ApiName:
     Type: String
     Default: CloudWatchLogsApiGateway
 
   StageName:
     Type: String
-    Default: sandbox
+    Default: dev
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
-
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: !Sub ${ApiName}ExecutionRole
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Path: "/"
       Policies:
-      - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-              - logs:CreateLogStream
-              - logs:CreateLogGroup
-              - logs:PutLogEvents
-            Resource: "*"
+        - PolicyName: !Sub ${ApiName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
 
   Lambda:
     Type: AWS::Lambda::Function
@@ -56,13 +54,12 @@ Resources:
         ZipFile: |
           exports.handler = async (event, context) => {
             console.log('event', JSON.stringify(event));
-            return {
-              statusCode: 200,
-              headers: {
-                  "Content-Type": "application/json"
-              },
-              body: JSON.stringify("Hello world!"),
-            };
+            const resource = `${event.httpMethod} ${event.path}`;
+            if (resource == "GET /customers") {
+              context.succeed( [ { "customer_id": "1", "customer_name": "EDWARD ELRIC" } ]);
+            } else {
+              context.fail("routeKey invalid");
+            }
           };
       Tags:
         - Key: Owner
@@ -75,15 +72,6 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt Lambda.Arn
       Principal: apigateway.amazonaws.com
-
-  CloudWatchLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/apigateway/${ApiName}/${StageName}
-      RetentionInDays: 7
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
 
   ApiGatewayCloudWatchRole:
     Type: AWS::IAM::Role
@@ -102,51 +90,77 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
 
-  ApiGatewayAccount:
+  Account:
     Type: AWS::ApiGateway::Account
     Properties:
       CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
 
-  Api:
-    Type: AWS::ApiGatewayV2::Api
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    DependsOn: Lambda
     Properties:
       Name: !Ref ApiName
       Description: !Ref ApiName
-      Version: 1
-      ProtocolType: HTTP
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
 
-  Integration:
-    Type: AWS::ApiGatewayV2::Integration
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
     Properties:
-      ApiId: !Ref Api
-      Description: !Ref ApiName
-      ConnectionType: INTERNET
-      IntegrationType: AWS_PROXY
-      IntegrationMethod: ANY
-      IntegrationUri: !GetAtt Lambda.Arn
-      PayloadFormatVersion: 2.0
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: customers
 
-  Route:
-    Type: AWS::ApiGatewayV2::Route
+  MethodGetCustomers:
+    Type: AWS::ApiGateway::Method
+    DependsOn: RestApi
     Properties:
-      ApiId: !Ref Api
-      RouteKey: "GET /customers"
-      Target: !Join ["/", [integrations, !Ref Integration]]
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: 200
+        - StatusCode: 500
+      Integration:
+        Type: AWS
+        IntegrationResponses:
+          - StatusCode: 200
+          - StatusCode: 500
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+        RequestTemplates:
+          application/json: '{ "httpMethod": "$context.httpMethod", "path": "/customers" }'
 
   Deployment:
-    Type: AWS::ApiGatewayV2::Deployment
-    DependsOn: [Api, Route]
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: MethodGetCustomers
     Properties:
-      ApiId: !Ref Api
+      RestApiId: !Ref RestApi
+
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${ApiName}
+      RetentionInDays: 7
 
   Stage:
-    Type: AWS::ApiGatewayV2::Stage
-    DependsOn: [Integration, Route, Deployment]
+    Type: AWS::ApiGateway::Stage
+    DependsOn: Deployment
     Properties:
       StageName: !Ref StageName
       Description: !Ref StageName
-      ApiId: !Ref Api
+      RestApiId: !Ref RestApi
       DeploymentId: !Ref Deployment
       AccessLogSetting:
         DestinationArn: !GetAtt CloudWatchLogGroup.Arn
-        Format: "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\" }"
+        Format: '{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\" }'
+      MethodSettings:
+        - HttpMethod: "*"
+          ResourcePath: "/*"
+          LoggingLevel: INFO
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

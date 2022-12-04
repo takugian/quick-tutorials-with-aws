@@ -8,7 +8,6 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewayapikeyusageplan] - REST API Gateway with usage plan and API Key configured
 - [apigatewaycache] - REST API Gateway with Cache enabled
-- [apigatewaycanarysetting] - REST API Gateway with Canary setting `backlog`
 - [apigatewayclientcertificate] - REST API Gateway with Client Certificate `backlog`
 - [apigatewaydomainnamebasepath] - REST API Gateway with domain name and base path
 - [apigatewaylambda] - Public REST API Gateway and a Lambda function as backend
@@ -108,8 +107,8 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudwatchalarmssqs] - CloudWatch Alarms for a SQS queue
 - [cloudwatchanormalydetector] - CloudWatch Anormaly Detector `backlog`
 - [cloudwatchdashboard] - CloudWatch Dashboard `backlog`
-- [cloudwatchlogsapigateway] - CloudWatch Logs for an API Gateway `backlog`
-- [cloudwatchlogsapigatewayv2] - CloudWatch Logs for an API Gateway V2 `error`
+- [cloudwatchlogsapigateway] - CloudWatch Logs for an API Gateway
+- [cloudwatchlogsapigatewayv2] - CloudWatch Logs for an API Gateway V2
 - [cloudwatchlogsecsapp] - CloudWatch Logs for an ECS task
 - [cloudwatchlogslambda] - CloudWatch Logs for a Lambda function
 
