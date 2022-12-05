@@ -88,6 +88,17 @@ A lot of AWS tutorials for you!!! ;)
 [originaccesscontrol]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccesscontrol
 [originaccessidentity]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccessidentity
 
+### [CloudTrail]
+
+- [cloudtraildynamotable] - CloudTrail for DynamoDB tables `backlog`
+- [cloudtraillambda] - CloudTrail for Lambda functions
+- [cloudtrails3object] - CloudTrail for S3 objects `backlog`
+
+[CloudTrail]: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/AWS_CloudTrail.html
+[cloudtraildynamotable]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudTrail/cloudtraildynamotable
+[cloudtraillambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudTrail/cloudtraillambda
+[cloudtrails3object]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudTrail/cloudtrails3object
+
 ### [CloudWatch]
 
 - [cloudwatchalarmsapigateway] - CloudWatch Alarms for an API Gateway
@@ -293,6 +304,7 @@ A lot of AWS tutorials for you!!! ;)
 - [lambdalayer] - Lambda function with a Lambda layer `backlog`
 - [lambdanode] - Lambda function using NodeJs as the runtime
 - [lambdanovpcconfig] - Lambda function without VPC configured
+- [lambdapermission] - Lambda permission
 - [lambdaprivate] - Lambda function with VPC configuration
 
 [Lambda]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Lambda.html
@@ -304,6 +316,7 @@ A lot of AWS tutorials for you!!! ;)
 [lambdalayer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdalayer
 [lambdanode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdanode
 [lambdanovpcconfig]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdanovpcconfig
+[lambdapermission]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdapermission
 [lambdaprivate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaprivate
 
 ### [Load Balancer]

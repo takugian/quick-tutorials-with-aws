@@ -15,10 +15,16 @@ Parameters:
     Type: String
     Default: PrivateLambda.zip
 
+  ReservedConcurrentExecutions:
+    Type: Number
+
   SubnetId1:
     Type: String
 
   SubnetId2:
+    Type: String
+
+  SubnetId3:
     Type: String
 
   SecurityGroupId:
@@ -66,6 +72,7 @@ Resources:
     Properties:
       FunctionName: !Ref FunctionName
       Runtime: nodejs14.x
+      ReservedConcurrentExecutions: !Ref ReservedConcurrentExecutions
       Role: !GetAtt ExecutionRole.Arn
       Handler: index.handler
       Code:
@@ -77,6 +84,7 @@ Resources:
         SubnetIds:
           - !Ref SubnetId1
           - !Ref SubnetId2
+          - !Ref SubnetId3
       Tags:
         - Key: Owner
           Value: !Ref Owner

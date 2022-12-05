@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Lambda permission
+
+Parameters:
+  FunctionName:
+    Type: String
+
+  Action:
+    Type: String
+    Description: "Example: lambda:InvokeFunction"
+
+  Principal:
+    Type: String
+    Description: "Example: events.amazonaws.com"
+
+  SourceArn:
+    Type: String
+    Description: "Example: ARN of a events bridge rule"
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref FunctionName
+      Action: !Ref Action
+      Principal: !Ref Principal
+      SourceArn: !Ref SourceArn

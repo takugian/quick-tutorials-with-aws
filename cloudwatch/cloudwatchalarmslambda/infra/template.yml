@@ -47,6 +47,7 @@ Resources:
     Properties:
       FunctionName: !Ref FunctionName
       Runtime: nodejs14.x
+      ReservedConcurrentExecutions: 2
       Role: !GetAtt ExecutionRole.Arn
       Handler: index.handler
       Code:
@@ -70,6 +71,69 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
+  ConcurrentExecutionsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ConcurrentExecutions${FunctionName}
+      AlarmDescription: !Sub ConcurrentExecutions${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: ConcurrentExecutions
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref FunctionName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  DurationAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub Duration${FunctionName}
+      AlarmDescription: !Sub Duration${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: Duration
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref FunctionName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  ThrottlesAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub Throttles${FunctionName}
+      AlarmDescription: !Sub Throttles${FunctionName}
+      Namespace: AWS/Lambda
+      MetricName: Throttles
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref FunctionName
+      Statistic: SampleCount
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
   InvocationsAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -83,9 +147,9 @@ Resources:
       Statistic: SampleCount
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 2
+      Threshold: 100
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions
@@ -101,96 +165,12 @@ Resources:
       Dimensions:
         - Name: FunctionName
           Value: !Ref Lambda
-      Statistic: SampleCount
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 2
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
-  DeadLetterErrorsAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub DeadLetterErrors${FunctionName}
-      AlarmDescription: !Sub DeadLetterErrors${FunctionName}
-      Namespace: AWS/Lambda
-      MetricName: DeadLetterErrors
-      Dimensions:
-        - Name: FunctionName
-          Value: !Ref Lambda
-      Statistic: SampleCount
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 2
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
-  ProvisionedConcurrencyInvocationsAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub ProvisionedConcurrencyInvocations${FunctionName}
-      AlarmDescription: !Sub ProvisionedConcurrencyInvocations${FunctionName}
-      Namespace: AWS/Lambda
-      MetricName: ProvisionedConcurrencyInvocations
-      Dimensions:
-        - Name: FunctionName
-          Value: !Ref Lambda
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 5
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
-  DurationAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub Duration${FunctionName}
-      AlarmDescription: !Sub Duration${FunctionName}
-      Namespace: AWS/Lambda
-      MetricName: Duration
-      Dimensions:
-        - Name: FunctionName
-          Value: !Ref Lambda
-      Statistic: Average
+      Statistic: Sum
       Period: 60
       EvaluationPeriods: 2
       Threshold: 1
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
-  ConcurrentExecutionsAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub ConcurrentExecutions${FunctionName}
-      AlarmDescription: !Sub ConcurrentExecutions${FunctionName}
-      Namespace: AWS/Lambda
-      MetricName: ConcurrentExecutions
-      Dimensions:
-        - Name: FunctionName
-          Value: !Ref Lambda
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 5
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions
