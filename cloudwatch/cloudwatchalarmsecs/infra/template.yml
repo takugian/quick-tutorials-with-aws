@@ -28,13 +28,34 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
-  CPUUtilizationAlarm:
+  MemoryUtilizationClusterAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub CPUUtilization${FunctionName}
-      AlarmDescription: !Sub CPUUtilization${FunctionName}
+      AlarmName: !Sub MemoryUtilizationCluster${FunctionName}
+      AlarmDescription: !Sub MemoryUtilizationCluster${FunctionName}
       Namespace: AWS/ECS
-      MetricName: CPUUtilization
+      MetricName: MemoryUtilization
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ClusterName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 70
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  MemoryUtilizationServiceAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub MemoryUtilizationService${FunctionName}
+      AlarmDescription: !Sub MemoryUtilizationService${FunctionName}
+      Namespace: AWS/ECS
+      MetricName: MemoryUtilization
       Dimensions:
         - Name: ClusterName
           Value: !Ref ClusterName
@@ -43,7 +64,7 @@ Resources:
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 50
+      Threshold: 60
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:
@@ -51,13 +72,34 @@ Resources:
       # OKActions
       # InsufficientDataActions
 
-  MemoryUtilizationAlarm:
+  CPUUtilizationClusterAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub MemoryUtilization${FunctionName}
-      AlarmDescription: !Sub MemoryUtilization${FunctionName}
+      AlarmName: !Sub CPUUtilizationCluster${FunctionName}
+      AlarmDescription: !Sub CPUUtilizationCluster${FunctionName}
       Namespace: AWS/ECS
-      MetricName: MemoryUtilization
+      MetricName: CPUUtilization
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ClusterName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 60
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  CPUUtilizationServiceAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub CPUUtilizationService${FunctionName}
+      AlarmDescription: !Sub CPUUtilizationService${FunctionName}
+      Namespace: AWS/ECS
+      MetricName: CPUUtilization
       Dimensions:
         - Name: ClusterName
           Value: !Ref ClusterName
@@ -89,7 +131,7 @@ Resources:
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 50
+      Threshold: 500
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:
@@ -112,7 +154,7 @@ Resources:
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 50
+      Threshold: 1
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:
