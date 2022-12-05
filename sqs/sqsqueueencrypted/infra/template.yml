@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SQS Queue encrypted
+
+Parameters:
+  QueueName:
+    Type: String
+    Default: Queue
+
+  KmsMasterKeyId:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName
+      KmsMasterKeyId: !Ref KmsMasterKeyId
+      KmsDataKeyReusePeriodSeconds: 300
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

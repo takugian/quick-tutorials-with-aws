@@ -3,23 +3,52 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Creates a SQS Queue
 
 Parameters:
-
   QueueName:
     Type: String
     Default: Queue
+
+  KmsMasterKeyId:
+    Type: String
+
+  AccountPrincipal:
+    Type: String
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
-
   Queue:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: !Ref QueueName
-      DelaySeconds: 0
+      DelaySeconds: 1
+      MaximumMessageSize: 262144
       MessageRetentionPeriod: 300
+      VisibilityTimeout: 2
+      ReceiveMessageWaitTimeSeconds: 2
+      FifoQueue: false
+      ContentBasedDeduplication: true
+      DeduplicationScope: messageGroup
+      FifoThroughputLimit: perMessageGroupId
+      KmsMasterKeyId: !Ref KmsMasterKeyId
+      KmsDataKeyReusePeriodSeconds: 300
       Tags:
         - Key: Owner
           Value: !Ref Owner
+
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Sub https://sqs:${AWS::Region}.amazonaws.com/${AWS::AccountId}/${QueueName}
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !Ref AccountPrincipal
+            Action:
+              - SQS:SendMessage
+              - SQS:ReceiveMessage
+            Resource: arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueName}

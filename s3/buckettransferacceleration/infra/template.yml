@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a S3 bucket with transfer acceleration enabled
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: tg-bucket-123456
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicReadWrite
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+      AccelerateConfiguration:
+        AccelerationStatus: Enabled
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

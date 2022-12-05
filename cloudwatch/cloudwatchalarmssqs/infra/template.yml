@@ -7,8 +7,8 @@ Parameters:
     Type: String
     Default: CloudWatchAlarmsQueue
 
-  AlarmEmail:
-    Type: String
+  # AlarmEmail:
+  #   Type: String
 
   Owner:
     Type: String
@@ -25,16 +25,16 @@ Resources:
         - Key: Owner
           Value: !Ref Owner
 
-  AlarmTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      Subscription:
-        - Endpoint:
-            Ref: AlarmEmail
-          Protocol: email
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
+  # AlarmTopic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     Subscription:
+  #       - Endpoint:
+  #           Ref: AlarmEmail
+  #         Protocol: email
+  #     Tags:
+  #       - Key: Owner
+  #         Value: !Ref Owner
 
   ApproximateNumberOfMessagesVisibleAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -46,24 +46,24 @@ Resources:
       Dimensions:
         - Name: QueueName
           Value: !Ref Queue
-      Statistic: Average
+      Statistic: Maximum
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 2
+      Threshold: 400
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions
       # InsufficientDataActions
 
-  NumberOfMessagesReceivedAlarm:
+  ApproximateAgeOfOldestMessageAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub NumberOfMessagesReceived${QueueName}
-      AlarmDescription: !Sub NumberOfMessagesReceived${QueueName}
+      AlarmName: !Sub ApproximateAgeOfOldestMessage${QueueName}
+      AlarmDescription: !Sub ApproximateAgeOfOldestMessage${QueueName}
       Namespace: AWS/SQS
-      MetricName: NumberOfMessagesReceived
+      MetricName: ApproximateAgeOfOldestMessage
       Dimensions:
         - Name: QueueName
           Value: !Ref Queue
@@ -72,9 +72,8 @@ Resources:
       EvaluationPeriods: 2
       Threshold: 10
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions
       # InsufficientDataActions
-

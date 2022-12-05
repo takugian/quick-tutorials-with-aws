@@ -41,9 +41,20 @@ Resources:
             Action:
               - s3:*
             Effect: Deny
-            Resource:
-              Fn::Join: ["", ["arn:aws:s3:::", !Ref Bucket, "/*"]]
+            Resource: !Sub arn:aws:s3:::${BucketName}/*
+            Principal: "*"
             Condition:
               Bool:
                 "aws:SecureTransport": "false"
-            Principal: "*"
+          - Sid: AllowGetObject
+            Action:
+              - s3:GetObject
+            Effect: Allow
+            Resource: !Sub arn:aws:s3:::${BucketName}/*
+            Principal:
+              AWS:
+                - !Ref AccountPrincipal
+            Condition:
+              StringLike:
+                "s3:x-amz-acl":
+                  - "public-read"

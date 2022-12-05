@@ -13,18 +13,25 @@ Parameters:
 
   BillingMode:
     Type: String
-    Default: PAY_PER_REQUEST
+    Default: PROVISIONED
     AllowedValues:
       - PAY_PER_REQUEST
       - PROVISIONED
   
   ReadCapacityUnits:
     Type: Number
-    Default: 0
+    Default: 1
 
   WriteCapacityUnits:
     Type: Number
-    Default: 0
+    Default: 1
+  
+  KMSMasterKeyId:
+    Type: String
+  
+  PointInTimeRecoveryEnabled:
+    Type: Boolean
+    Default: true
 
   Owner:
     Type: String
@@ -51,12 +58,12 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: !Ref ReadCapacityUnits
         WriteCapacityUnits: !Ref WriteCapacityUnits
-      # SSESpecification:
-      #   KMSMasterKeyId: !Ref KMSMasterKeyId
-      #   SSEEnabled: false
-      #   SSEType: KMS
+      SSESpecification:
+        KMSMasterKeyId: !Ref KMSMasterKeyId
+        SSEEnabled: false
+        SSEType: KMS
       PointInTimeRecoverySpecification:
-        PointInTimeRecoveryEnabled: false
+        PointInTimeRecoveryEnabled: !Ref PointInTimeRecoveryEnabled
       TimeToLiveSpecification:
         AttributeName: person_create_date
         Enabled: true

@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a S3 bucket with Replication configuration
+
+Parameters:
+  ReplicationBucketName:
+    Type: String
+    Default: tg-replication-bucket-123456
+
+  BucketName:
+    Type: String
+    Default: tg-bucket-123456
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  ReplicationBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref ReplicationBucketName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ReplicationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${BucketName}ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - s3.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${BucketName}Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ReplicateObject
+                  - s3:ReplicateTags
+                  - s3:GetObjectVersionForReplication
+                  - s3:InitiateReplication
+                  - s3:GetReplicationConfiguration
+                  - s3:ReplicateDelete
+                Resource: !Sub arn:aws:s3:::${ReplicationBucketName}
+
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicReadWrite
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+      ReplicationConfiguration:
+        Role: !GetAtt ReplicationRole.Arn
+        Rules:
+          - Id: MyRule1
+            Status: Enabled
+            Prefix: MyPrefix
+            Destination:
+              Bucket: !Sub arn:aws:s3:::${ReplicationBucketName}
+              StorageClass: STANDARD
+          - Status: Enabled
+            Prefix: MyOtherPrefix
+            Destination:
+              Bucket: !Sub arn:aws:s3:::${ReplicationBucketName}
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

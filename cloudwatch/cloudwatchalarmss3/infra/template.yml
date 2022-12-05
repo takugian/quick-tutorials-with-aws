@@ -41,6 +41,111 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
+  ListRequestsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ListRequests${BucketName}
+      AlarmDescription: !Sub ListRequests${BucketName}
+      Namespace: AWS/S3
+      MetricName: ListRequests
+      Dimensions:
+        - Name: BucketName
+          Value: !Ref BucketName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  FirstByteLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub FirstByteLatency${BucketName}
+      AlarmDescription: !Sub FirstByteLatency${BucketName}
+      Namespace: AWS/S3
+      MetricName: FirstByteLatency
+      Dimensions:
+        - Name: BucketName
+          Value: !Ref BucketName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 100
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  TotalRequestLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub TotalRequestLatency${BucketName}
+      AlarmDescription: !Sub TotalRequestLatency${BucketName}
+      Namespace: AWS/S3
+      MetricName: TotalRequestLatency
+      Dimensions:
+        - Name: BucketName
+          Value: !Ref BucketName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 500
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  4xxErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 4xxErrors${BucketName}
+      AlarmDescription: !Sub 4xxErrors${BucketName}
+      Namespace: AWS/S3
+      MetricName: 4xxErrors
+      Dimensions:
+        - Name: BucketName
+          Value: !Ref BucketName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  5xxErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 5xxErrors${BucketName}
+      AlarmDescription: !Sub 5xxErrors${BucketName}
+      Namespace: AWS/S3
+      MetricName: 5xxErrors
+      Dimensions:
+        - Name: BucketName
+          Value: !Ref BucketName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
   BucketSizeBytesAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -54,28 +159,7 @@ Resources:
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 1000
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
-  NumberOfObjectsAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub NumberOfObjects${BucketName}
-      AlarmDescription: !Sub NumberOfObjects${BucketName}
-      Namespace: AWS/S3
-      MetricName: NumberOfObjects
-      Dimensions:
-        - Name: BucketName
-          Value: !Ref BucketName
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 2
+      Threshold: 50000000
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:

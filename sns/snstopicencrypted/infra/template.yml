@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a SNS Topic encrypted
+
+Parameters:
+  TopicName:
+    Type: String
+    Default: Topic
+
+  KmsMasterKeyId:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Ref TopicName
+      KmsMasterKeyId: !Ref KmsMasterKeyId
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

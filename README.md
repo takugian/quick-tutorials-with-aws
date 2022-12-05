@@ -362,23 +362,49 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [S3]
 
+- [bucketanalytics] - Bucket with analytics configuration `backlog`
+- [bucketcors]: Bucket with CORS configuration
+- [bucketencrypted]: Bucket encrypted
+- [bucketintelligenttiering] - Bucket with intelligent tiering configuration
+- [bucketinventory] - Bucket with inventory configuration `backlog`
 - [bucketlambda] - Private bucket consumed by a Lambda function
-- [bucketnotification] - S3 bucket with SQS notification and Lambda notification
-- [loggingbucket] - S3 Bucket with logging enabled `backlog`
-- [privatebucket] - Private S3 bucket
-- [privatebucketcognito] - Private S3 Bucket and Cognito Credentials `backlog`
-- [privatebucketpresignedurl] - Private S3 bucket and a Lambda function that creates a Pre Signed URL
-- [privatelink] - S3 Bucket witk PrivateLink enabled `backlog`
-- [publicbucket] - Public S3 bucket
-- [s3javasdk] - Integration between a S3 bucket and Java SDK
-- [staticwebsite] - S3 Bucket used as a static website
-- [staticwebsiteangularsecretsmanager] - S3 Bucket used as a static website and Secrets Manager to deploy an AngularJS app
-- [staticwebsiteapigatewayhttpwebsocket] - S3 Bucket used as a static website that consumes a websocket
+- [bucketlifecycle] - Bucket with lifecycle configuration
+- [bucketlogging] - Bucket with logging configuration `backlog`
+- [bucketmetrics] - Bucket with metrics configuration `backlog`
+- [bucketnotification] - Bucket with SQS notification and Lambda notification
+- [bucketobjectlock] - Bucket with object lock configuration `backlog`
+- [bucketownershipcontrols] - Bucket with ownership controls `backlog`
+- [bucketpolicy]: Bucket policy
+- [bucketreplication] - Bucket with replication configuration
+- [buckettransferacceleration] - Bucket with transfer acceleration enabled
+- [bucketversioning] - Bucket with versioning configuration
+- [privatebucket] - Private bucket
+- [privatebucketcognito] - Private Bucket and Cognito Credentials `backlog`
+- [privatebucketpresignedurl] - Private bucket and a Lambda function that creates a Pre Signed URL
+- [privatelink] - Bucket witk PrivateLink enabled `backlog`
+- [publicbucket] - Public bucket
+- [s3javasdk] - Integration between a bucket and Java SDK
+- [staticwebsite] - Bucket used as a static website
+- [staticwebsiteangularsecretsmanager] - Bucket used as a static website and Secrets Manager to deploy an AngularJS app
+- [staticwebsiteapigatewayhttpwebsocket] - Bucket used as a static website that consumes a websocket
 
 [S3]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_S3.html
+[bucketanalytics]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketanalytics
+[bucketcors]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketcors
+[bucketencrypted]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketencrypted
+[bucketintelligenttiering]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketintelligenttiering
+[bucketinventory]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketinventory
 [bucketlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketlambda
+[bucketlifecycle]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketlifecycle
+[bucketlogging]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketlogging
+[bucketmetrics]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketmetrics
 [bucketnotification]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketnotification
-[loggingbucket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/loggingbucket
+[bucketobjectlock]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketobjectlock
+[bucketownershipcontrols]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketownershipcontrols
+[bucketpolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketpolicy
+[bucketreplication]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketreplication
+[buckettransferacceleration]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/buckettransferacceleration
+[bucketversioning]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketversioning
 [privatebucket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucket
 [privatebucketcognito]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucketcognito
 [privatebucketpresignedurl]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucketpresignedurl
@@ -421,22 +447,30 @@ A lot of AWS tutorials for you!!! ;)
 
 - [snsfanoutlambda] SNS Topic with fanout to Lambda functions `backlog`
 - [snsfanoutsqs] - SNS Topic with fanout to SQS queues
+- [snsfifo] - SNS Topic with FIFO enabled
 - [snsfilterpolicy] - SNS Topic with subscription filter applied
 - [snsjavasdk] - Integration between a SNS topic and Java SDK
 - [snssubscriptionemail] - SNS Topic with an email subscription
 - [snssubscriptionhttp] - SNS Topic with a HTTPS subscription
 - [snssubscriptionlambda] - SNS Topic with a Lambda subscription
 - [snssubscriptionsqs] - SNS Topic with a SQS subscription
+- [snstopic] - SNS Topic
+- [snstopicdeduplication] - SNS Topic with deduplication enabled
+- [snstopicencrypted] - SNS Topic encrypted
 
 [SNS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
 [snsfanoutlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsfanoutlambda
 [snsfanoutsqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsfanoutsqs
+[snsfifo]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsfifo
 [snsfilterpolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsfilterpolicy
 [snsjavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snsjavasdk
 [snssubscriptionemail]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snssubscriptionemail
 [snssubscriptionhttp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snssubscriptionhttp
 [snssubscriptionlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snssubscriptionlambda
 [snssubscriptionsqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snssubscriptionsqs
+[snstopic]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snstopic
+[snstopicdeduplication]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snstopicdeduplication
+[snstopicencrypted]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sns/snstopicencrypted
 
 ### [SQS]
 
@@ -446,6 +480,8 @@ A lot of AWS tutorials for you!!! ;)
 - [sqsjavasdk] - Integration between a SQS Queue and Java SDK
 - [sqslambda] - Integration between a SQS Queue and two Lambda functions
 - [sqsqueue] - SQS Queue
+- [sqsqueuededuplication] - SQS Queue with deduplication enabled
+- [sqsqueueencrypted] - SQS Queue encrypted
 - [sqsqueuepolicy] - SQS Queue policy
 
 [SQS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SQS.html
@@ -455,6 +491,8 @@ A lot of AWS tutorials for you!!! ;)
 [sqsjavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsjavasdk
 [sqslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqslambda
 [sqsqueue]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsqueue
+[sqsqueuededuplication]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsqueuededuplication
+[sqsqueueencrypted]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsqueueencrypted
 [sqsqueuepolicy]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/sqs/sqsqueuepolicy
 
 ### [Step Functions]
@@ -481,9 +519,13 @@ A lot of AWS tutorials for you!!! ;)
 
 - [xrayapigateway] - AWS X-Ray with API Gateway
 - [xraygroup] - AWS X-Ray group
-- [xraysamplingrule] - AWS X-Ray Samping rule `backlog`
+- [xraysamplingrule] - AWS X-Ray Sampling rule `backlog`
 
 [X-Ray]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_XRay.html
 [xrayapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xrayapigateway
 [xraygroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xraygroup
-[xraysamplingrule]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xraysamplingrule 
+[xraysamplingrule]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xraysamplingrule
+
+## Thank you
+
+;)

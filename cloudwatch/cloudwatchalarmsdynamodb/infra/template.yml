@@ -30,7 +30,10 @@ Resources:
         - AttributeName: table_sk
           KeyType: RANGE
       TableClass: STANDARD
-      BillingMode: PAY_PER_REQUEST
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
       Tags:
         - Key: Owner
           Value: !Ref Owner
@@ -45,6 +48,111 @@ Resources:
   #     Tags:
   #       - Key: Owner
   #         Value: !Ref Owner
+
+  ReadThrottleEventsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ReadThrottleEvents${TableName}
+      AlarmDescription: !Sub ReadThrottleEvents${TableName}
+      Namespace: AWS/DynamoDB
+      MetricName: ReadThrottleEvents
+      Dimensions:
+        - Name: TableName
+          Value: !Ref TableName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 4
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  WriteThrottleEventsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub WriteThrottleEvents${TableName}
+      AlarmDescription: !Sub WriteThrottleEvents${TableName}
+      Namespace: AWS/DynamoDB
+      MetricName: WriteThrottleEvents
+      Dimensions:
+        - Name: TableName
+          Value: !Ref TableName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 6
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  SuccessfulRequestLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub SuccessfulRequestLatency${TableName}
+      AlarmDescription: !Sub SuccessfulRequestLatency${TableName}
+      Namespace: AWS/DynamoDB
+      MetricName: SuccessfulRequestLatency
+      Dimensions:
+        - Name: TableName
+          Value: !Ref TableName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: LessThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  SystemErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub SystemErrors${TableName}
+      AlarmDescription: !Sub SystemErrors${TableName}
+      Namespace: AWS/DynamoDB
+      MetricName: SystemErrors
+      Dimensions:
+        - Name: TableName
+          Value: !Ref TableName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  UserErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub UserErrors${TableName}
+      AlarmDescription: !Sub UserErrors${TableName}
+      Namespace: AWS/DynamoDB
+      MetricName: UserErrors
+      Dimensions:
+        - Name: TableName
+          Value: !Ref TableName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
 
   ConsumedReadCapacityUnitsAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -61,7 +169,7 @@ Resources:
       EvaluationPeriods: 2
       Threshold: 2
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions
@@ -80,9 +188,9 @@ Resources:
       Statistic: Maximum
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 2
+      Threshold: 3
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions
@@ -101,9 +209,9 @@ Resources:
       Statistic: Maximum
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 2
+      Threshold: 50
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions

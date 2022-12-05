@@ -34,27 +34,6 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
-  NumberOfMessagesPublishedAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub NumberOfMessagesPublished${TopicName}
-      AlarmDescription: !Sub NumberOfMessagesPublished${TopicName}
-      Namespace: AWS/SNS
-      MetricName: NumberOfMessagesPublished
-      Dimensions:
-        - Name: TopicName
-          Value: !Ref TopicName
-      Statistic: Sum
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 2
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
   NumberOfNotificationsFailedAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -68,7 +47,28 @@ Resources:
       Statistic: Average
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 2
+      Threshold: 0.5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing 
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  NumberOfMessagesPublishedAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub NumberOfMessagesPublished${TopicName}
+      AlarmDescription: !Sub NumberOfMessagesPublished${TopicName}
+      Namespace: AWS/SNS
+      MetricName: NumberOfMessagesPublished
+      Dimensions:
+        - Name: TopicName
+          Value: !Ref TopicName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 400
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:

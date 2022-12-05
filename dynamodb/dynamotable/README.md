@@ -1,6 +1,6 @@
 # dynamotable
 
-This project creates a DynamoDB table.
+This project creates a DynamoDB table with server-side encryption enabled.
 
 ## Helpful links
 

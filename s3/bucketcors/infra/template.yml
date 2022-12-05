@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a S3 bucket with CORS configuration
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: tg-bucket-123456
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicReadWrite
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+      CorsConfiguration:
+        CorsRules:
+          - Id: myCORSRuleId1
+            AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - "*"
+            ExposedHeaders:
+              - Date
+            MaxAge: 3600
+          - Id: myCORSRuleId2
+            AllowedHeaders:
+              - x-amz-*
+            AllowedMethods:
+              - DELETE
+            AllowedOrigins:
+              - "http://www.example.com"
+              - "http://www.example.net"
+            ExposedHeaders:
+              - Connection
+              - Server
+              - Date
+            MaxAge: 1800
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

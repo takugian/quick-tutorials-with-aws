@@ -22,11 +22,11 @@ Resources:
         - !Sub https://sqs:${AWS::Region}.amazonaws.com/${AWS::AccountId}/${QueueName}
       PolicyDocument:
         Statement:
-          - Action:
-              - SQS:SendMessage
-              - SQS:ReceiveMessage
-            Effect: Allow
-            Resource: arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueName}
+          - Effect: Allow
             Principal:
               AWS:
                 - !Ref AccountPrincipal
+            Action:
+              - SQS:SendMessage
+              - SQS:ReceiveMessage
+            Resource: arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueName}
