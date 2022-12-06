@@ -46,20 +46,20 @@ Resources:
       # OKActions
       # InsufficientDataActions
 
-  CacheHitsAlarm:
+  SwapUsageAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub CacheHits${FunctionName}
-      AlarmDescription: !Sub CacheHits${FunctionName}
+      AlarmName: !Sub SwapUsage${FunctionName}
+      AlarmDescription: !Sub SwapUsage${FunctionName}
       Namespace: AWS/ElastiCache
-      MetricName: CacheHits
+      MetricName: SwapUsage
       Dimensions:
         - Name: ClusterName
           Value: !Ref ClusterName
-      Statistic: Average
+      Statistic: Sum
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 50
+      Threshold: 500000000
       ComparisonOperator: GreaterThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:
@@ -67,21 +67,21 @@ Resources:
       # OKActions
       # InsufficientDataActions
 
- CacheMissesAlarm:
+  FreeableMemoryAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub CacheMisses${FunctionName}
-      AlarmDescription: !Sub CacheMisses${FunctionName}
+      AlarmName: !Sub FreeableMemory${FunctionName}
+      AlarmDescription: !Sub FreeableMemory${FunctionName}
       Namespace: AWS/ElastiCache
-      MetricName: CacheMisses
+      MetricName: FreeableMemory
       Dimensions:
         - Name: ClusterName
           Value: !Ref ClusterName
-      Statistic: Average
+      Statistic: Sum
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 50
-      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 500000000
+      ComparisonOperator: LessThanOrEqualToThreshold
       TreatMissingData: missing 
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn

@@ -1,4 +1,4 @@
-# elasticacheredis
+# elasticacherediscluster
 
 This project creates an ElastiCache Redis cluster.
 

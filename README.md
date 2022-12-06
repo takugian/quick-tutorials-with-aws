@@ -66,6 +66,12 @@ A lot of AWS tutorials for you!!! ;)
 [Aurora]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_RDS.html
 [auroramysqlcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/aurora/auroramysqlcluster
 
+### [Backup]
+
+- `backlog`
+
+[Backup]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Backup.html
+
 ### [Certificate Manager]
 
 - [publiccertificate] - Public certificate
@@ -228,10 +234,10 @@ A lot of AWS tutorials for you!!! ;)
 ### [ECS]
 
 - [ecsappgrpc] - ECS with gRPC `backlog`
-- [ecsappjava] - ECS App using Java
+- [ecsappjava] - ECS App using Java `in progress`
 - [ecsapplauchtypeec2] - ECS App with lauch type EC2 `backlog`
 - [ecsapploadbalancer] - ECS App with load balancer `backlog`
-- [ecsappnode] - ECS App using NodeJS
+- [ecsappnode] - ECS App using NodeJS `in progress`
 - [ecsautoscaling] - ECS App using NodeJS with Auto Scaling configured
 - [ecscluster] - ECS Cluster
 - [ecsfargatespot] - ECS App using NodeJS using cluster with Fargate Spot compatibility enabled
@@ -248,12 +254,14 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [ElastiCache]
 
-- [elasticacheredis] - ElastiCache Redis cluster
+- [elasticacherediscluster] - ElastiCache Redis cluster `in progress`
 - [elasticacheredislambda] - Integration between an ElastiCache Redis cluster and a Lambda function
+- [elasticacheredisreplicationgroup] - ElastiCache Redis Replication Group `in progress`
 
 [ElastiCache]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ElastiCache.html
-[elasticacheredis]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredis
+[elasticacherediscluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacherediscluster
 [elasticacheredislambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredislambda
+[elasticacheredisreplicationgroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredisreplicationgroup
 
 ### [EventBridge]
 
@@ -444,24 +452,26 @@ A lot of AWS tutorials for you!!! ;)
 [staticwebsiteangularsecretsmanager]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/staticwebsiteangularsecretsmanager
 [staticwebsiteapigatewayhttpwebsocket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/staticwebsiteapigatewayhttpwebsocket
 
-### [Secret Manager]
+### [Secrets Manager]
 
 - [secretattachrds] - Secret attaches to a RDS instance
 - [secretecstask] - ECS task that gets a secret from Secrets Manager `backlog`
+- [secretelasticache] - Elasticache replication group that gets a secret from Secrets Manager `backlog`
 - [secretgeneratepassword] - Secret with dynamic password and a Secret with hardcoded password
 - [secretlambda] - Lambda function that gets a secret from Secrets Manager
 - [secretmanagerjavasdk] - Integration between Secrets Manager and Java SDK `backlog`
 - [secretreplicatepassword] - Secret replicated to two regions
 - [secretrotationrateexpression] - Secret rotation schedule with a rate expression
 
-[Secret Manager]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SecretsManager.html
-[secretattachrds]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretattachrds
-[secretecstask]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretecstask
-[secretgeneratepassword]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretgeneratepassword
-[secretlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretlambda
-[secretmanagerjavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretmanagerjavasdk
-[secretreplicatepassword]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretreplicatepassword
-[secretrotationrateexpression]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretmanager/secretrotationrateexpression
+[Secrets Manager]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SecretsManager.html
+[secretattachrds]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretsmanager/secretattachrds
+[secretecstask]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretsmanager/secretecstask
+[secretelasticache]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretsmanager/secretelasticache
+[secretgeneratepassword]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretsmanager/secretgeneratepassword
+[secretlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretsmanager/secretlambda
+[secretmanagerjavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretsmanager/secretmanagerjavasdk
+[secretreplicatepassword]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretsmanager/secretreplicatepassword
+[secretrotationrateexpression]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/secretsmanager/secretrotationrateexpression
 
 ### [Security Group]
 

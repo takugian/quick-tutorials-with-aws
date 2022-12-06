@@ -25,70 +25,7 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
- DatabaseConnectionsAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub DatabaseConnections${DBInstanceIdentifier}
-      AlarmDescription: !Sub DatabaseConnections${DBInstanceIdentifier}
-      Namespace: AWS/RDS
-      MetricName: DatabaseConnections
-      Dimensions:
-        - Name: DBInstanceIdentifier
-          Value: !Ref DBInstanceIdentifier
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 10
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
- WriteThroughputAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub WriteThroughput${DBInstanceIdentifier}
-      AlarmDescription: !Sub WriteThroughput${DBInstanceIdentifier}
-      Namespace: AWS/RDS
-      MetricName: WriteThroughput
-      Dimensions:
-        - Name: DBInstanceIdentifier
-          Value: !Ref DBInstanceIdentifier
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 10
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
- ReadThroughputAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: !Sub ReadThroughput${DBInstanceIdentifier}
-      AlarmDescription: !Sub ReadThroughput${DBInstanceIdentifier}
-      Namespace: AWS/RDS
-      MetricName: ReadThroughput
-      Dimensions:
-        - Name: DBInstanceIdentifier
-          Value: !Ref DBInstanceIdentifier
-      Statistic: Average
-      Period: 60
-      EvaluationPeriods: 2
-      Threshold: 10
-      ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
-      # AlarmActions:
-      #   - !GetAtt Topic.TopicArn
-      # OKActions
-      # InsufficientDataActions
-
- CPUUtilizationAlarm:
+  CPUUtilizationAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub CPUUtilization${DBInstanceIdentifier}
@@ -103,7 +40,196 @@ Resources:
       EvaluationPeriods: 2
       Threshold: 70
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  FreeableMemoryAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub FreeableMemory${DBInstanceIdentifier}
+      AlarmDescription: !Sub FreeableMemory${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: FreeableMemory
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 70
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  ReadLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ReadLatency${DBInstanceIdentifier}
+      AlarmDescription: !Sub ReadLatency${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: ReadLatency
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  WriteLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub WriteLatency${DBInstanceIdentifier}
+      AlarmDescription: !Sub WriteLatency${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: WriteLatency
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  DatabaseConnectionsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub DatabaseConnections${DBInstanceIdentifier}
+      AlarmDescription: !Sub DatabaseConnections${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: DatabaseConnections
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  DiskQueueDepthAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub DiskQueueDepth${DBInstanceIdentifier}
+      AlarmDescription: !Sub DiskQueueDepth${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: DiskQueueDepth
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 2
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  SwapUsageAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub SwapUsage${DBInstanceIdentifier}
+      AlarmDescription: !Sub SwapUsage${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: SwapUsage
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 1000000000
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  FreeLocalStorageAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub FreeLocalStorage${DBInstanceIdentifier}
+      AlarmDescription: !Sub FreeLocalStorage${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: FreeLocalStorage
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 100000000000
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  ReadIOPSAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ReadIOPS${DBInstanceIdentifier}
+      AlarmDescription: !Sub ReadIOPS${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: ReadIOPS
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  BurstBalanceAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub BurstBalance${DBInstanceIdentifier}
+      AlarmDescription: !Sub BurstBalance${DBInstanceIdentifier}
+      Namespace: AWS/RDS
+      MetricName: BurstBalance
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Ref DBInstanceIdentifier
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions

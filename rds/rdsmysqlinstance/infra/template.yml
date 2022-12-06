@@ -113,6 +113,7 @@ Resources:
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: false
       # KmsKeyId: !Ref KmsKeyId
+      # StorageEncrypted: true
       ## Use for multi AZ
       # MultiAZ: true
       ## Use for single AZ

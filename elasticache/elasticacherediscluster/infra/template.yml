@@ -1,0 +1,125 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an ElastiCache Redis cluster
+
+Parameters:
+  ClusterName:
+    Type: String
+    Default: CacheClusterRedis
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  VpcSecurityGroupId:
+    Type: String
+
+  RedisPort:
+    Type: Number
+    Default: 6379
+
+  NumCacheNodes:
+    Type: Number
+    Default: 2
+
+  KmsKeyId:
+    Type: String
+
+  MultiAZEnabled:
+    Type: Boolean
+    Default: true
+
+  NumCacheClusters:
+    Type: Number
+    Default: 2
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/elasticache/${ClusterName}
+      RetentionInDays: 7
+
+  SubnetGroup:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties:
+      Description: !Sub ${ClusterName} Subnet Group
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ClusterName} Security Group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref RedisPort
+          ToPort: !Ref RedisPort
+          SourceSecurityGroupId: !Ref VpcSecurityGroupId
+
+  CacheCluster:
+    Type:
+    Properties:
+      ClusterName: !Ref ClusterName
+      Engine: redis
+      CacheNodeType: cache.t2.micro
+      AZMode: single-az @
+      PreferredAvailabilityZone: us-east-2a @
+      # PreferredAvailabilityZones:
+      # -
+      NumCacheNodes: !Ref NumCacheNodes
+      Port: !Ref RedisPort
+      VpcSecurityGroupIds:
+        - !GetAtt SecurityGroup.GroupId
+      CacheSubnetGroupName: !Ref SubnetGroup
+      LogDeliveryConfigurations:
+        - DestinationDetails:
+            CloudWatchLogsDetails:
+              LogGroup: !Sub /aws/elasticache/${ClusterName}
+          DestinationType: cloudwatch-logs
+          LogFormat: json
+          LogType: engine-log
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ReplicationGroup:
+    Type: AWS::ElastiCache::ReplicationGroup
+    Properties:
+      ReplicationGroupDescription: !Sub ${ClusterName}ReplicationGroup
+      CacheNodeType: cache.t2.micro
+      Engine: redis
+      EngineVersion: 4.0.10
+      AuthToken: "{{resolve:secretsmanager:RedisClusterPassword:SecretString}}"
+      CacheSubnetGroupName: !Ref SubnetGroup
+      MultiAZEnabled: !Ref MultiAZEnabled
+      NumCacheClusters: !Ref NumCacheClusters
+      NumNodeGroups: Integer
+      Port: !Ref RedisPort
+      # ReplicasPerNodeGroup: Integer
+      # ReplicationGroupId: String
+      # NotificationTopicArn: String
+      # GlobalReplicationGroupId: String
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      LogDeliveryConfigurations:
+        - DestinationDetails:
+            CloudWatchLogsDetails:
+              LogGroup: !Sub /aws/elasticache/${ClusterName}
+          DestinationType: cloudwatch-logs
+          LogFormat: json
+          LogType: engine-log
+      AutomaticFailoverEnabled: false
+      # KmsKeyId: !Ref KmsKeyId
+      # AtRestEncryptionEnabled: true
+      # TransitEncryptionEnabled: true
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
