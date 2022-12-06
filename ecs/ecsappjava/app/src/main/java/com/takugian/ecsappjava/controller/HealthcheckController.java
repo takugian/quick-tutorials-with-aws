@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class HealthcheckController {
+public class HealthCheckController {
 
-    @GetMapping("/healthcheck")
+    @GetMapping("/")
     public ResponseEntity<Object> getCustomers() {
 
-        System.out.println("running /healthcheck");
+        System.out.println("running /");
 
         return new ResponseEntity<>(null, HttpStatus.OK);
 

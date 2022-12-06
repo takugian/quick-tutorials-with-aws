@@ -20,9 +20,32 @@ Parameters:
   SubnetId2:
     Type: String
 
+  # SubnetId3:
+  #   Type: String
+
+  Cpu:
+    Type: Number
+    Default: 256
+
+  Memory:
+    Type: Number
+    Default: 512
+
+  MemoryReservation:
+    Type: Number
+    Default: 512
+
+  DesiredNumberOfTasks:
+    Type: Number
+    Default: 1
+
   ExposedPortInDockerFile:
-    Type: String
+    Type: Number
     Default: 3071
+
+  EnvironmentName:
+    Type: String
+    Default: DEV
 
   Owner:
     Type: String
@@ -32,7 +55,7 @@ Resources:
   CloudWatchLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /aws/ecs/${ServiceName}
+      LogGroupName: !Sub /aws/ecs/${ClusterName}/${ServiceName}
       RetentionInDays: 7
 
   ECSCluster:
@@ -80,7 +103,7 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: !Sub ${ServiceName}TaskRolePolicy
+        - PolicyName: !Sub ${ServiceName}TaskRoleLogsPolicy
           PolicyDocument:
             Statement:
               - Effect: Allow
@@ -100,7 +123,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: !Ref ExposedPortInDockerFile
           ToPort: !Ref ExposedPortInDockerFile
-          CidrIp: 0.0.0.0/0
+          CidrIp: 0.0.0.0/0 # All IPs just for fast testing
       SecurityGroupEgress:
         - IpProtocol: "-1"
           CidrIp: 0.0.0.0/0
@@ -115,15 +138,29 @@ Resources:
       Family: !Sub family-${ServiceName}
       ExecutionRoleArn: !Ref ExecutionRole
       TaskRoleArn: !Ref TaskRole
-      Cpu: 256
-      Memory: 512
+      Cpu: !Ref Cpu
+      Memory: !Ref Memory
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
       ContainerDefinitions:
         - Name: !Ref ServiceName
           Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ServiceName}:v1
-          MemoryReservation: 256
+          MemoryReservation: !Ref MemoryReservation
+          Environment:
+            - Name: ENVIRONMENT_NAME
+              Value: !Ref EnvironmentName
+          # Secrets:
+          # - Name: SECRET
+          # Value: !Sub ${SecretsArn}:secret_name::
+          # HealthCheck:
+          #   Command:
+          #     - "'CMD-SHELL', 'curl -f http://localhost/ || exit 1'"
+          #   Interval: 5
+          #   Retries: 3
+          #   StartPeriod: 30
+          #   Timeout: 5
+          Essential: true
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -144,10 +181,15 @@ Resources:
       TaskDefinition: !Ref TaskDefinition
       LaunchType: FARGATE
       SchedulingStrategy: REPLICA
-      DesiredCount: 1
+      DesiredCount: !Ref DesiredNumberOfTasks
       DeploymentConfiguration:
+        DeploymentCircuitBreaker:
+          Rollback: true
+          Enable: true
         MaximumPercent: 200
         MinimumHealthyPercent: 100
+      # LoadBalancers:
+      # HealthCheckGracePeriodSeconds: 10
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED # If subnets are public
@@ -155,8 +197,12 @@ Resources:
           Subnets:
             - !Ref SubnetId1
             - !Ref SubnetId2
+            # - !Ref SubnetId3
           SecurityGroups:
             - !GetAtt ServiceSecurityGroup.GroupId
+      # PlacementStrategies: Just for LaunchType: EC2
+      #   - Field: instanceId
+      #     Type: spread
       Tags:
         - Key: Owner
           Value: !Ref Owner

@@ -1,8 +1,12 @@
 # ecsappjava
 
-This project creates an ECS App using Java, and:
+This project creates an ECS App with following features:
+    - Java 11;
+    - Docker
     - CloudWatch Logs enabled;
     - Fargate compatibility;
+    - Health check enabled;
+    - Placement stratregy 'spread';
     - Public IP address enabled;
 
 ## Pre requirements
@@ -60,6 +64,10 @@ docker tag {ImageId} {RepositoryURI}:v1
 Push docker image to ECR repository
 ```
 docker push {RepositoryURI}:v1
+```
+
+```
+Use Cloudformation to create the stack to deploy the ECS task
 ```
 
 #### How to test

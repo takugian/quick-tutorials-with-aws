@@ -53,6 +53,12 @@ A lot of AWS tutorials for you!!! ;)
 [apigatewayopenapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayopenapi
 [apigatewayv2vpclink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayv2vpclink
 
+### [AppSync]
+
+- `backlog`
+
+[AppSync]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_AppSync.html
+
 ### [Aurora]
 
 - [auroramysqlcluster] - Aurora cluster using MySQL engine
@@ -87,6 +93,12 @@ A lot of AWS tutorials for you!!! ;)
 [cloudfronts3staticwebsite]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/cloudfronts3staticwebsite
 [originaccesscontrol]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccesscontrol
 [originaccessidentity]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudfront/originaccessidentity
+
+### [Cloud Map]
+
+- `backlog`
+
+[Cloud Map]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ServiceDiscovery.html
 
 ### [CloudTrail]
 
@@ -217,6 +229,8 @@ A lot of AWS tutorials for you!!! ;)
 
 - [ecsappgrpc] - ECS with gRPC `backlog`
 - [ecsappjava] - ECS App using Java
+- [ecsapplauchtypeec2] - ECS App with lauch type EC2 `backlog`
+- [ecsapploadbalancer] - ECS App with load balancer `backlog`
 - [ecsappnode] - ECS App using NodeJS
 - [ecsautoscaling] - ECS App using NodeJS with Auto Scaling configured
 - [ecscluster] - ECS Cluster
@@ -225,6 +239,8 @@ A lot of AWS tutorials for you!!! ;)
 [ECS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ECS.html
 [ecsappgrpc]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappgrpc
 [ecsappjava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappjava
+[ecsapplauchtypeec2]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsapplauchtypeec2
+[ecsapploadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsapploadbalancer
 [ecsappnode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappnode
 [ecsautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsautoscaling
 [ecscluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecscluster
@@ -530,12 +546,14 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [X-Ray]
 
-- [xrayapigateway] - AWS X-Ray with API Gateway
+- [xrayapigateway] - AWS X-Ray for an API Gateway
+- [xrayecs] - AWS X-Ray for an ECS task `backlog`
 - [xraygroup] - AWS X-Ray group
 - [xraysamplingrule] - AWS X-Ray Sampling rule `backlog`
 
 [X-Ray]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_XRay.html
 [xrayapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xrayapigateway
+[xrayecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xrayecs
 [xraygroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xraygroup
 [xraysamplingrule]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/xray/xraysamplingrule
 

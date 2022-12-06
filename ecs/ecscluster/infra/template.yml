@@ -7,9 +7,6 @@ Parameters:
     Type: String
     Default: FargateEcsCluster
 
-  VpcId:
-    Type: String
-
   ContainerInsights:
     Type: String
     Default: disabled
@@ -35,18 +32,3 @@ Resources:
       Tags:
         - Key: Owner
           Value: !Ref Owner
-
-  SecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: !Sub Sg${ClusterName}
-      GroupDescription: !Sub Sg${ClusterName}
-      VpcId: !Ref VpcId
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 0.0.0.0/0
-      SecurityGroupEgress:
-        - IpProtocol: "-1"
-          CidrIp: 0.0.0.0/0
