@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an ElastiCache Redis replication group with cluster enabled
+
+Parameters:
+  ReplicationGroupName:
+    Type: String
+    Default: redisclusterenabled
+
+  SubnetId1:
+    Type: String
+
+  SubnetId2:
+    Type: String
+
+  VpcSecurityGroupId:
+    Type: String
+
+  RedisPort:
+    Type: Number
+    Default: 6379
+
+  MultiAZEnabled:
+    Type: String
+    Default: true
+
+  NumNodeGroups:
+    Type: Number
+    Default: 2
+
+  ReplicasPerNodeGroup:
+    Type: Number
+    Default: 2
+
+  # KmsKeyId:
+  #   Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  RedisClusterPassword:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub ${ReplicationGroupName}Password
+      Description: !Sub ${ReplicationGroupName}Password
+      GenerateSecretString:
+        PasswordLength: 128
+        ExcludePunctuation: true
+
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/elasticache/${ReplicationGroupName}
+      RetentionInDays: 7
+
+  SubnetGroup:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties:
+      Description: !Sub ${ReplicationGroupName} Subnet Group
+      SubnetIds:
+        - !Ref SubnetId1
+        - !Ref SubnetId2
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ReplicationGroupName} Security Group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref RedisPort
+          ToPort: !Ref RedisPort
+          SourceSecurityGroupId: !Ref VpcSecurityGroupId
+
+  ReplicationGroup:
+    Type: AWS::ElastiCache::ReplicationGroup
+    DependsOn: RedisClusterPassword
+    Properties:
+      ReplicationGroupId: !Sub ${ReplicationGroupName}-group
+      # GlobalReplicationGroupId: String
+      ReplicationGroupDescription: !Sub ${ReplicationGroupName}ReplicationGroup
+      CacheNodeType: cache.t2.micro
+      Engine: redis
+      Port: !Ref RedisPort
+      AuthToken: !Sub "{{resolve:secretsmanager:${ReplicationGroupName}Password:SecretString}}"
+      CacheSubnetGroupName: !Ref SubnetGroup
+      MultiAZEnabled: !Ref MultiAZEnabled
+      # PrimaryClusterId: String
+      NumNodeGroups: !Ref NumNodeGroups
+      ReplicasPerNodeGroup: !Ref ReplicasPerNodeGroup
+      SecurityGroupIds:
+        - !GetAtt SecurityGroup.GroupId
+      LogDeliveryConfigurations:
+        - DestinationDetails:
+            CloudWatchLogsDetails:
+              LogGroup: !Sub /aws/elasticache/${ReplicationGroupName}
+          DestinationType: cloudwatch-logs
+          LogFormat: json
+          LogType: engine-log
+      AutomaticFailoverEnabled: true
+      # KmsKeyId: !Ref KmsKeyId
+      # AtRestEncryptionEnabled: true
+      TransitEncryptionEnabled: true
+      # NotificationTopicArn: String
+      # SnapshotName
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

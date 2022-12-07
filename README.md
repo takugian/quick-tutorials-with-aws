@@ -53,6 +53,25 @@ A lot of AWS tutorials for you!!! ;)
 [apigatewayopenapi]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayopenapi
 [apigatewayv2vpclink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigatewayv2/apigatewayv2vpclink
 
+### [Application Auto Scaling]
+
+- [autoscalingauroracluster] - Auto Scaling for an Aurora DB Cluster `backlog`
+- [autoscalingdynamodbglobalsecondaryindex] - Auto Scaling for a DynamoDB Global Secondary Index `backlog`
+- [autoscalingdynamodbtable] - Auto Scaling for a DynamoDB Table `in revision`
+- [autoscalingecs] - Auto Scaling for an ECS task `in revision`
+- [autoscalingelasticachereplicationgroup] - Auto Scaling for an Elasticache Replication Group `backlog`
+- [autoscalinglambda] - Auto Scaling for a Lambda provisioned concurrency `in revision`
+- [autoscalingmskcluster] - Auto Scaling for a MSK Cluster `backlog`
+
+[Application Auto Scaling]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ApplicationAutoScaling.html
+[autoscalingauroracluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/applicationautoscaling/autoscalingauroracluster
+[autoscalingdynamodbglobalsecondaryindex]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/applicationautoscaling/autoscalingdynamodbglobalsecondaryindex
+[autoscalingdynamodbtable]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/applicationautoscaling/autoscalingdynamodbtable
+[autoscalingecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/applicationautoscaling/autoscalingecs
+[autoscalingelasticachereplicationgroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/applicationautoscaling/autoscalingelasticachereplicationgroup
+[autoscalinglambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/applicationautoscaling/autoscalinglambda
+[autoscalingmskcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/applicationautoscaling/autoscalingmskcluster
+
 ### [AppSync]
 
 - `backlog`
@@ -120,6 +139,7 @@ A lot of AWS tutorials for you!!! ;)
 ### [CloudWatch]
 
 - [cloudwatchalarmsapigateway] - CloudWatch Alarms for an API Gateway
+- [cloudwatchalarmsapplicationloadbalancer] - CloudWatch Alarms for an Application Load Balancer
 - [cloudwatchalarmsaurora] - CloudWatch Alarms for an Aurora database
 - [cloudwatchalarmscloudfront] - CloudWatch Alarms for a CloudFront
 - [cloudwatchalarmscustommetric] - CloudWatch Alarms for a Custom Metric
@@ -129,7 +149,7 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudwatchalarmsecsclusterautoscaling] - CloudWatch Alarms for an ECS auto scaling
 - [cloudwatchalarmselasticache] - CloudWatch Alarms for an ElastiCache
 - [cloudwatchalarmslambda] - CloudWatch Alarms for a Lambda function
-- [cloudwatchalarmsloadbalancer] - CloudWatch Alarms for a Load Balancer
+- [cloudwatchalarmsnetworkloadbalancer] - CloudWatch Alarms for a Network Load Balancer
 - [cloudwatchalarmsrds] - CloudWatch Alarms for a RDS instance
 - [cloudwatchalarmss3] - CloudWatch Alarms for a S3 bucket
 - [cloudwatchalarmssns] - CloudWatch Alarms for a SNS topic
@@ -143,6 +163,7 @@ A lot of AWS tutorials for you!!! ;)
 
 [CloudWatch]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CloudWatch.html
 [cloudwatchalarmsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsapigateway
+[cloudwatchalarmsapplicationloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsapplicationloadbalancer
 [cloudwatchalarmsaurora]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsaurora
 [cloudwatchalarmscloudfront]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmscloudfront
 [cloudwatchalarmscustommetric]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmscustommetric
@@ -152,7 +173,7 @@ A lot of AWS tutorials for you!!! ;)
 [cloudwatchalarmsecsclusterautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsecsclusterautoscaling
 [cloudwatchalarmselasticache]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmselasticache
 [cloudwatchalarmslambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmslambda
-[cloudwatchalarmsloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsloadbalancer
+[cloudwatchalarmsnetworkloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsnetworkloadbalancer
 [cloudwatchalarmsrds]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmsrds
 [cloudwatchalarmss3]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmss3
 [cloudwatchalarmssns]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmssns
@@ -205,7 +226,6 @@ A lot of AWS tutorials for you!!! ;)
 - [dynamojavasdk] - Integration between a DynamoDB table and Java SDK
 - [dynamostreamlambda] - DynamoDB Stream integrated with a Lambda function
 - [dynamotable] - DynamoDB table
-- [dynamotableautoscaling] - DynamoDB table with auto Scaling configured
 - [dynamotableecsapp] - Integration between a DynamoDB table and an ECS task
 - [dynamotableimportsource] - DynamoDB table and import data from a S3 bucket
 - [dynamotableindexes] - DynamoDB table with Global Secondary Index (GSI) and Local Secondary Index (LSI) configured
@@ -216,7 +236,6 @@ A lot of AWS tutorials for you!!! ;)
 [dynamojavasdk]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamojavasdk
 [dynamostreamlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamostreamlambda
 [dynamotable]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotable
-[dynamotableautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableautoscaling
 [dynamotableecsapp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableecsapp
 [dynamotableimportsource]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableimportsource
 [dynamotableindexes]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/dynamodb/dynamotableindexes
@@ -238,7 +257,6 @@ A lot of AWS tutorials for you!!! ;)
 - [ecsapplauchtypeec2] - ECS App with lauch type EC2 `backlog`
 - [ecsapploadbalancer] - ECS App with load balancer `backlog`
 - [ecsappnode] - ECS App using NodeJS `in progress`
-- [ecsautoscaling] - ECS App using NodeJS with Auto Scaling configured
 - [ecscluster] - ECS Cluster
 - [ecsfargatespot] - ECS App using NodeJS using cluster with Fargate Spot compatibility enabled
 
@@ -248,20 +266,25 @@ A lot of AWS tutorials for you!!! ;)
 [ecsapplauchtypeec2]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsapplauchtypeec2
 [ecsapploadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsapploadbalancer
 [ecsappnode]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappnode
-[ecsautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsautoscaling
 [ecscluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecscluster
 [ecsfargatespot]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsfargatespot
 
 ### [ElastiCache]
 
-- [elasticacherediscluster] - ElastiCache Redis cluster `in progress`
+- [elasticachememcachedcluster] - ElastiCache Memcached cluster
+- [elasticacherediscluster] - ElastiCache Redis cluster
 - [elasticacheredislambda] - Integration between an ElastiCache Redis cluster and a Lambda function
-- [elasticacheredisreplicationgroup] - ElastiCache Redis Replication Group `in progress`
+- [elasticacheredisreplicationgroupclusterdisabled] - ElastiCache Redis Replication Group with cluster disabled
+- [elasticacheredisreplicationgroupclusterenabled] - ElastiCache Redis Replication Group with cluster enabled
+- [elasticacheusergroup] - ElastiCache user group
 
 [ElastiCache]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ElastiCache.html
+[elasticachememcachedcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticachememcachedcluster
 [elasticacherediscluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacherediscluster
 [elasticacheredislambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredislambda
-[elasticacheredisreplicationgroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredisreplicationgroup
+[elasticacheredisreplicationgroupclusterdisabled]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredisreplicationgroupclusterdisabled
+[elasticacheredisreplicationgroupclusterenabled]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheredisreplicationgroupclusterenabled
+[elasticacheusergroup]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/elasticache/elasticacheusergroup
 
 ### [EventBridge]
 
@@ -321,7 +344,6 @@ A lot of AWS tutorials for you!!! ;)
 ### [Lambda]
 
 - [lambdaalias] - Lambda function with versions and an alias with routing configuration
-- [lambdaautoscaling] - Lambda function with Auto Scaling configured
 - [lambdadlq] - Lambda function with DLQ configured
 - [lambdaendpoint] - Lambda function with endpoint enabled
 - [lambdajava] - Lambda function using Java as the runtime
@@ -333,7 +355,6 @@ A lot of AWS tutorials for you!!! ;)
 
 [Lambda]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Lambda.html
 [lambdaalias]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaalias
-[lambdaautoscaling]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaautoscaling
 [lambdadlq]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdadlq
 [lambdaendpoint]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdaendpoint
 [lambdajava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/lambda/lambdajava

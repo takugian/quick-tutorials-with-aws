@@ -1,11 +1,14 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a CloudWatch Alarms for a Load Balancer
+Description: Creates a CloudWatch Alarms for an Application Load Balancer
 
 Parameters:
   LoadBalancerName:
     Type: String
-  
+
+  AvailabilityZone:
+    Type: String
+
   TargetGroup:
     Type: String
 
@@ -28,43 +31,76 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
-  ActiveConnectionCountAlarm:
+  RequestCountAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub ActiveConnectionCount${LoadBalancerName}
-      AlarmDescription: !Sub ActiveConnectionCount${LoadBalancerName}
+      AlarmName: !Sub RequestCount${LoadBalancerName}
+      AlarmDescription: !Sub RequestCount${LoadBalancerName}
       Namespace: AWS/ApplicationELB
-      MetricName: ActiveConnectionCount
+      MetricName: RequestCount
       Dimensions:
         - Name: LoadBalancer
           Value: !Ref LoadBalancerName
+        - Name: AvailabilityZone
+          Value: !Ref AvailabilityZone
+        - Name: TargetGroup
+          Value: !Ref TargetGroup
       Statistic: Sum
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 2
+      Threshold: 500
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions
       # InsufficientDataActions
 
-  HTTPCode_ELB_5XX_CountAlarm:
+  TargetResponseTimeAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub HTTPCode_ELB_5XX_Count${TableName}
-      AlarmDescription: !Sub HTTPCode_ELB_5XX_Count${TableName}
+      AlarmName: !Sub TargetResponseTime${LoadBalancerName}
+      AlarmDescription: !Sub TargetResponseTime${LoadBalancerName}
       Namespace: AWS/ApplicationELB
-      MetricName: HTTPCode_ELB_5XX_Count
+      MetricName: TargetResponseTime
       Dimensions:
         - Name: LoadBalancer
           Value: !Ref LoadBalancerName
-      Statistic: Average
+        - Name: AvailabilityZone
+          Value: !Ref AvailabilityZone
+        - Name: TargetGroup
+          Value: !Ref TargetGroup
+      Statistic: Sum
       Period: 60
       EvaluationPeriods: 2
       Threshold: 2
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
+      # AlarmActions:
+      #   - !GetAtt Topic.TopicArn
+      # OKActions
+      # InsufficientDataActions
+
+  TargetConnectionErrorCountAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub TargetConnectionErrorCount${LoadBalancerName}
+      AlarmDescription: !Sub TargetConnectionErrorCount${LoadBalancerName}
+      Namespace: AWS/ApplicationELB
+      MetricName: TargetConnectionErrorCount
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !Ref LoadBalancerName
+        - Name: AvailabilityZone
+          Value: !Ref AvailabilityZone
+        - Name: TargetGroup
+          Value: !Ref TargetGroup
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions
@@ -80,14 +116,16 @@ Resources:
       Dimensions:
         - Name: LoadBalancer
           Value: !Ref LoadBalancerName
+        - Name: AvailabilityZone
+          Value: !Ref AvailabilityZone
         - Name: TargetGroup
           Value: !Ref TargetGroup
-      Statistic: Minimum
+      Statistic: Sum
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 2
+      Threshold: 1
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions

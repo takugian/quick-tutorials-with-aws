@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates an ElastiCache user group
+
+Parameters:
+  UserId:
+    Type: String
+    Default: user1
+
+  UserName:
+    Type: String
+    Default: myuser1
+
+  PasswordUser1:
+    Type: String
+    Default: mYnuUzrpAxXw2rdzx
+
+  UserGroupId:
+    Type: String
+    Default: usergroup
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  User1:
+    Type: AWS::ElastiCache::User
+    Properties:
+      UserId: !Ref UserId
+      UserName: !Ref UserName
+      NoPasswordRequired: false
+      Passwords:
+        - !Ref PasswordUser1
+      AccessString: "on ~app::* -@all +@read"
+      # AuthenticationMode:
+      #   {
+      #     AuthenticationType: password
+      #     Passwords: ["*****"]
+      #   }
+      Engine: redis
+
+  UserGroup:
+    Type: AWS::ElastiCache::UserGroup
+    DependsOn: User1
+    Properties:
+      UserGroupId: !Ref UserGroupId
+      Engine: redis
+      UserIds:
+        - default
+        - !Ref UserId

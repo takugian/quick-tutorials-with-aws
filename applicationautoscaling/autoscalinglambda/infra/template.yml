@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a Lambda function with Auto Scaling configured
+Description: Creates an Auto Scaling for a Lambda provisioned concurrency
 
 Parameters:
   FunctionName:

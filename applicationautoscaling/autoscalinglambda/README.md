@@ -1,6 +1,6 @@
-# lambdaautoscaling
+# autoscalinglambda
 
-This project creates a Lambda function with Auto Scaling configured.
+This project creates an auto Scaling for a Lambda provisioned concurrency.
 
 ## Helpful links
 

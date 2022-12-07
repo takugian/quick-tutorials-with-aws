@@ -5,11 +5,7 @@ Description: Creates an integration between an ElastiCache Redis cluster and a L
 Parameters:
   ClusterName:
     Type: String
-    Default: CacheClusterRedisDefault
-
-  ClusterPort:
-    Type: Number
-    Default: 6379
+    Default: rediscluster
 
   SubnetId1:
     Type: String
@@ -17,12 +13,16 @@ Parameters:
   SubnetId2:
     Type: String
 
-  SecurityGroupId:
+  VpcSecurityGroupId:
     Type: String
+
+  RedisPort:
+    Type: Number
+    Default: 6379
 
   LambdaFunctionName:
     Type: String
-    Default: LambdaRedis
+    Default: lambdaredis
 
   BucketLambdaSourceCode:
     Type: String
@@ -65,12 +65,12 @@ Resources:
     Type: AWS::ElastiCache::CacheCluster
     Properties:
       ClusterName: !Ref ClusterName
-      Engine: redis
       CacheNodeType: cache.t2.micro
+      Engine: redis      
       AZMode: single-az
       PreferredAvailabilityZone: us-east-2a
       NumCacheNodes: 1
-      Port: !Ref ClusterPort
+      Port: !Ref RedisPort
       VpcSecurityGroupIds:
         - !GetAtt SecurityGroup.GroupId
       CacheSubnetGroupName: !Ref SubnetGroup

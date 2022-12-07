@@ -30,7 +30,7 @@ Parameters:
     Type: String
   
   PointInTimeRecoveryEnabled:
-    Type: Boolean
+    Type: String
     Default: true
 
   Owner:

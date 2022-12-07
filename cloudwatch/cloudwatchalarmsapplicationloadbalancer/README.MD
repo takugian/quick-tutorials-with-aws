@@ -1,6 +1,6 @@
-# cloudwatchalarmsloadbalancer
+# cloudwatchalarmsapplicationloadbalancer
 
-This project creates a CloudWatch Alarms for a Load Balancer.
+This project creates a CloudWatch Alarms for an Application Load Balancer.
 
 ## Helpful links
 

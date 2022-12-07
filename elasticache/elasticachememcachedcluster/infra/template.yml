@@ -1,16 +1,19 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an ElastiCache Redis cluster
+Description: Creates an ElastiCache Memcached cluster
 
 Parameters:
   ClusterName:
     Type: String
-    Default: rediscluster
+    Default: memcachedcluster
 
   SubnetId1:
     Type: String
 
   SubnetId2:
+    Type: String
+
+  SubnetId3:
     Type: String
 
   VpcSecurityGroupId:
@@ -22,29 +25,32 @@ Parameters:
 
   AZMode:
     Type: String
-    Default: single-az
+    Default: cross-az
     AllowedValues:
       - single-az
+      - cross-az
 
   NumCacheNodes:
     Type: Number
-    Default: 1
+    Default: 3
 
-  PreferredAvailabilityZone:
+  PreferredAvailabilityZone1:
     Type: String
     Default: us-east-2a
+
+  PreferredAvailabilityZone2:
+    Type: String
+    Default: us-east-2b
+
+  PreferredAvailabilityZone3:
+    Type: String
+    Default: us-east-2c
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
-  CloudWatchLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/elasticache/${ClusterName}
-      RetentionInDays: 7
-
   SubnetGroup:
     Type: AWS::ElastiCache::SubnetGroup
     Properties:
@@ -52,6 +58,7 @@ Resources:
       SubnetIds:
         - !Ref SubnetId1
         - !Ref SubnetId2
+        - !Ref SubnetId3
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -68,24 +75,21 @@ Resources:
     Properties:
       ClusterName: !Ref ClusterName
       CacheNodeType: cache.t2.micro
-      Engine: redis
+      Engine: memcached
       AZMode: !Ref AZMode
-      PreferredAvailabilityZone: !Ref PreferredAvailabilityZone
+      PreferredAvailabilityZones:
+        - !Ref PreferredAvailabilityZone1
+        - !Ref PreferredAvailabilityZone2
+        - !Ref PreferredAvailabilityZone3
       NumCacheNodes: !Ref NumCacheNodes
       Port: !Ref RedisPort
       VpcSecurityGroupIds:
         - !GetAtt SecurityGroup.GroupId
       # CacheParameterGroupName: String
       CacheSubnetGroupName: !Ref SubnetGroup
-      LogDeliveryConfigurations:
-        - DestinationDetails:
-            CloudWatchLogsDetails:
-              LogGroup: !Sub /aws/elasticache/${ClusterName}
-          DestinationType: cloudwatch-logs
-          LogFormat: json
-          LogType: engine-log
       # NotificationTopicArn: String
       # SnapshotName: String
+      # TransitEncryptionEnabled: true
       Tags:
         - Key: Owner
           Value: !Ref Owner

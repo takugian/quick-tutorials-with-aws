@@ -1,6 +1,6 @@
-# ecsappautoscaling
+# autoscalingecs
 
-This project creates an ECS App using NodeJS with Auto Scaling configured.
+This project creates an auto Scaling for an ECS task.
 
 ## Helpful links
 

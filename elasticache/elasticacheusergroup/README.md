@@ -1,6 +1,6 @@
-# elasticacheredisreplicationgroup
+# elasticacheusergroup
 
-This project creates an ElastiCache Redis replication group.
+This project creates an ElastiCache user group.
 
 ## Helpful links
 
