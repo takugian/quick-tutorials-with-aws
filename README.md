@@ -371,6 +371,7 @@ A lot of AWS tutorials for you!!! ;)
 - [loadbalancerhealthcheck] - Application Load Balancer with health check enabled
 - [loadbalancerlistenerrules] - Application Load Balancer with listener rules configured
 - [loadbalancerstickinesssession] - Application Load Balancer with stickiness session enabled
+- [loadbalancertls] - Application Load Balancer with SSL/TLS certificates `backlog`
 - [loadbalancerweight] - Application Load Balancer with weight listener rules
 - [networkloadbalancerecs] - Network Load Balancer in front of an ECS App
 
@@ -380,6 +381,7 @@ A lot of AWS tutorials for you!!! ;)
 [loadbalancerhealthcheck]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerhealthcheck
 [loadbalancerlistenerrules]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerlistenerrules
 [loadbalancerstickinesssession]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerstickinesssession
+[loadbalancertls]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancertls
 [loadbalancerweight]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerweight
 [networkloadbalancerecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/networkloadbalancerecs
 

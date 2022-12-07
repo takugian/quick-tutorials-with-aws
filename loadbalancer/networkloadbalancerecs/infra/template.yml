@@ -119,6 +119,9 @@ Resources:
       Subnets:
         - !Ref SubnetId1
         - !Ref SubnetId2
+      LoadBalancerAttributes:
+        - Key: load_balancing.cross_zone.enabled
+          Name: true
       Tags:
         - Key: Owner
           Value: !Ref Owner
@@ -142,6 +145,10 @@ Resources:
       Port: !Ref ListenerContainerPort
       TargetType: ip
       HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 35
+      HealthCheckPath: "/healthcheck"
+      HealthCheckPort: !Ref ListenerContainerPort
+      HealthCheckProtocol: HTTP
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 5

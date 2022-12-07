@@ -114,13 +114,9 @@ Resources:
       Subnets:
         - !Ref SubnetId1
         - !Ref SubnetId2
-      # LoadBalancerAttributes:
-      #   - Key: access_logs.s3.enabled
-      #     Name: true
-      #   - Key: access_logs.s3.prefix
-      #     Name: !Ref BucketLoadBalancerLogs
-      #   - Key: access_logs.s3.bucket
-      #     Name: !Ref BucketKeyLoadBalancerLogs
+      LoadBalancerAttributes:
+        - Key: load_balancing.cross_zone.enabled
+          Name: true
       Tags:
         - Key: Owner
           Value: !Ref Owner
@@ -141,6 +137,7 @@ Resources:
       Name: !Sub LbTg${FunctionName}
       TargetType: lambda
       HealthCheckEnabled: true
+      HealthCheckPath: "/"
       Targets:
         - Id: !GetAtt Lambda.Arn
       TargetGroupAttributes:

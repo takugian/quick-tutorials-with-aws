@@ -25,22 +25,22 @@ Resources:
   #       - Key: Owner
   #         Value: !Ref Owner
 
- RequestsAlarm:
+  5xxErrorRateAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub Requests${DistributionId}
-      AlarmDescription: !Sub Requests${DistributionId}
+      AlarmName: !Sub 5xxErrorRate${DistributionId}
+      AlarmDescription: !Sub 5xxErrorRate${DistributionId}
       Namespace: AWS/CloudFront
       MetricName: Requests
       Dimensions:
         - Name: DistributionId
           Value: !Ref DistributionId
-      Statistic: Count
+      Statistic: Sum
       Period: 60
       EvaluationPeriods: 2
-      Threshold: 10
+      Threshold: 2
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: missing 
+      TreatMissingData: missing
       # AlarmActions:
       #   - !GetAtt Topic.TopicArn
       # OKActions

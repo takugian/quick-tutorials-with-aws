@@ -76,7 +76,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt Lambda.Arn
-      Action: "lambda:InvokeFunction"
+      Action: lambda:InvokeFunction
       Principal: elasticloadbalancing.amazonaws.com
 
   LoadBalancer:
