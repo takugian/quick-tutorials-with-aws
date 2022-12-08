@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Route 53 record set for an Application Load Balancer
+
+Parameters:
+  RecordSetName:
+    Type: String
+
+  HostedZoneId:
+    Type: String
+
+  LoadBalancerDNSName:
+    Type: String
+
+  LoadBalancerHostedZoneId:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Ref RecordSetName
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      AliasTarget:
+        DNSName: !Ref LoadBalancerDNSName
+        HostedZoneId: !Ref LoadBalancerHostedZoneId
+        EvaluateTargetHealth: true

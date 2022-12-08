@@ -7,14 +7,6 @@ Parameters:
     Type: String
     Default: LoadBalancerLambda
 
-  BucketLambdaSourceCode:
-    Type: String
-    Default: tg-quicklabs-lambdasrc
-
-  BucketKeyLambdaSourceCode:
-    Type: String
-    Default: LoadBalancerLambda.zip
-
   SecurityGroupId:
     Type: String
 
@@ -72,8 +64,33 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Handler: index.handler
       Code:
-        S3Bucket: !Ref BucketLambdaSourceCode
-        S3Key: !Ref BucketKeyLambdaSourceCode
+        ZipFile: |
+          exports.handler = async (event, context) => {
+              let response = {
+                  statusCode: 200,
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify("OK"),
+              };
+              const resource = `${event.httpMethod} ${event.path}`;
+              console.log(`Running ${resource}`);
+              try {
+                  if (resource == "GET /") {
+                      console.log(`Running healthcheck`);
+                  } else if (resource == "GET /customers") {
+                      console.log(`Running GET /customers`);
+                  } else {
+                      throw new Error(`Resource ${resource} not found`);
+                  }
+              } catch (err) {
+                  console.log(err);
+                  response.statusCode = 500;
+                  response.body = JSON.stringify(err.message);
+              }
+              console.log(`Request has completed with response ${JSON.stringify(response)}`);
+              return response;
+          };
       VpcConfig:
         SecurityGroupIds:
           - !Ref SecurityGroupId
@@ -88,7 +105,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt Lambda.Arn
-      Action: "lambda:InvokeFunction"
+      Action: lambda:InvokeFunction
       Principal: elasticloadbalancing.amazonaws.com
 
   LoadBalancerSecurityGroup:
@@ -102,7 +119,7 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
-
+          
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -116,7 +133,7 @@ Resources:
         - !Ref SubnetId2
       LoadBalancerAttributes:
         - Key: load_balancing.cross_zone.enabled
-          Name: true
+          Value: true
       Tags:
         - Key: Owner
           Value: !Ref Owner
@@ -140,9 +157,6 @@ Resources:
       HealthCheckPath: "/"
       Targets:
         - Id: !GetAtt Lambda.Arn
-      TargetGroupAttributes:
-        - Key: deregistration_delay.timeout_seconds
-          Value: 5
       Tags:
         - Key: Owner
           Value: !Ref Owner

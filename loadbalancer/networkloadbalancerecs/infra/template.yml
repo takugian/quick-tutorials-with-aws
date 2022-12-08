@@ -121,7 +121,7 @@ Resources:
         - !Ref SubnetId2
       LoadBalancerAttributes:
         - Key: load_balancing.cross_zone.enabled
-          Name: true
+          Value: true
       Tags:
         - Key: Owner
           Value: !Ref Owner

@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Route 53 public hosted zone
+
+Parameters:
+  HostedZoneName:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: takugian.com
+      HostedZoneConfig:
+        Comment: My hosted zone for takugian.com
+      HostedZoneTags:
+        - Key: Owner
+          Value: !Ref Owner

@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Route 53 private hosted zone
+
+Parameters:
+  HostedZoneName:
+    Type: String
+
+  VPCId:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: takugian.com
+      HostedZoneConfig:
+        Comment: My hosted zone for takugian.com
+      VPCs:
+        - VPCId: !Ref VPCId
+          VPCRegion: !Sub ${AWS::Region}
+      HostedZoneTags:
+        - Key: Owner
+          Value: !Ref Owner

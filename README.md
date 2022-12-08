@@ -415,10 +415,20 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [Route 53]
 
-- [hostedzone] - Route 53 Hosted Zone `backlog`
+- [privatehostedzone] - Route 53 private Hosted Zone
+- [publichostedzone] - Route 53 public Hosted Zone
+- [recordsetapigateway] - Route 53 Record Set for an API Gateway `backlog`
+- [recordsetcloudfront] - Route 53 Record Set for a CloudFront Distribution `backlog`
+- [recordsetloadbalancer] - Route 53 Record Set for an Application Load Balancer
+- [recordsets3staticwebsite] - Route 53 Record Set for a S3 Static Website `backlog`
 
 [Route 53]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Route53.html
-[hostedzone]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/hostedzone
+[privatehostedzone]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/privatehostedzone
+[publichostedzone]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/publichostedzone
+[recordsetapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/recordsetapigateway
+[recordsetcloudfront]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/recordsetcloudfront
+[recordsetloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/recordsetloadbalancer
+[recordsets3staticwebsite]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/recordsets3staticwebsite
 
 ### [S3]
 

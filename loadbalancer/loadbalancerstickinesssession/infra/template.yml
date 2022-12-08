@@ -101,8 +101,6 @@ Resources:
       Targets:
         - Id: !GetAtt Lambda.Arn
       TargetGroupAttributes:
-        - Key: deregistration_delay.timeout_seconds
-          Value: 5
         - Key: stickiness.enabled
           Value: true
         - Key: stickiness.type

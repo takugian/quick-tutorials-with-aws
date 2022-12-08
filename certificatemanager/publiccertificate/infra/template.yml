@@ -5,7 +5,7 @@ Description: Creates a public certificate
 Parameters:
   DomainName:
     Type: String
-    Default: "*.takugian.com"
+    Default: takugian.com
 
   Owner:
     Type: String
