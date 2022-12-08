@@ -367,21 +367,19 @@ A lot of AWS tutorials for you!!! ;)
 ### [Load Balancer]
 
 - [applicationloadbalancerlambda] - Application Load Balancer in front of a Lambda function
-- [loadbalancercertificate] - Application Load Balancer with a public certificate
+- [applicationloadbalancertls] - Application Load Balancer with SSL/TLS certificates `backlog`
 - [loadbalancerhealthcheck] - Application Load Balancer with health check enabled
 - [loadbalancerlistenerrules] - Application Load Balancer with listener rules configured
 - [loadbalancerstickinesssession] - Application Load Balancer with stickiness session enabled
-- [loadbalancertls] - Application Load Balancer with SSL/TLS certificates `backlog`
 - [loadbalancerweight] - Application Load Balancer with weight listener rules
 - [networkloadbalancerecs] - Network Load Balancer in front of an ECS App
 
 [Load Balancer]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ElasticLoadBalancingV2.html
 [applicationloadbalancerlambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/applicationloadbalancerlambda
-[loadbalancercertificate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancercertificate
+[applicationloadbalancertls]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/applicationloadbalancertls
 [loadbalancerhealthcheck]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerhealthcheck
 [loadbalancerlistenerrules]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerlistenerrules
 [loadbalancerstickinesssession]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerstickinesssession
-[loadbalancertls]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancertls
 [loadbalancerweight]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/loadbalancerweight
 [networkloadbalancerecs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/loadbalancer/networkloadbalancerecs
 
@@ -420,7 +418,7 @@ A lot of AWS tutorials for you!!! ;)
 - [recordsetapigateway] - Route 53 Record Set for an API Gateway `backlog`
 - [recordsetcloudfront] - Route 53 Record Set for a CloudFront Distribution `backlog`
 - [recordsetloadbalancer] - Route 53 Record Set for an Application Load Balancer
-- [recordsets3staticwebsite] - Route 53 Record Set for a S3 Static Website `backlog`
+- [recordsets3staticwebsite] - Route 53 Record Set for a S3 Static Website
 
 [Route 53]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Route53.html
 [privatehostedzone]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/route53/privatehostedzone

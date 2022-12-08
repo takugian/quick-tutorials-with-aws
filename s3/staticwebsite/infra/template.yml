@@ -1,44 +1,52 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a bucket used as a static website with logging configuration
+Description: Creates a bucket used as a static website
 
 Parameters:
-  BucketName:
+  StaticWebsiteBucketName:
     Type: String
     Default: tg-staticwebsite-123456
+
+  Route53RecordName:
+    Type: String
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
-  LoggingBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub ${BucketName}-logging
-      AccessControl: LogDeliveryWrite
-
   StaticWebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref BucketName
-      AccessControl: PublicRead
+      BucketName: !Ref StaticWebsiteBucketName
+      # AccessControl: Private
       PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        IgnorePublicAcls: true
-        BlockPublicPolicy: true
-        RestrictPublicBuckets: true
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
-      LoggingConfiguration:
-        DestinationBucketName: !Ref LoggingBucket
-        LogFilePrefix: logs
       Tags:
         - Key: Owner
           Value: !Ref Owner
-    DeletionPolicy: Retain
 
+  # Public access via website URL
+  # BucketPolicy:
+  #   Type: AWS::S3::BucketPolicy
+  #   Properties:
+  #     Bucket: !Ref StaticWebsiteBucket
+  #     PolicyDocument:
+  #       Statement:
+  #         - Sid: AllowPublic
+  #           Effect: Allow
+  #           Action:
+  #             - s3:GetObject
+  #           Resource: !Sub arn:aws:s3:::${StaticWebsiteBucketName}/*
+  #           Principal: "*"
+
+  # Public access via Route 53
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -49,17 +57,6 @@ Resources:
             Effect: Allow
             Action:
               - s3:GetObject
-            Resource: !Sub arn:aws:s3:::${BucketName}/*
-            Principal: "*"
-
-Outputs:
-  WebsiteURL:
-    Value: !GetAtt StaticWebsiteBucket.WebsiteURL
-    Description: URL for website hosted on S3
-
-  S3BucketSecureURL:
-    Value: !Join
-      - ""
-      - - "https://"
-        - !GetAtt StaticWebsiteBucket.DomainName
-    Description: Name of S3 bucket to hold website content
+            Resource: !Sub arn:aws:s3:::${Route53RecordName}/*
+            Principal:
+              AWS: "*"

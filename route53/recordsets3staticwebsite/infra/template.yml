@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Route 53 record set for a S3 Static Website
+
+Parameters:
+  RecordSetName:
+    Type: String
+
+  HostedZoneId:
+    Type: String
+
+  BucketWebsiteEndpoint:
+    Type: String
+
+  WebsiteRegionHostedZoneId:
+    Type: String
+    Default: Z2O1EMRO9K5GLX
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Ref RecordSetName
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      AliasTarget:
+        DNSName: !Ref BucketWebsiteEndpoint
+        HostedZoneId: !Ref WebsiteRegionHostedZoneId
+        EvaluateTargetHealth: true
