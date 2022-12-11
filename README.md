@@ -367,7 +367,7 @@ A lot of AWS tutorials for you!!! ;)
 ### [Load Balancer]
 
 - [applicationloadbalancerlambda] - Application Load Balancer in front of a Lambda function
-- [applicationloadbalancertls] - Application Load Balancer with SSL/TLS certificates `backlog`
+- [applicationloadbalancertls] - Application Load Balancer with SSL/TLS certificates
 - [loadbalancerhealthcheck] - Application Load Balancer with health check enabled
 - [loadbalancerlistenerrules] - Application Load Balancer with listener rules configured
 - [loadbalancerstickinesssession] - Application Load Balancer with stickiness session enabled

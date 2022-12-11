@@ -19,3 +19,12 @@ Resources:
       Tags:
         - Key: Owner
           Value: !Ref Owner
+
+  GenericDNSCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub "*.${DomainName}"
+      ValidationMethod: DNS
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
