@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Route 53 record set for an API Gateway
+
+Parameters:
+  RecordSetName:
+    Type: String
+
+  HostedZoneId:
+    Type: String
+
+  ApiGatewayRegionalDomainName:
+    Type: String
+
+  ApiGatewayRegionalHostedZoneId:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Ref RecordSetName
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      AliasTarget:
+        DNSName: !Ref ApiGatewayRegionalDomainName
+        HostedZoneId: !Ref ApiGatewayRegionalHostedZoneId
+        EvaluateTargetHealth: true

@@ -8,24 +8,23 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewayapikeyusageplan] - REST API Gateway with usage plan and API Key configured
 - [apigatewaycache] - REST API Gateway with Cache enabled
-- [apigatewayclientcertificate] - REST API Gateway with Client Certificate `backlog`
-- [apigatewaydomainnamebasepath] - REST API Gateway with domain name and base path
+- [apigatewayedgedomainnamebasepath] - REST Edge API Gateway with domain name and base path
 - [apigatewaylambda] - Public REST API Gateway and a Lambda function as backend
 - [apigatewaylambdaauthorizer] - REST API Gateway with a Lambda function as authorizer
 - [apigatewaymock] - REST API Gateway with a mocked backend
 - [apigatewayprivateloadbalancer] - Private REST API Gateway integrated with a Network Load Balancer and an ECS task
+- [apigatewayregionaldomainnamebasepath] - REST Regional API Gateway with domain name and base path
 - [apigatewayvpclink] - VPC Link 
 
 [API Gateway]: https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html
 [apigatewayapikeyusageplan]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayapikeyusageplan
 [apigatewaycache]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaycache
-[apigatewaycanarysetting]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaycanarysetting
-[apigatewayclientcertificate]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayclientcertificate
-[apigatewaydomainnamebasepath]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaydomainnamebasepath
+[apigatewayedgedomainnamebasepath]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayedgedomainnamebasepath
 [apigatewaylambda]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaylambda
 [apigatewaylambdaauthorizer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaylambdaauthorizer
 [apigatewaymock]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewaymock
 [apigatewayprivateloadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayprivateloadbalancer
+[apigatewayregionaldomainnamebasepath]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayregionaldomainnamebasepath
 [apigatewayvpclink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/apigateway/apigatewayvpclink
 
 ### [API Gateway V2]
@@ -415,7 +414,7 @@ A lot of AWS tutorials for you!!! ;)
 
 - [privatehostedzone] - Route 53 private Hosted Zone
 - [publichostedzone] - Route 53 public Hosted Zone
-- [recordsetapigateway] - Route 53 Record Set for an API Gateway `backlog`
+- [recordsetapigateway] - Route 53 Record Set for an API Gateway
 - [recordsetcloudfront] - Route 53 Record Set for a CloudFront Distribution `backlog`
 - [recordsetloadbalancer] - Route 53 Record Set for an Application Load Balancer
 - [recordsets3staticwebsite] - Route 53 Record Set for a S3 Static Website

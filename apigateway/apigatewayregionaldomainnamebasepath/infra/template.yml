@@ -1,34 +1,61 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a REST API Gateway with domain name and base path
+Description: Creates a REST Regional API Gateway with domain name and base path
 
 Parameters:
+  ApiName:
+    Type: String
+    Default: ApiGatewayDomainNameBasePath
+
+  CertificateArn:
+    Type: String
+
   DomainName:
     Type: String
-    Default: api.takugian.com
 
   BasePath:
     Type: String
     Default: awsquickstarts
 
-  ApiName:
-    Type: String
-    Default: ApiGatewayDomainNameBasePath
-
   StageName:
     Type: String
     Default: dev
+
+  HostedZoneId:
+    Type: String
 
   Owner:
     Type: String
     Default: tg
 
 Resources:
+  GatewayDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref DomainName
+      RegionalCertificateArn: !Ref CertificateArn
+      SecurityPolicy: TLS_1_2
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ClientCertificate:
+    Type: AWS::ApiGateway::ClientCertificate
+    Properties:
+      Description: !Sub ${ApiName} certificate
+
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Name: !Ref ApiName
       Description: !Ref ApiName
+      DisableExecuteApiEndpoint: true
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
       Tags:
         - Key: Owner
           Value: !Ref Owner
@@ -74,35 +101,27 @@ Resources:
       Description: !Ref StageName
       RestApiId: !Ref RestApi
       DeploymentId: !Ref Deployment
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
-
-  Certificate:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Ref DomainName
-
-  GatewayDomainName:
-    Type: AWS::ApiGateway::DomainName
-    Properties:
-      DomainName: !Ref DomainName
-      CertificateArn: !Ref Certificate
+      ClientCertificateId: !Ref ClientCertificate
       Tags:
         - Key: Owner
           Value: !Ref Owner
 
   BasePathMapping:
     Type: AWS::ApiGateway::BasePathMapping
+    DependsOn: [GatewayDomainName, Stage]
     Properties:
       BasePath: !Ref BasePath
-      DomainName: !Ref GatewayDomainName
+      DomainName: !Ref DomainName
       RestApiId: !Ref RestApi
       Stage: !Ref StageName
 
-Outputs:
-  ApiGatewayId:
-    Value: !Ref RestApi
-
-  DomainName:
-    Value: !GetAtt GatewayDomainName.DistributionDomainName
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    DependsOn: [GatewayDomainName]
+    Properties:
+      Name: !Ref DomainName
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt GatewayDomainName.RegionalDomainName
+        HostedZoneId: !GetAtt GatewayDomainName.RegionalHostedZoneId
