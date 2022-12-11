@@ -60,12 +60,12 @@ Resources:
       PolicyDocument:
         Statement:
           - Sid: AllowPublic
+            Principal: "*"
             Effect: Allow
             Action:
               - s3:GetObject
-            Resource: 
+            Resource:
               - !Sub "arn:aws:s3:::${BucketName}/*"
-            Principal: "*"
 
 Outputs:
   WebsiteURL:

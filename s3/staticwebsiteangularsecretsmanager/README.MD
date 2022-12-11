@@ -8,7 +8,7 @@ This project creates a S3 Bucket used as a static website and Secrets Manager to
 - ng build
 ```
 
-Upload the files of dist directory which was created from ng build command
+Upload the files of /angular/dist directory which was created from ng build command
 
 ## Helpful links
 

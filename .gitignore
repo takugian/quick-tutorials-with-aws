@@ -1,12 +1,15 @@
 ### Angular ###
 ## Angular ##
 # compiled output
+*.angular
+*dist
 */dist/
 */tmp/
 */app/**/*.js
 */app/**/*.js.map
 
 # dependencies
+*node_modules
 */node_modules/
 */bower_components/
 
@@ -215,3 +218,6 @@
 */.ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/node,java,angular,visualstudiocode
+s3/staticwebsiteangularsecretsmanager/angular/node_modules/.bin/acorn
+
+s3/staticwebsiteangularsecretsmanager/angular/.angular/cache/13.1.4/babel-webpack/fddb412882e30511fe2881bde5fa5dd2.json
