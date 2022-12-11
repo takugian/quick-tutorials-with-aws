@@ -8,7 +8,7 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewayapikeyusageplan] - REST API Gateway with usage plan and API Key configured
 - [apigatewaycache] - REST API Gateway with Cache enabled
-- [apigatewayedgedomainnamebasepath] - REST Edge API Gateway with domain name and base path
+- [apigatewayedgedomainnamebasepath] - REST Edge API Gateway with domain name and base path `backlog`
 - [apigatewaylambda] - Public REST API Gateway and a Lambda function as backend
 - [apigatewaylambdaauthorizer] - REST API Gateway with a Lambda function as authorizer
 - [apigatewaymock] - REST API Gateway with a mocked backend
