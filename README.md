@@ -8,7 +8,7 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewayapikeyusageplan] - REST API Gateway with usage plan and API Key configured
 - [apigatewaycache] - REST API Gateway with Cache enabled
-- [apigatewayedgedomainnamebasepath] - REST Edge API Gateway with domain name and base path `backlog`
+- [apigatewayedgedomainnamebasepath] - REST Edge API Gateway with domain name and base path
 - [apigatewaylambda] - Public REST API Gateway and a Lambda function as backend
 - [apigatewaylambdaauthorizer] - REST API Gateway with a Lambda function as authorizer
 - [apigatewaymock] - REST API Gateway with a mocked backend
@@ -31,7 +31,7 @@ A lot of AWS tutorials for you!!! ;)
 
 - [apigatewaychatroomwebsocket] - Complete Chat Room WebSocket API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewaycognitoauthorizer] - REST API Gateway using Cognito as authorizer `backlog`
-- [apigatewaydomainname] - REST API Gateway with Domain name `backlog`
+- [apigatewaydomainname] - REST API Gateway with Domain name
 - [apigatewayecsappgamerestapi] - Complete CRUD REST API using an API Gateway, a Load Balancer in front of an ECS task as backend, a Lambda function as authorizer and a RDS MySQL table
 - [apigatewaygamerestapi] - Complete CRUD REST API using an API Gateway, a Lambda function as backend, a Lambda function as authorizer and a DynamoDB table
 - [apigatewayhttplambda] - REST API Gateway integrated to a Lambda function
@@ -104,7 +104,7 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudfrontlambdaedge] - Cloud Front Lambda@Edge
 - [cloudfrontloadbalancer] - CloudFront distribution in front of a Load Balancer
 - [cloudfronts3] - CloudFront distribution in front of a S3 Bucket
-- [cloudfronts3staticwebsite] - CloudFront distribution in front of a S3 Static Website
+- [cloudfronts3staticwebsite] - CloudFront distribution in front of a S3 Static Website `in revision`
 - [originaccesscontrol] - Cloud Front Origin Access Control (OAC)
 - [originaccessidentity] - Cloud Front Origin Access Identity (OAI)
 
@@ -207,10 +207,9 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [CodePipeline]
 
-- [completepipeline] - Complete pipeline using CodeCommit, CodeBuild and CodeDeploy `backlog`
+- `backlog`
 
 [CodePipeline]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_CodePipeline.html
-[completepipeline]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/codepipeline/completepipeline
 
 ### [Cognito]
 
@@ -252,10 +251,10 @@ A lot of AWS tutorials for you!!! ;)
 ### [ECS]
 
 - [ecsappgrpc] - ECS with gRPC `backlog`
-- [ecsappjava] - ECS App using Java `in progress`
+- [ecsappjava] - ECS App using Java `in revision`
 - [ecsapplauchtypeec2] - ECS App with lauch type EC2 `backlog`
-- [ecsapploadbalancer] - ECS App with load balancer `backlog`
-- [ecsappnode] - ECS App using NodeJS `in progress`
+- [ecsapploadbalancer] - ECS App with load balancer
+- [ecsappnode] - ECS App using NodeJS `in revision`
 - [ecscluster] - ECS Cluster
 - [ecsfargatespot] - ECS App using NodeJS using cluster with Fargate Spot compatibility enabled
 

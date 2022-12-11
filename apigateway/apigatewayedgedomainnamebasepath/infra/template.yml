@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a REST Edge API Gateway with domain name and base path
+
+Parameters:
+  ApiName:
+    Type: String
+    Default: ApiGatewayDomainNameBasePath
+
+  CertificateArn:
+    Type: String
+
+  DomainName:
+    Type: String
+
+  BasePath:
+    Type: String
+    Default: awsquickstarts
+
+  StageName:
+    Type: String
+    Default: dev
+
+  HostedZoneId:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  GatewayDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref DomainName
+      CertificateArn: !Ref CertificateArn
+      SecurityPolicy: TLS_1_2
+      EndpointConfiguration:
+        Types:
+          - EDGE
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  ClientCertificate:
+    Type: AWS::ApiGateway::ClientCertificate
+    Properties:
+      Description: !Sub ${ApiName} certificate
+
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Ref ApiName
+      Description: !Ref ApiName
+      DisableExecuteApiEndpoint: true
+      EndpointConfiguration:
+        Types:
+          - EDGE
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: customers
+
+  MethodGetCustomers:
+    Type: AWS::ApiGateway::Method
+    DependsOn: RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: 200
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseTemplates:
+              application/json: '[ { "id": "1", "name": "CRISTIANO RONALDO" } ]'
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: [MethodGetCustomers]
+    Properties:
+      RestApiId: !Ref RestApi
+
+  Stage:
+    Type: AWS::ApiGateway::Stage
+    DependsOn: [Deployment]
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      RestApiId: !Ref RestApi
+      DeploymentId: !Ref Deployment
+      ClientCertificateId: !Ref ClientCertificate
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  BasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    DependsOn: [GatewayDomainName, Stage]
+    Properties:
+      BasePath: !Ref BasePath
+      DomainName: !Ref DomainName
+      RestApiId: !Ref RestApi
+      Stage: !Ref StageName
+
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    DependsOn: [GatewayDomainName]
+    Properties:
+      Name: !Ref DomainName
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt GatewayDomainName.DistributionDomainName
+        HostedZoneId: !GetAtt GatewayDomainName.DistributionHostedZoneId

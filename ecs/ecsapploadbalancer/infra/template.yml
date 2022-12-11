@@ -1,15 +1,15 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an ECS App using NodeJS and Fargate
+Description: Creates an ECS App with a Network Load Balancer
 
 Parameters:
   ClusterName:
     Type: String
-    Default: fargateecscluster
+    Default: FargateEcsCluster
 
   ServiceName:
     Type: String
-    Default: ecsappnode
+    Default: EcsAppNode
 
   VpcId:
     Type: String
@@ -20,32 +20,12 @@ Parameters:
   SubnetId2:
     Type: String
 
-  # SubnetId3:
-  #   Type: String
-
-  Cpu:
-    Type: Number
-    Default: 256
-
-  Memory:
-    Type: Number
-    Default: 512
-
-  MemoryReservation:
-    Type: Number
-    Default: 512
-
-  DesiredNumberOfTasks:
-    Type: Number
-    Default: 1
+  TargetGroupArn:
+    Type: String
 
   ExposedPortInDockerFile:
-    Type: Number
-    Default: 3070
-
-  EnvironmentName:
     Type: String
-    Default: DEV
+    Default: 3070
 
   Owner:
     Type: String
@@ -55,7 +35,7 @@ Resources:
   CloudWatchLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /aws/ecs/${ClusterName}/${ServiceName}
+      LogGroupName: !Sub /aws/ecs/${ServiceName}
       RetentionInDays: 7
 
   ECSCluster:
@@ -69,7 +49,7 @@ Resources:
   ExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${ServiceName}ExecutionRole
+      RoleName: !Sub ExecutionRole${ServiceName}
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -78,7 +58,7 @@ Resources:
             Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: !Sub ${ServiceName}ExecutionRolePolicy
+        - PolicyName: !Sub ExecutionRolePolicy${ServiceName}
           PolicyDocument:
             Statement:
               - Effect: Allow
@@ -95,7 +75,7 @@ Resources:
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${ServiceName}TaskRole
+      RoleName: !Sub TaskRole${ServiceName}
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -103,10 +83,11 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: !Sub ${ServiceName}TaskRoleLogsPolicy
+        - PolicyName: !Sub TaskRolePolicy${ServiceName}
           PolicyDocument:
             Statement:
-              - Effect: Allow
+              - Sid: ForSecrets2KMS
+                Effect: Allow
                 Action:
                   - logs:CreateLogStream
                   - logs:CreateLogGroup
@@ -116,53 +97,31 @@ Resources:
   ServiceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub Sg${ServiceName}
-      GroupDescription: !Sub Sg${ServiceName}
+      GroupName: !Sub SgService${ServiceName}
+      GroupDescription: !Sub SgService${ServiceName}
       VpcId: !Ref VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: !Ref ExposedPortInDockerFile
           ToPort: !Ref ExposedPortInDockerFile
-          CidrIp: 0.0.0.0/0 # All IPs just for fast testing
+          CidrIp: 0.0.0.0/0
       SecurityGroupEgress:
         - IpProtocol: "-1"
           CidrIp: 0.0.0.0/0
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     DependsOn: CloudWatchLogGroup
     Properties:
-      Family: !Sub family-${ServiceName}
+      Family: !Sub Family${ServiceName}
       ExecutionRoleArn: !Ref ExecutionRole
       TaskRoleArn: !Ref TaskRole
-      Cpu: !Ref Cpu
-      Memory: !Ref Memory
+      Cpu: 256
+      Memory: 512
       NetworkMode: awsvpc
-      RequiresCompatibilities:
-        - FARGATE
       ContainerDefinitions:
         - Name: !Ref ServiceName
-          Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ServiceName}:v1
-          MemoryReservation: !Ref MemoryReservation
-          Environment:
-            - Name: ENVIRONMENT_NAME
-              Value: !Ref EnvironmentName
-          # Secrets:
-          # - Name: SECRET
-          # Value: !Sub ${SecretsArn}:secret_name::
-          HealthCheck:
-            Command:
-              [
-                "CMD-SHELL",
-                "curl -f http://localhost:3070/healthcheck || exit 1",
-              ]
-            Interval: 30
-            Retries: 3
-            Timeout: 5
-          Essential: true
+          Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/ecsappnode:v1
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -171,40 +130,32 @@ Resources:
               awslogs-stream-prefix: ecs
           PortMappings:
             - ContainerPort: !Ref ExposedPortInDockerFile
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
+          MemoryReservation: 256
+      RequiresCompatibilities:
+        - FARGATE
 
   Service:
     Type: AWS::ECS::Service
+    DependsOn: LoadBalancerListener
     Properties:
       Cluster: !Ref ClusterName
-      ServiceName: !Sub service-${ServiceName}
+      ServiceName: !Sub Service${ServiceName}
       TaskDefinition: !Ref TaskDefinition
       LaunchType: FARGATE
       SchedulingStrategy: REPLICA
-      DesiredCount: !Ref DesiredNumberOfTasks
+      DesiredCount: 1
       DeploymentConfiguration:
-        DeploymentCircuitBreaker:
-          Rollback: true
-          Enable: true
         MaximumPercent: 200
         MinimumHealthyPercent: 100
-      # LoadBalancers:
-      # HealthCheckGracePeriodSeconds: 10
+      LoadBalancers:
+        - ContainerName: !Ref ServiceName
+          ContainerPort: !Ref ExposedPortInDockerFile
+          TargetGroupArn: !Ref TargetGroupArn
       NetworkConfiguration:
         AwsvpcConfiguration:
-          AssignPublicIp: ENABLED # If subnets are public
-          # AssignPublicIp: DISABLED # If subnets are private
+          AssignPublicIp: ENABLED
           Subnets:
             - !Ref SubnetId1
             - !Ref SubnetId2
-            # - !Ref SubnetId3
           SecurityGroups:
             - !GetAtt ServiceSecurityGroup.GroupId
-      # PlacementStrategies: Just for LaunchType: EC2
-      #   - Field: instanceId
-      #     Type: spread
-      Tags:
-        - Key: Owner
-          Value: !Ref Owner
