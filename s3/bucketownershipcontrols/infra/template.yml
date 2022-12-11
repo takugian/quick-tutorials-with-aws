@@ -1,14 +1,19 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a S3 bucket with versioning
+Description: Creates a S3 bucket with Ownership Controls configurations
 
 Parameters:
   BucketName:
     Type: String
     Default: tg-bucket-123456
 
-  KMSMasterKeyID:
+  ObjectOwnership:
     Type: String
+    AllowedValues:
+      - BucketOwnerEnforced
+      - ObjectWriter
+      - BucketOwnerPreferred
+    Default: BucketOwnerEnforced
 
   Owner:
     Type: String
@@ -19,8 +24,9 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref BucketName
-      VersioningConfiguration:
-        Status: Enabled
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: !Ref ObjectOwnership
       Tags:
         - Key: Owner
           Value: !Ref Owner

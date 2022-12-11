@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a S3 bucket with Analytics configurations
+
+Parameters:
+  DestinationBucketName:
+    Type: String
+    Default: tg-destinationbucket-123456
+
+  AnalyticBucketName:
+    Type: String
+    Default: tg-bucket-123456
+
+  AnalyticsDestinationPrefix:
+    Type: String
+
+  AnalyticsConfigurationPrefix:
+    Type: String
+
+  InventoryDestinationPrefix:
+    Type: String
+
+  InventoryConfigurationPrefix:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  DestinationBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DestinationBucketName
+
+  DestinationBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DestinationBucketName
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - s3:PutObject
+            Effect: Allow
+            Resource: !Sub arn:aws:s3:::${DestinationBucketName}/*
+            Principal:
+              Service: s3.amazonaws.com
+            Condition:
+              ArnLike:
+                aws:SourceArn:
+                  - !Sub arn:aws:s3:::${AnalyticBucketName}/*
+              StringEquals:
+                aws:SourceAccount:
+                  - !Sub ${AWS::AccountId}
+                s3:x-amz-acl: bucket-owner-full-control
+
+  AnalyticsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref AnalyticBucketName
+      AnalyticsConfigurations:
+        - Id: AnalyticsConfigurationId
+          StorageClassAnalysis:
+            DataExport:
+              Destination:
+                BucketArn: !GetAtt DestinationBucket.Arn
+                Format: CSV
+                Prefix: !Ref AnalyticsDestinationPrefix
+              OutputSchemaVersion: V_1
+          Prefix: !Ref AnalyticsConfigurationPrefix
+          # TagFilters:
+          #   - Key: AnalyticsTagKey
+          #     Value: AnalyticsTagValue
+      InventoryConfigurations:
+        - Id: InventoryConfigurationId
+          Destination:
+            BucketArn: !GetAtt DestinationBucket.Arn
+            Format: CSV
+            Prefix: !Ref InventoryDestinationPrefix
+          Enabled: true
+          IncludedObjectVersions: Current
+          Prefix: !Ref InventoryConfigurationPrefix
+          ScheduleFrequency: Weekly
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

@@ -57,11 +57,6 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref BucketName
-      AccessControl: PublicReadWrite
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        IgnorePublicAcls: false
-        BlockPublicPolicy: false
       ReplicationConfiguration:
         Role: !GetAtt ReplicationRole.Arn
         Rules:

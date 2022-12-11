@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a S3 bucket with Logging configurations
+
+Parameters:
+  LoggingBucketName:
+    Type: String
+    Default: tg-loggingbucket-123456
+
+  BucketName:
+    Type: String
+    Default: tg-bucket-123456
+
+  InventoryDestinationPrefix:
+    Type: String
+
+  InventoryConfigurationPrefix:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  LoggingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref LoggingBucketName
+      AccessControl: LogDeliveryWrite
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner
+
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: Private
+      LoggingConfiguration:
+        DestinationBucketName: !Ref LoggingBucket
+        LogFilePrefix: testing-logs
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

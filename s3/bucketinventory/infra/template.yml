@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a S3 bucket with Inventory configurations
+
+Parameters:
+  InventoryDestinationBucketName:
+    Type: String
+    Default: tg-inventorybucket-123456
+
+  BucketName:
+    Type: String
+    Default: tg-bucket-123456
+
+  InventoryDestinationPrefix:
+    Type: String
+
+  InventoryConfigurationPrefix:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  InventoryDestinationBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref InventoryDestinationBucketName
+
+  InventoryDestinationBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref InventoryDestinationBucketName
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - s3:PutObject
+            Effect: Allow
+            Resource: !Sub arn:aws:s3:::${InventoryDestinationBucketName}/*
+            Principal:
+              Service: s3.amazonaws.com
+            Condition:
+              ArnLike:
+                aws:SourceArn:
+                  - !Sub arn:aws:s3:::${BucketName}/*
+              StringEquals:
+                aws:SourceAccount:
+                  - !Sub ${AWS::AccountId}
+                s3:x-amz-acl: bucket-owner-full-control
+
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      InventoryConfigurations:
+        - Id: InventoryConfigurationId
+          Enabled: true
+          Destination:
+            BucketArn: !GetAtt InventoryDestinationBucket.Arn
+            Format: CSV
+            Prefix: !Ref InventoryDestinationPrefix
+          Prefix: !Ref InventoryConfigurationPrefix
+          ScheduleFrequency: Daily
+          IncludedObjectVersions: Current
+          # OptionalFields
+      Tags:
+        - Key: Owner
+          Value: !Ref Owner

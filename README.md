@@ -430,18 +430,18 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [S3]
 
-- [bucketanalytics] - Bucket with analytics configuration `backlog`
+- [bucketanalytics] - Bucket with analytics configuration
 - [bucketcors]: Bucket with CORS configuration
 - [bucketencrypted]: Bucket encrypted
 - [bucketintelligenttiering] - Bucket with intelligent tiering configuration
-- [bucketinventory] - Bucket with inventory configuration `backlog`
+- [bucketinventory] - Bucket with inventory configuration
 - [bucketlambda] - Private bucket consumed by a Lambda function
 - [bucketlifecycle] - Bucket with lifecycle configuration
-- [bucketlogging] - Bucket with logging configuration `backlog`
+- [bucketlogging] - Bucket with logging configuration
 - [bucketmetrics] - Bucket with metrics configuration `backlog`
 - [bucketnotification] - Bucket with SQS notification and Lambda notification
-- [bucketobjectlock] - Bucket with object lock configuration `backlog`
-- [bucketownershipcontrols] - Bucket with ownership controls `backlog`
+- [bucketobjectlock] - Bucket with object lock configuration
+- [bucketownershipcontrols] - Bucket with ownership controls
 - [bucketpolicy]: Bucket policy
 - [bucketreplication] - Bucket with replication configuration
 - [buckettransferacceleration] - Bucket with transfer acceleration enabled

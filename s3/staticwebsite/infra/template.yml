@@ -10,6 +10,9 @@ Parameters:
   Route53RecordName:
     Type: String
 
+  OriginAccessControlId:
+    Type: String
+
   Owner:
     Type: String
     Default: tg
@@ -19,7 +22,6 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref StaticWebsiteBucketName
-      # AccessControl: Private
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
         IgnorePublicAcls: false
@@ -32,31 +34,35 @@ Resources:
         - Key: Owner
           Value: !Ref Owner
 
-  # Public access via website URL
-  # BucketPolicy:
-  #   Type: AWS::S3::BucketPolicy
-  #   Properties:
-  #     Bucket: !Ref StaticWebsiteBucket
-  #     PolicyDocument:
-  #       Statement:
-  #         - Sid: AllowPublic
-  #           Effect: Allow
-  #           Action:
-  #             - s3:GetObject
-  #           Resource: !Sub arn:aws:s3:::${StaticWebsiteBucketName}/*
-  #           Principal: "*"
-
-  # Public access via Route 53
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref StaticWebsiteBucket
       PolicyDocument:
         Statement:
+          # Public access via website URL
           - Sid: AllowPublic
             Effect: Allow
+            Principal: "*"
+            Action:
+              - s3:GetObject
+            Resource: !Sub arn:aws:s3:::${StaticWebsiteBucketName}/*
+          # Public access via Route 53
+          - Sid: Route53Record
+            Effect: Allow
+            Principal:
+              AWS: "*"
             Action:
               - s3:GetObject
             Resource: !Sub arn:aws:s3:::${Route53RecordName}/*
+          # Public access via CloudFront
+          - Sid: AllowCloudFront
+            Effect: Allow
             Principal:
-              AWS: "*"
+              Service: cloudfront.amazonaws.com
+            Action:
+              - s3:GetObject
+            Resource: !Sub arn:aws:s3:::${StaticWebsiteBucketName}/*
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${OriginAccessControlId}
