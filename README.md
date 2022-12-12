@@ -104,7 +104,7 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudfrontlambdaedge] - Cloud Front Lambda@Edge
 - [cloudfrontloadbalancer] - CloudFront distribution in front of a Load Balancer
 - [cloudfronts3] - CloudFront distribution in front of a S3 Bucket
-- [cloudfronts3staticwebsite] - CloudFront distribution in front of a S3 Static Website `in revision`
+- [cloudfronts3staticwebsite] - CloudFront distribution in front of a S3 Static Website
 - [originaccesscontrol] - Cloud Front Origin Access Control (OAC)
 - [originaccessidentity] - Cloud Front Origin Access Identity (OAI)
 
@@ -414,7 +414,7 @@ A lot of AWS tutorials for you!!! ;)
 - [privatehostedzone] - Route 53 private Hosted Zone
 - [publichostedzone] - Route 53 public Hosted Zone
 - [recordsetapigateway] - Route 53 Record Set for an API Gateway
-- [recordsetcloudfront] - Route 53 Record Set for a CloudFront Distribution `backlog`
+- [recordsetcloudfront] - Route 53 Record Set for a CloudFront Distribution
 - [recordsetloadbalancer] - Route 53 Record Set for an Application Load Balancer
 - [recordsets3staticwebsite] - Route 53 Record Set for a S3 Static Website
 

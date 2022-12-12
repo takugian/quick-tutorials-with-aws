@@ -1,9 +1,6 @@
 # cloudfronts3staticwebsite
 
-This project creates:
-- CloudFront distribution in front of a S3 Static Website
-    - CachingOptimized as the cache policy configured;
-    - Georestriction configured;
+This project creates a CloudFront distribution in front of a S3 Static Website.
 
 ## How to test
 

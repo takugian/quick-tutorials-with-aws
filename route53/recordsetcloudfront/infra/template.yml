@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates a Route 53 record set for a CloudFront Distribution
+
+Parameters:
+  RecordSetName:
+    Type: String
+
+  HostedZoneId:
+    Type: String
+
+  DistributionDomainName:
+    Type: String
+
+  Owner:
+    Type: String
+    Default: tg
+
+Resources:
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Ref RecordSetName
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      AliasTarget:
+        DNSName: !Ref DistributionDomainName
+        #This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: true

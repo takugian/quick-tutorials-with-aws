@@ -14,6 +14,15 @@ Parameters:
   OriginAccessControlId:
     Type: String
 
+  AcmCertificateArn:
+    Type: String
+
+  DomainName:
+    Type: String
+
+  HostedZoneId:
+    Type: String
+
   Owner:
     Type: String
     Default: tg
@@ -24,37 +33,19 @@ Resources:
     Properties:
       BucketName: !Ref LoggingBucketName
       AccessControl: LogDeliveryWrite
-
-  LoggingBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    DependsOn: LoggingBucket
-    Properties:
-      Bucket: !Ref LoggingBucketName
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: AllowCloudFrontServicePrincipal
-            Effect: Allow
-            Principal:
-              Service: cloudfront.amazonaws.com
-            Action:
-              - s3:GetBucketAcl
-              - s3:PutBucketAcl
-            Resource: !Sub arn:aws:s3:::${LoggingBucketName}/*
-            Condition:
-              StringEquals:
-                AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${OriginAccessControlId}
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
 
   StaticWebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref StaticWebsiteBucketName
-      AccessControl: Private
       PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        IgnorePublicAcls: true
-        BlockPublicPolicy: true
-        RestrictPublicBuckets: true
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
@@ -70,7 +61,7 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Sid: AllowCloudFrontServicePrincipal
+          - Sid: AllowCloudFront
             Effect: Allow
             Principal:
               Service: cloudfront.amazonaws.com
@@ -83,7 +74,7 @@ Resources:
 
   Distribution:
     Type: AWS::CloudFront::Distribution
-    DependsOn: [LoggingBucketPolicy, StaticWebsiteBucketPolicy]
+    DependsOn: [StaticWebsiteBucketPolicy]
     Properties:
       DistributionConfig:
         Comment: !Sub ${StaticWebsiteBucketName}Distribution
@@ -91,6 +82,7 @@ Resources:
         Origins:
           - Id: !Sub ${StaticWebsiteBucketName}Origin
             DomainName: !Sub ${StaticWebsiteBucketName}.s3.${AWS::Region}.amazonaws.com
+            # OriginPath: String
             OriginAccessControlId: !Ref OriginAccessControlId
             ConnectionAttempts: 3
             ConnectionTimeout: 10
@@ -104,21 +96,28 @@ Resources:
           AllowedMethods:
             - GET
             - HEAD
-          ViewerProtocolPolicy: allow-all
+          ViewerProtocolPolicy: redirect-to-https
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AcmCertificateArn
+          MinimumProtocolVersion: TLSv1.2_2021
+          SslSupportMethod: sni-only
         Logging:
           Bucket: !Sub ${LoggingBucketName}.s3.amazonaws.com
           Prefix: logs
-        Restrictions:
-          GeoRestriction:
-            RestrictionType: whitelist
-            Locations:
-              - BR
+        HttpVersion: http2
         Enabled: true
       Tags:
         - Key: Owner
           Value: !Ref Owner
 
-Outputs:
-
-  DomainName:
-    Value: !GetAtt Distribution.DomainName
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Ref DomainName
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt Distribution.DomainName
+        #This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: true
