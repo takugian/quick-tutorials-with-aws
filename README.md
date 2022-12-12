@@ -84,12 +84,6 @@ A lot of AWS tutorials for you!!! ;)
 [Aurora]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_RDS.html
 [auroramysqlcluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/aurora/auroramysqlcluster
 
-### [Backup]
-
-- `backlog`
-
-[Backup]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Backup.html
-
 ### [Certificate Manager]
 
 - [publiccertificate] - Public certificate
