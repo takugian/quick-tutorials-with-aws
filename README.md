@@ -154,7 +154,6 @@ A lot of AWS tutorials for you!!! ;)
 - [cloudwatchalarmssns] - CloudWatch Alarms for a SNS topic
 - [cloudwatchalarmssqs] - CloudWatch Alarms for a SQS queue
 - [cloudwatchanormalydetector] - CloudWatch Anormaly Detector `backlog`
-- [cloudwatchdashboard] - CloudWatch Dashboard `backlog`
 - [cloudwatchlogsapigateway] - CloudWatch Logs for an API Gateway
 - [cloudwatchlogsapigatewayv2] - CloudWatch Logs for an API Gateway V2
 - [cloudwatchlogsecsapp] - CloudWatch Logs for an ECS task
@@ -178,7 +177,6 @@ A lot of AWS tutorials for you!!! ;)
 [cloudwatchalarmssns]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmssns
 [cloudwatchalarmssqs]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchalarmssqs
 [cloudwatchanormalydetector]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchanormalydetector
-[cloudwatchdashboard]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchdashboard
 [cloudwatchlogsapigateway]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsapigateway
 [cloudwatchlogsapigatewayv2]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsapigatewayv2
 [cloudwatchlogsecsapp]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/cloudwatch/cloudwatchlogsecsapp
@@ -443,7 +441,6 @@ A lot of AWS tutorials for you!!! ;)
 - [buckettransferacceleration] - Bucket with transfer acceleration enabled
 - [bucketversioning] - Bucket with versioning configuration
 - [privatebucket] - Private bucket
-- [privatebucketcognito] - Private Bucket and Cognito Credentials `backlog`
 - [privatebucketpresignedurl] - Private bucket and a Lambda function that creates a Pre Signed URL
 - [privatelink] - Bucket witk PrivateLink enabled `backlog`
 - [publicbucket] - Public bucket
@@ -470,7 +467,6 @@ A lot of AWS tutorials for you!!! ;)
 [buckettransferacceleration]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/buckettransferacceleration
 [bucketversioning]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/bucketversioning
 [privatebucket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucket
-[privatebucketcognito]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucketcognito
 [privatebucketpresignedurl]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatebucketpresignedurl
 [privatelink]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/privatelink
 [publicbucket]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/s3/publicbucket
