@@ -250,16 +250,14 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [ECS]
 
-- [ecsappgrpc] - ECS with gRPC `backlog`
-- [ecsappjava] - ECS App using Java `in revision`
+- [ecsappjava] - ECS App using Java
 - [ecsapplauchtypeec2] - ECS App with lauch type EC2 `backlog`
 - [ecsapploadbalancer] - ECS App with load balancer
-- [ecsappnode] - ECS App using NodeJS `in revision`
+- [ecsappnode] - ECS App using NodeJS
 - [ecscluster] - ECS Cluster
 - [ecsfargatespot] - ECS App using NodeJS using cluster with Fargate Spot compatibility enabled
 
 [ECS]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ECS.html
-[ecsappgrpc]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappgrpc
 [ecsappjava]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsappjava
 [ecsapplauchtypeec2]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsapplauchtypeec2
 [ecsapploadbalancer]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/ecs/ecsapploadbalancer
