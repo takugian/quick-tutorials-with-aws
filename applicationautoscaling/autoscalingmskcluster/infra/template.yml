@@ -1,12 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an Auto Scaling for a Lambda provisioned concurrency
+Description: Creates an Auto Scaling for a MSK Cluster
 
 Parameters:
-  FunctionName:
-    Type: String
-
-  FunctionVersionOrAlias:
+  MSKClusterArn:
     Type: String
 
   ScalingRoleArn:
@@ -40,9 +37,9 @@ Resources:
   ScalableTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
     Properties:
-      ServiceNamespace: lambda
-      ResourceId: !Sub function/${FunctionName}/${FunctionVersionOrAlias}
-      ScalableDimension: lambda:function:ProvisionedConcurrency
+      ServiceNamespace: kafka
+      ResourceId: !Ref MSKClusterArn
+      ScalableDimension: kafka:broker-storage:VolumeSize
       MaxCapacity: !Ref MaxCapacity
       MinCapacity: !Ref MinCapacity
       RoleARN: !Ref ScalingRoleArn
@@ -60,4 +57,4 @@ Resources:
         ScaleOutCooldown: !Ref ScaleOutCooldown
         DisableScaleIn: false
         PredefinedMetricSpecification:
-          PredefinedMetricType: LambdaProvisionedConcurrencyUtilization
+          PredefinedMetricType: KafkaBrokerStorageUtilization

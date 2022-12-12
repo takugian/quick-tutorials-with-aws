@@ -1,6 +1,6 @@
-# autoscalingdynamodbglobalsecondaryindex
+# autoscalingdynamodbtable
 
-This project creates an auto Scaling for a DynamoDB Global Secondary Index.
+This project creates an auto Scaling for a DynamoDB Table.
 
 ## Pre requirements
 

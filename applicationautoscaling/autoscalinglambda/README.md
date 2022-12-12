@@ -1,6 +1,11 @@
 # autoscalinglambda
 
-This project creates an auto Scaling for a Lambda provisioned concurrency.
+This project creates an Auto Scaling for a Lambda provisioned concurrency.
+
+## Pre requirements
+
+- Create AWSServiceRoleForApplicationAutoScaling_RDSCluster IAM role
+    - aws iam create-service-linked-role --aws-service-name lambda.application-autoscaling.amazonaws.com
 
 ## Helpful links
 

@@ -1,12 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an Auto Scaling for a Lambda provisioned concurrency
+Description: Creates an Auto Scaling for an ElastiCache Node Groups and Replicas
 
 Parameters:
-  FunctionName:
-    Type: String
-
-  FunctionVersionOrAlias:
+  ClusterName:
     Type: String
 
   ScalingRoleArn:
@@ -40,9 +37,10 @@ Resources:
   ScalableTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
     Properties:
-      ServiceNamespace: lambda
-      ResourceId: !Sub function/${FunctionName}/${FunctionVersionOrAlias}
-      ScalableDimension: lambda:function:ProvisionedConcurrency
+      ServiceNamespace: elasticache
+      ResourceId: !Sub replication-group/${ClusterName}
+      ScalableDimension: elasticache:replication-group:NodeGroups
+      # ScalableDimension: elasticache:replication-group:Replicas
       MaxCapacity: !Ref MaxCapacity
       MinCapacity: !Ref MinCapacity
       RoleARN: !Ref ScalingRoleArn
@@ -60,4 +58,6 @@ Resources:
         ScaleOutCooldown: !Ref ScaleOutCooldown
         DisableScaleIn: false
         PredefinedMetricSpecification:
-          PredefinedMetricType: LambdaProvisionedConcurrencyUtilization
+          PredefinedMetricType: ElastiCacheDatabaseMemoryUsageCountedForEvictPercentage
+          # PredefinedMetricType: ElastiCachePrimaryEngineCPUUtilization
+          # PredefinedMetricType: ElastiCacheReplicaEngineCPUUtilization

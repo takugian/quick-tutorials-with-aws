@@ -1,12 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates an Auto Scaling for an ECS task
+Description: Creates an auto Scaling for a DynamoDB Global Secondary Index
 
 Parameters:
-  ECSClusterName:
-    Type: String
-
-  ServiceName:
+  DynamDBTableName:
     Type: String
 
   ScalingRoleArn:
@@ -40,7 +37,7 @@ Resources:
   # ScalingRole:
   #   Type: AWS::IAM::Role
   #   Properties:
-  #     RoleName: !Sub ${ServiceName}ScalingRole
+  #     RoleName: !Sub ${DynamDBTableName}ScalingRole
   #     AssumeRolePolicyDocument:
   #       Version: 2012-10-17
   #       Statement:
@@ -52,27 +49,27 @@ Resources:
   #             - sts:AssumeRole
   #     Path: "/"
   #     Policies:
-  #       - PolicyName: !Sub ${ServiceName}Policy
+  #       - PolicyName: !Sub ${DynamDBTableName}Policy
   #         PolicyDocument:
   #           Version: 2012-10-17
   #           Statement:
   #             - Effect: Allow
   #               Action:
-  #                 - ecs:DescribeServices
-  #                 - ecs:UpdateService
   #                 - cloudwatch:PutMetricAlarm
   #                 - cloudwatch:DescribeAlarms
   #                 - cloudwatch:GetMetricStatistics
   #                 - cloudwatch:SetAlarmState
   #                 - cloudwatch:DeleteAlarms
-  #               Resource: "*"
+  #                 - dynamodb:DescribeTable
+  #                 - dynamodb:UpdateTable
 
   ScalableTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
     Properties:
-      ServiceNamespace: ecs
-      ResourceId: !Sub service/${ECSClusterName}/${ServiceName}
-      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: dynamodb
+      ResourceId: !Sub table/${DynamDBTableName}
+      ScalableDimension: dynamodb:index:ReadCapacityUnits
+      # ScalableDimension: dynamodb:index:WriteCapacityUnits
       MaxCapacity: !Ref MaxCapacity
       MinCapacity: !Ref MinCapacity
       # If you run create-service-linked-role
@@ -83,7 +80,7 @@ Resources:
   ScalingPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
-      PolicyName: !Sub ${ServiceName}ScalingPolicy
+      PolicyName: !Sub ${DynamDBTableName}ScalingPolicy
       PolicyType: TargetTrackingScaling
       ScalingTargetId: !Ref ScalableTarget
       TargetTrackingScalingPolicyConfiguration:
@@ -92,4 +89,5 @@ Resources:
         ScaleOutCooldown: !Ref ScaleOutCooldown
         DisableScaleIn: false
         PredefinedMetricSpecification:
-          PredefinedMetricType: ECSServiceAverageCPUUtilization
+          PredefinedMetricType: DynamoDBReadCapacityUtilization
+          # PredefinedMetricType: DynamoDBWriteCapacityUtilization

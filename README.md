@@ -54,13 +54,13 @@ A lot of AWS tutorials for you!!! ;)
 
 ### [Application Auto Scaling]
 
-- [autoscalingauroracluster] - Auto Scaling for an Aurora DB Cluster `backlog`
-- [autoscalingdynamodbglobalsecondaryindex] - Auto Scaling for a DynamoDB Global Secondary Index `backlog`
-- [autoscalingdynamodbtable] - Auto Scaling for a DynamoDB Table `in revision`
-- [autoscalingecs] - Auto Scaling for an ECS task `in revision`
-- [autoscalingelasticachereplicationgroup] - Auto Scaling for an Elasticache Replication Group `backlog`
-- [autoscalinglambda] - Auto Scaling for a Lambda provisioned concurrency `in revision`
-- [autoscalingmskcluster] - Auto Scaling for a MSK Cluster `backlog`
+- [autoscalingauroracluster] - Auto Scaling for an Aurora DB Cluster
+- [autoscalingdynamodbglobalsecondaryindex] - Auto Scaling for a DynamoDB Global Secondary Index
+- [autoscalingdynamodbtable] - Auto Scaling for a DynamoDB Table
+- [autoscalingecs] - Auto Scaling for an ECS task
+- [autoscalingelasticachereplicationgroup] - Auto Scaling for an Elasticache Replication Group
+- [autoscalinglambda] - Auto Scaling for a Lambda provisioned concurrency
+- [autoscalingmskcluster] - Auto Scaling for a MSK Cluster
 
 [Application Auto Scaling]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ApplicationAutoScaling.html
 [autoscalingauroracluster]: https://github.com/takugian/quick-tutorials-with-aws/tree/main/applicationautoscaling/autoscalingauroracluster
