@@ -5,12 +5,26 @@ Description: Creates an Auto Scaling for an ECS task
 Parameters:
   ECSClusterName:
     Type: String
+    Default: fargateecscluster
 
   ServiceName:
     Type: String
+    Default: service-ecsappjava
 
   ScalingRoleArn:
     Type: String
+  
+  ScheduleExpression:
+    Type: String
+    Default: at(2022-12-20T17:42:00)
+
+  ScheduledMaxCapacity:
+    Type: Number
+    Default: 6
+
+  ScheduledMinCapacity:
+    Type: Number
+    Default: 3
 
   MaxCapacity:
     Type: Number
@@ -78,12 +92,20 @@ Resources:
       # If you run create-service-linked-role
       RoleARN: !Ref ScalingRoleArn
       # RoleARN: !GetAtt ScalingRole.Arn
-      # ScheduledActions: List of ScheduledAction
+      ScheduledActions:
+        - ScheduledActionName: ScheduledActionName
+          Schedule: !Ref ScheduleExpression
+          # StartTime: Timestamp
+          # EndTime: Timestamp
+          Timezone: America/Sao_Paulo
+          ScalableTargetAction:
+            MaxCapacity: !Ref ScheduledMaxCapacity
+            MinCapacity: !Ref ScheduledMinCapacity
 
-  ScalingPolicy:
+  ScalingPolicyCPU:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
-      PolicyName: !Sub ${ServiceName}ScalingPolicy
+      PolicyName: !Sub ${ServiceName}ScalingPolicyCPU
       PolicyType: TargetTrackingScaling
       ScalingTargetId: !Ref ScalableTarget
       TargetTrackingScalingPolicyConfiguration:
@@ -93,3 +115,17 @@ Resources:
         DisableScaleIn: false
         PredefinedMetricSpecification:
           PredefinedMetricType: ECSServiceAverageCPUUtilization
+
+  ScalingPolicyMemory:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub ${ServiceName}ScalingPolicyMemory
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref ScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: !Ref TargetValue
+        ScaleInCooldown: !Ref ScaleInCooldown
+        ScaleOutCooldown: !Ref ScaleOutCooldown
+        DisableScaleIn: false
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageMemoryUtilization
