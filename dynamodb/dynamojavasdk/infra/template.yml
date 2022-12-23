@@ -1,39 +1,54 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a DynamoDB table
+Description: Creates a DynamoDB table with two Global Secondary Indexes (GSI) for an integration with Java SDK
 
 Parameters:
-
-  ImportSourceSpecificationS3BucketSource:
-    Type: String
-    Default: tg-quicklabs-data
-
   Owner:
     Type: String
     Default: tg
 
 Resources:
-
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: Person
+      TableName: primary
       AttributeDefinitions:
-        - AttributeName: person_document_number
+        - AttributeName: pk
           AttributeType: S
-        - AttributeName: person_birth_country
+        - AttributeName: sk
           AttributeType: S
+        - AttributeName: gsi1pk
+          AttributeType: S
+        - AttributeName: gsi1sk
+          AttributeType: S
+        - AttributeName: gsi2pk
+          AttributeType: S
+        - AttributeName: gsi2sk
+          AttributeType: N
       KeySchema:
-        - AttributeName: person_document_number
+        - AttributeName: pk
           KeyType: HASH
-        - AttributeName: person_birth_country
+        - AttributeName: sk
           KeyType: RANGE
       TableClass: STANDARD
       BillingMode: PAY_PER_REQUEST
-      ImportSourceSpecification:
-        InputFormat: CSV
-        S3BucketSource: 
-            S3Bucket: !Ref ImportSourceSpecificationS3BucketSource
+      GlobalSecondaryIndexes:
+        - IndexName: gsi1
+          KeySchema:
+            - AttributeName: gsi1pk
+              KeyType: HASH
+            - AttributeName: gsi1sk
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: gsi2
+          KeySchema:
+            - AttributeName: gsi2pk
+              KeyType: HASH
+            - AttributeName: gsi2sk
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
       Tags:
         - Key: Owner
           Value: !Ref Owner

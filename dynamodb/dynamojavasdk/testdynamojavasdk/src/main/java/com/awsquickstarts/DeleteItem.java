@@ -9,24 +9,21 @@ import software.amazon.awssdk.services.dynamodb.model.DeleteItemRequest;
 public class DeleteItem {
 
     public static void main(String[] args) throws Exception {
-        final String accessKeyId = System.getenv("ACCESS_KEY_ID");
-        final String secretAccessId = System.getenv("SECRET_ACCESS_KEY");
-        final DynamoDbClient dynamoDbClient = new DynamoDbService(accessKeyId, secretAccessId).getDynamoDbClient();
-        deleteItem(dynamoDbClient);
+        deleteItem();
     }
 
-    private static void deleteItem(final DynamoDbClient dynamoDbClient) {
-        System.out.println("Running delete item...");
+    private static void deleteItem() {
+        System.out.println("running deleteItemm...");
         try {
-            final AttributeValue personDocumentNumber = AttributeValue.builder().s("111222333").build();
-            final AttributeValue personBirthCountry = AttributeValue.builder().s("ISRAEL").build();
+            final AttributeValue pk = AttributeValue.builder().s("MOVIE#DieHard").build();
+            final AttributeValue sk = AttributeValue.builder().s("MOVIE#DieHard").build();
             final DeleteItemRequest request = DeleteItemRequest.builder()
                     .tableName(DynamoDbService.TABLE_NAME)
-                    .key(Map.of("person_document_number", personDocumentNumber, "person_birth_country",
-                            personBirthCountry))
+                    .key(Map.of("pk", pk, "sk", sk))
                     .build();
+            final DynamoDbClient dynamoDbClient = new DynamoDbService().getDynamoDbClient();
             dynamoDbClient.deleteItem(request);
-            System.out.println("Delete item has completed");
+            System.out.println("deleteItem has completed");
         } catch (Exception e) {
             e.printStackTrace();
         }

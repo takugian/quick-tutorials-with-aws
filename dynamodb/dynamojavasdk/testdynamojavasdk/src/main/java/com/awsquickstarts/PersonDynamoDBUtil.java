@@ -6,32 +6,16 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 public class PersonDynamoDBUtil {
 
-    public static Person convertItem(final Map<String, AttributeValue> item) {
+    public static void printItem(final Map<String, AttributeValue> item) {
 
-        final Person person = new Person();
+        final StringBuilder str = new StringBuilder();
 
-        for (String itemKey : item.keySet()) {
-
-            final AttributeValue attributeValue = item.get(itemKey);
-
-            if (itemKey == "person_document_number") {
-                person.setPersonDocumentNumber(getValue(attributeValue));
-            } else if (itemKey == "person_birth_country") {
-                person.setPersonBirthCountry(getValue(attributeValue));
-            } else if (itemKey == "person_name") {
-                person.setPersonName(getValue(attributeValue));
-            } else if (itemKey == "person_gender") {
-                person.setPersonGender(getValue(attributeValue));
-            } else if (itemKey == "person_age") {
-                person.setPersonAge(Integer.valueOf(getValue(attributeValue)));
-            } else if (itemKey == "person_birth_date") {
-                person.setPersonBirthDate(getValue(attributeValue));
-            } else if (itemKey == "person_create_date") {
-                person.setPersonCreateDate(getValue(attributeValue));
-            }
+        for (String itemKey : item.keySet()) {            
+            final AttributeValue attributeValue = item.get(itemKey);            
+            str.append(itemKey).append("=").append(getValue(attributeValue)).append(" ");
         }
 
-        return person;
+        System.out.println(str);
 
     }
 

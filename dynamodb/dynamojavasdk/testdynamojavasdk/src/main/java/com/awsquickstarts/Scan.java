@@ -9,27 +9,24 @@ import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
 public class Scan {
 
     public static void main(String[] args) throws Exception {
-        final String accessKeyId = System.getenv("ACCESS_KEY_ID");
-        final String secretAccessId = System.getenv("SECRET_ACCESS_KEY");
-        final DynamoDbClient dynamoDbClient = new DynamoDbService(accessKeyId, secretAccessId).getDynamoDbClient();
-        scan(dynamoDbClient);
+        scan();
     }
 
-    private static void scan(final DynamoDbClient dynamoDbClient) {
-        System.out.println("Running scan...");
+    private static void scan() {
+        System.out.println("running scan...");
         try {
             final ScanRequest request = ScanRequest.builder()
                     .tableName(DynamoDbService.TABLE_NAME)
-                    .projectionExpression(
-                            "person_document_number,person_birth_country,person_name,person_gender,person_age,person_birth_date")
-                    .filterExpression("#person_gender = :person_gender")
-                    .expressionAttributeNames(Map.of("#person_gender", "person_gender"))
-                    .expressionAttributeValues(Map.of(":person_gender", AttributeValue.builder().s("FEMALE").build()))
+                    // .indexName("")
+                    // .filterExpression("")
+                    // .expressionAttributeValues(Map.of("",
+                    // AttributeValue.builder().s("").build()))
                     .build();
+            final DynamoDbClient dynamoDbClient = new DynamoDbService().getDynamoDbClient();
             for (Map<String, AttributeValue> item : dynamoDbClient.scan(request).items()) {
-                System.out.println(PersonDynamoDBUtil.convertItem(item));
+                PersonDynamoDBUtil.printItem(item);
             }
-            System.out.println("Scan has completed...");
+            System.out.println("scan has completed...");
         } catch (Exception e) {
             e.printStackTrace();
         }

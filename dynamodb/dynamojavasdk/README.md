@@ -1,6 +1,6 @@
 # dynamojavasdk
 
-This project creates a DynamoDB table for an integration with Java SDK.
+This project creates a DynamoDB table with two Global Secondary Indexes (GSI) for an integration with Java SDK.
 
 ## Helpful links
 

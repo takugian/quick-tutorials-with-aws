@@ -11,11 +11,15 @@ public class DynamoDbService {
     
     private final String secretAccessId;
 
-    public final static String TABLE_NAME = "Person";
+    public final static String TABLE_NAME = "primary";
 
-    public DynamoDbService(String accessKeyId, String secretAccessId) {
-        this.accessKeyId = accessKeyId;
-        this.secretAccessId = secretAccessId;
+    public final static String INDEX_1_NAME = "gsi1";
+
+    public final static String INDEX_2_NAME = "gsi2";
+
+    public DynamoDbService() {
+        this.accessKeyId = System.getenv("ACCESS_KEY_ID");
+        this.secretAccessId = System.getenv("SECRET_ACCESS_KEY");
     }
 
     public DynamoDbClient getDynamoDbClient() {

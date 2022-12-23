@@ -10,32 +10,31 @@ import software.amazon.awssdk.services.dynamodb.model.ScanResponse;
 public class PaginationScan {
 
     public static void main(String[] args) throws Exception {
-        final String accessKeyId = System.getenv("ACCESS_KEY_ID");
-        final String secretAccessId = System.getenv("SECRET_ACCESS_KEY");
-        final DynamoDbClient dynamoDbClient = new DynamoDbService(accessKeyId, secretAccessId).getDynamoDbClient();
-        scan(dynamoDbClient);
+        scan();
     }
 
-    private static void scan(final DynamoDbClient dynamoDbClient) {
-        System.out.println("Running pagination scan...");
+    private static void scan() {
+        System.out.println("running scan with pagination...");
         try {
             Map<String, AttributeValue> lastEvaluatedKey = null;
             while (true) {
                 final ScanRequest request = ScanRequest.builder()
                         .tableName(DynamoDbService.TABLE_NAME)
+                        // .indexName("")
                         .limit(2)
                         .exclusiveStartKey(lastEvaluatedKey)
                         .build();
+                final DynamoDbClient dynamoDbClient = new DynamoDbService().getDynamoDbClient();
                 final ScanResponse scanResponse = dynamoDbClient.scan(request);
                 lastEvaluatedKey = scanResponse.lastEvaluatedKey();
                 for (Map<String, AttributeValue> item : dynamoDbClient.scan(request).items()) {
-                    System.out.println(PersonDynamoDBUtil.convertItem(item));
+                    PersonDynamoDBUtil.printItem(item);
                 }
                 if (lastEvaluatedKey.isEmpty()) {
                     break;
                 }
             }
-            System.out.println("Pagination scan has completed...");
+            System.out.println("scan with pagination has completed...");
         } catch (Exception e) {
             e.printStackTrace();
         }
